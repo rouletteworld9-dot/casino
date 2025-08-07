@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import GameCard from './ui/GameCard';
 
 
-const GameContainer = () => {
+const GameContainer = ({className=""}) => {
     const games = [
       {
         id: 1,
@@ -79,6 +79,60 @@ const GameContainer = () => {
       },
       {
         id: 9,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 10,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 11,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 12,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 13,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 14,
+        title: "ANDAR BAHAR",
+        provider: "EZUGI",
+        image: "bg-gradient-to-br from-brown-700 to-brown-800",
+        icon: "🃏",
+        isTop: true,
+        hasInfo: true,
+      },
+      {
+        id: 15,
         title: "AUTO-ROULETTE",
         provider: "EVOLUTION",
         image: "bg-gradient-to-br from-red-500 to-red-600",
@@ -87,7 +141,7 @@ const GameContainer = () => {
         hasInfo: true,
       },
       {
-        id: 10,
+        id: 16,
         title: "See All",
         provider: "",
         image: "bg-gradient-to-br from-gray-700 to-gray-800",
@@ -109,7 +163,7 @@ const GameContainer = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+      className={`grid grid-cols-2 gap-4 ${className}`}
     >
       {games.map((game) => (
         <GameCard key={game.id} game={game} />

@@ -137,7 +137,7 @@ const GameCards = () => {
           <motion.div
             onClick={() => {
               if (category.title === "Casino") {
-                navigate("/casino/game"); // Navigate to the casino game page
+                navigate("/casino/game"); 
               }
             }}
             key={index}
