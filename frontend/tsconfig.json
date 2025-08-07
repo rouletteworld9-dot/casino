@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-      "target": "es6",
-      "module": "esnext",
-      "jsx": "react-jsx",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true
+        "target": "ESNext",
+        "module": "ESNext", // or "ES2020"
+        "moduleResolution": "node", // ✅ This is critical
+        "jsx": "react-jsx", // or "react" if older React
+        "strict": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
     },
-    "include": ["src"]
+    "include": [
+        "src"
+    ] // or wherever your frontend code lives
 }
-  
