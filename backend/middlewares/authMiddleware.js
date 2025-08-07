@@ -1,14 +1,11 @@
-// middlewares/authMiddleware.js
-
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized : No-Token" });
   }
-
   const token = authHeader.split(" ")[1];
 
   try {
@@ -21,6 +18,7 @@ const authMiddleware = async (req, res, next) => {
 
     req.user = user;
     next();
+    // eslint-disable-next-line no-unused-vars
   } catch (err) {
     return res.status(401).json({ message: "Token invalid or expired" });
   }
