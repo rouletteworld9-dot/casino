@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import GameCards from "./gameCards";
 import CasinoGamesUI from "./games";
+import HeroSlider from "./ui/HeroSlider";
 
 interface LandingPageProps {
   isLoggedIn: boolean;
@@ -55,38 +56,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-purple-600/20"></div>
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="container mx-auto text-center relative z-10"
-        >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-red-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            NEON CASINO
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Experience the thrill of Vegas from anywhere. Premium games, live
-            dealers, and massive jackpots await!
-          </p>
-          {!isLoggedIn && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <button className="bg-gradient-to-r from-red-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-red-600 hover:to-purple-700 transition-all transform hover:scale-105">
-                Start Playing Now
-              </button>
-              <button className="border-2 border-purple-500 text-purple-400 px-8 py-4 rounded-lg font-bold text-lg hover:bg-purple-500 hover:text-white transition-all">
-                Learn More
-              </button>
-            </motion.div>
-          )}
-        </motion.div>
-      </section>
+      <HeroSlider isLoggedIn={isLoggedIn}/>
 
       {/* Game Categories */}
           <GameCards/>

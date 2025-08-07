@@ -4,7 +4,7 @@ import { Dice6, Trophy, Heart, Plane, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const GameCards = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -107,7 +107,7 @@ const GameCards = () => {
     {
       title: "Aviator",
       subtitle: "Instant game",
-      image:"/desk_Aviator_supernew.png",
+      image: "/desk_Aviator_supernew.png",
       buttonText: "Play now",
       bgGradient: "from-lime-400 via-yellow-400 to-yellow-500",
       icon: (
@@ -135,11 +135,11 @@ const GameCards = () => {
       >
         {gameCategories.map((category, index) => (
           <motion.div
-          onClick={() =>{
-            if (category.title === "Casino") {
-              navigate("/casino/game"); // Navigate to the casino game page
-            }
-          }}
+            onClick={() => {
+              if (category.title === "Casino") {
+                navigate("/casino/game"); // Navigate to the casino game page
+              }
+            }}
             key={index}
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -5 }}
