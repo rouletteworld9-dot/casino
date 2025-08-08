@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputField from "./ui/InputField";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../hooks/useAuth";
 const motionFade = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -10,17 +11,27 @@ const motionFade = {
 
 export default function LoginScreen() {
   const navigate = useNavigate();
- const [formData , setFormData] = useState({
+  const [formData, setFormData] = useState({
     phone: "",
-  password: "",})
-  const [isLoading, setIsLoading] = useState(false);
+    password: "",
+  });
+  const { loginUser, loginLoading } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!formData.phone || !formData.password) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    loginUser(formData, {
+      onSuccess: () => {
+        navigate("/");
+      },
+    });
   };
 
-    const handleChange = (e) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   return (
@@ -31,7 +42,7 @@ export default function LoginScreen() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="bg-black/60 backdrop-blur-lg rounded-2xl border border-red-500/30 p-8 shadow-2xl">
+        <div className="bg-black/60 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
           <motion.div {...motionFade} className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent mb-2">
               Welcome Back
@@ -41,7 +52,7 @@ export default function LoginScreen() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <InputField
-            name="phone"
+              name="phone"
               label="Phone Number"
               type="tel"
               value={formData.phone}
@@ -50,7 +61,7 @@ export default function LoginScreen() {
             />
 
             <InputField
-            name="password"
+              name="password"
               label="Password"
               type="password"
               value={formData.password}
@@ -63,10 +74,10 @@ export default function LoginScreen() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              disabled={isLoading}
+              disabled={loginLoading}
               className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {loginLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                   Signing In...
@@ -81,7 +92,7 @@ export default function LoginScreen() {
             <p className="text-gray-400">
               Don't have an account?{" "}
               <button
-              onClick={() =>navigate("/register")}
+                onClick={() => navigate("/register")}
                 className="text-red-400 hover:text-red-300 font-medium transition-colors"
               >
                 Register

@@ -28,5 +28,6 @@ export const useAuth = ()=>{
   return {
     registerUser : registerMutation.mutate,
     loginUser : loginMutation.mutate,
+    loginLoading:loginMutation.isPending
   }
 }

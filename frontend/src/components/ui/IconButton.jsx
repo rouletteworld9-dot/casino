@@ -5,7 +5,7 @@ const IconButton = ({
   icon = <ChevronRight size={16} className="rotate-90" />,
   onClick,
   className = "",
-  iconPosition = "right", 
+  iconPosition = "right",
 }) => {
   return (
     <button

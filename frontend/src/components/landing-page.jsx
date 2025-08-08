@@ -74,7 +74,7 @@ export default function LandingPage({ isLoggedIn }) {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {promotions.map((promo, index) => (  
+            {promotions.map((promo, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}

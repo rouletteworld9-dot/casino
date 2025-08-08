@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import { Gift, Trophy, Search, Settings, Globe, Menu, X } from "lucide-react";
 import { useState } from "react";
 
-
-
 const NavButton = ({ children, onClick, className = "" }) => (
   <motion.button
     whileHover={{ scale: 1.05 }}
@@ -21,13 +19,7 @@ const IconButton = ({ icon: Icon, onClick, className = "" }) => (
   </NavButton>
 );
 
-
-export default function Header({
-  isLoggedIn,
-  user,
-  onNavigate,
-  onLogout,
-}) {
+export default function Header({ isLoggedIn, user, onNavigate, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -131,7 +123,7 @@ export default function Header({
             <IconButton
               icon={mobileMenuOpen ? X : Menu}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden" 
+              className="lg:hidden"
             />
           </div>
         </div>

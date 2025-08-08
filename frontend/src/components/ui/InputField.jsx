@@ -1,25 +1,18 @@
-import React from 'react'
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 const motionFade = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5 },
 };
-const InputField = ({
-  label,
-  type,
-  name , 
-  value,
-  onChange,
-  placeholder,
-}) => (
+const InputField = ({ label, type, name, value, onChange, placeholder }) => (
   <motion.div {...motionFade}>
     <label className="block text-sm font-medium text-gray-300 mb-2">
       {label}
     </label>
     <input
-    name={name}
+      name={name}
       type={type || "text"}
       value={value}
       onChange={onChange}
@@ -30,4 +23,4 @@ const InputField = ({
   </motion.div>
 );
 
-export default InputField
+export default InputField;

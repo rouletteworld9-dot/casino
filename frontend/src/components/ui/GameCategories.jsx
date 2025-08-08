@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Cherry,
   Crown,
@@ -9,7 +7,6 @@ import {
   Trophy,
   Zap,
 } from "lucide-react";
-import React from "react";
 import { motion } from "framer-motion";
 
 const defaultCategories = [

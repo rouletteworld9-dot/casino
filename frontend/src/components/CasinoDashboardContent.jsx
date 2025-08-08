@@ -1,9 +1,9 @@
-import React from 'react';
-import GameContainer from './GameContainer';
-import SearchBar from './ui/SearchBar';
-import IconButton from './ui/IconButton';
-import { ChevronRight } from 'lucide-react';
-import HeroSlider from './ui/HeroSlider';
+import React from "react";
+import GameContainer from "./GameContainer";
+import SearchBar from "./ui/SearchBar";
+import IconButton from "./ui/IconButton";
+import { ChevronRight } from "lucide-react";
+import HeroSlider from "./ui/HeroSlider";
 
 const CasinoDashboardContent = () => {
   return (
@@ -25,11 +25,7 @@ const CasinoDashboardContent = () => {
             icon={<ChevronRight size={16} className="rotate-90" />}
             className="w-[25%]"
           />
-          <IconButton
-            label=""
-            icon={<span>🍀</span>}
-            className="p-2 w-auto"
-          />
+          <IconButton label="" icon={<span>🍀</span>} className="p-2 w-auto" />
         </div>
       </div>
 
