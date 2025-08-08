@@ -15,14 +15,24 @@ import LandingPage from "./components/landing-page";
 import Footer from "./components/footer";
 import LoginScreen from "./components/login";
 import CasinoDashboard from "./pages/casino-game";
+import AdminLayout from "./components/admin/AdminLayout.jsx";
+import Dashboard from "./components/admin/Dashboard.jsx";
+import Members from "./components/admin/Members.jsx";
+import BrowseRecharge from "./components/admin/BrowseRecharge.jsx";
+import RechargeApprove from "./components/admin/RechargeApprove.jsx";
+import Withdrawals from "./components/admin/Withdrawals.jsx";
+import WithdrawlsSettings from "./components/admin/WithdrawlsSettings.jsx";
+import LiveGame from "./components/admin/LiveGame.jsx";
+import Settings from "./components/admin/Settings.jsx";
+import Games from "./components/admin/Games.jsx";
+import Transactions from "./components/admin/Transactions.jsx";
 
 export default function CasinoApp() {
-
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  const handleLogin = (userData: any) => {
+  const handleLogin = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
   };
@@ -32,7 +42,7 @@ export default function CasinoApp() {
     setUser(null);
   };
 
-  const handleRegister = (userData: any) => {
+  const handleRegister = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
   };
@@ -76,7 +86,21 @@ export default function CasinoApp() {
               }
             />
             <Route path="/casino/game" element={<CasinoDashboard />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="members" element={<Members />} />
+              <Route path="games" element={<Games />} />
+              <Route path="transactions" element={<Transactions />} />
+              <Route path="browse-recharge" element={<BrowseRecharge />} />
+              <Route path="recharge-approve" element={<RechargeApprove />} />
+              <Route path="withdrawals" element={<Withdrawals />} />
+              <Route path="withdrawals-settings" element={<WithdrawlsSettings />} />
+              <Route path="live-game" element={<LiveGame />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="" element={<Navigate to="dashboard" />} />
+            </Route>
+            {/* <Route path="*" element={<Navigate to="/" />} /> */}
           </Routes>
         </motion.main>
       </AnimatePresence>
