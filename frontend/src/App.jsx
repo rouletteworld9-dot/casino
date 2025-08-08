@@ -12,30 +12,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "./components/header";
 import RegisterScreen from "./components/register";
 import LandingPage from "./components/landing-page";
-import Footer from "./components/footer";
 import LoginScreen from "./components/login";
 import CasinoDashboard from "./pages/casino-game";
 
-export default function CasinoApp() {
+export default function App() {
 
   const navigate= useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-
-  const handleLogin = (userData: any) => {
-    setIsLoggedIn(true);
-    setUser(userData);
-  };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
   };
 
-  const handleRegister = (userData: any) => {
-    setIsLoggedIn(true);
-    setUser(userData);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
@@ -59,10 +49,7 @@ export default function CasinoApp() {
               path="/login"
               element={
                 <LoginScreen
-                  onLogin={handleLogin}
-                  onSwitchToRegister={() =>
-                    (window.location.href = "/register")
-                  }
+                 
                 />
               }
             />
@@ -70,8 +57,7 @@ export default function CasinoApp() {
               path="/register"
               element={
                 <RegisterScreen
-                  onRegister={handleRegister}
-                  onSwitchToLogin={() => (window.location.href = "/login")}
+                 
                 />
               }
             />
@@ -80,7 +66,7 @@ export default function CasinoApp() {
           </Routes>
         </motion.main>
       </AnimatePresence>
-      <Footer />
+   
     </div>
   );
 }

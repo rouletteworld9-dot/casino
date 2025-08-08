@@ -1,15 +1,9 @@
-"use client";
-
-import { motion } from "framer-motion";
 import GameCards from "./gameCards";
 import CasinoGamesUI from "./games";
 import HeroSlider from "./ui/HeroSlider";
+import { motion } from "framer-motion";
 
-interface LandingPageProps {
-  isLoggedIn: boolean;
-}
-
-export default function LandingPage({ isLoggedIn }: LandingPageProps) {
+export default function LandingPage({ isLoggedIn }) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -31,7 +25,6 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
     },
   };
 
- 
   const promotions = [
     {
       title: "Welcome Bonus",
@@ -56,11 +49,11 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <HeroSlider isLoggedIn={isLoggedIn}/>
+      <HeroSlider className="rounded-none h-[80vh]" />
 
       {/* Game Categories */}
-          <GameCards/>
-          <CasinoGamesUI/>
+      <GameCards />
+      <CasinoGamesUI />
 
       {/* Promotions */}
       <section className="py-16 px-4 bg-black/20">
