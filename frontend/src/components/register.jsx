@@ -1,6 +1,8 @@
 import { useState } from "react";
 import InputField from "./ui/InputField";
 import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "../hooks/useAuth";
 import VerifyOtp from "./VerifyOtp";
 
 export default function RegisterScreen() {
@@ -10,67 +12,70 @@ export default function RegisterScreen() {
     phone: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const { registerUser, registerLoading } = useAuth();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     if (!agreeToTerms) return alert("Please agree to the terms and conditions");
-
-    setIsLoading(true);
-    setTimeout(() => {
-      console.log("Registration successful:", formData);
-      setIsLoading(false);
-      setCodeSent(true); // Show verification section
-    }, 1000);
-  };
-
-  const handleCodeSubmit = () => {
-    if (verificationCode.length < 4) {
-      alert("Please enter a valid verification code");
-      return;
-    }
-    // Simulate verification
-    setTimeout(() => {
-      navigate("/");
-    }, 500);
+    registerUser(formData, {
+      onSuccess: () => {
+        setCodeSent(true);
+      },
+    });
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-[#482D60] via-[#412C4D] to-[#19161A] flex">
+    <div className="min-h-screen relative bg-gradient-to-br from-[#482D60] via-[#412C4D] to-[#19161A] flex flex-col lg:flex-row">
       {/* Left Side - Image */}
-      <div className="relative flex-1 flex items-center justify-center p-2 overflow-hidden">
+      <div className="relative flex-1 flex items-center justify-center p-4 overflow-hidden h-[300px] sm:h-[500px] lg:h-auto">
         <img
           src="./registerbg.webp"
           alt="Background"
-          className="object-contain w-full h-full absolute top-0 left-0"
+          className="object-cover w-full h-full absolute top-0 left-0"
         />
-        <div className="relative top-30 z-10 text-white text-center max-w-[100%]">
-          <p className="text-3xl font-semibold text-yellow-400">WELCOME PACK</p>
-          <h1 className="text-7xl font-extrabold text-yellow-300 my-2">
+        <div className="relative z-10 text-white text-center px-4">
+          <p className="text-xl sm:text-3xl font-semibold text-yellow-400">
+            WELCOME PACK
+          </p>
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-yellow-300 my-2">
             500% + 430 FS
           </h1>
-          <p className="text-2xl font-semibold text-white">UP TO 150 000 INR</p>
+          <p className="text-lg sm:text-2xl font-semibold text-white">
+            UP TO 150 000 INR
+          </p>
         </div>
       </div>
 
       {/* Right Side - Registration + Code Verification */}
-      <div className="w-[40%] bg-gray-900/95 backdrop-blur-lg border-l border-purple-500/30 flex items-center justify-center px-8 py-2">
+      <div className="w-full lg:w-[40%] bg-gray-900/95 backdrop-blur-lg border-t lg:border-t-0 lg:border-l border-purple-500/30 flex items-center justify-center px-6 py-8">
         <div className="w-full max-w-sm">
+          {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white">Registration</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">
+              Registration
+            </h2>
             <p className="text-gray-400 text-sm mt-1">
               Create your account now
             </p>
           </div>
 
           <div className="space-y-4">
-            {/* Phone Input */}
+            {/* Name */}
+            <InputField
+              type="text"
+              label="Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+            />
+
+            {/* Phone */}
             <InputField
               type="tel"
               label="Phone Number"
@@ -119,10 +124,10 @@ export default function RegisterScreen() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isLoading}
+              disabled={registerLoading}
               className="w-full bg-gradient-to-r from-pink-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6"
             >
-              {isLoading ? (
+              {registerLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                   Creating Account...
@@ -131,6 +136,8 @@ export default function RegisterScreen() {
                 "Register"
               )}
             </button>
+
+            {/* Login Redirect */}
             <p className="text-sm text-center mt-3 text-gray-400">
               Already have an account?{" "}
               <button
@@ -142,8 +149,8 @@ export default function RegisterScreen() {
             </p>
           </div>
 
-          {/* Verification Section */}
-          {codeSent && <VerifyOtp />}
+          {/* OTP Verification */}
+          {codeSent && <VerifyOtp phone={formData.phone} />}
         </div>
       </div>
     </div>
