@@ -6,7 +6,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app/"],
+    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app"],
     credentials: true
 }));
 
