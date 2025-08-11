@@ -1,5 +1,3 @@
-"use client";
-
 import {
   BrowserRouter as Router,
   Route,
@@ -27,24 +25,13 @@ import Settings from "./components/admin/Settings.jsx";
 // import Games from "./components/admin/Games.jsx";
 import Transactions from "./components/admin/Transactions.jsx";
 
+
 export default function App() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
-      <Header
-        isLoggedIn={isLoggedIn}
-        user={user}
-        onLogout={handleLogout}
-        onNavigate={(path) => navigate(`/${path}`)}
-      />
+      <Header onNavigate={(path) => navigate(`/${path}`)} />
       <AnimatePresence mode="wait">
         <motion.main
           initial={{ opacity: 0, y: 20 }}
@@ -54,7 +41,9 @@ export default function App() {
           className="min-h-screen"
         >
           <Routes>
-            <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} />} />
+
+            <Route path="/" element={<LandingPage />} />
+
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/casino/game" element={<CasinoDashboard />} />
@@ -79,7 +68,6 @@ export default function App() {
           </Routes>
         </motion.main>
       </AnimatePresence>
-      <Footer/>
     </div>
   );
 }

@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { useAuthStore } from '../stores/useAuthStore';
+import axios from "axios";
+import { useAuthStore } from "../stores/useAuthStore";
 
 const api = axios.create({
   // baseURL: "https://craveon-backend.onrender.com/api", // eskills development
-  baseURL: 'http://localhost:8080/api', // for development
+  baseURL: "http://localhost:8080/api", // for development
   withCredentials: true,
 });
 
@@ -27,18 +27,19 @@ api.interceptors.response.use(
     const state = useAuthStore.getState();
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (state.isRefreshing) return Promise.reject(error); 
+      if (state.isRefreshing) return Promise.reject(error);
       originalRequest._retry = true;
 
       try {
         state.isRefreshing = true;
-        const response = await api.get('/auth/refresh', { withCredentials: true });
+        const response = await api.get("/auth/refresh", {
+          withCredentials: true,
+        });
         state.isRefreshing = false;
 
         const { accessToken } = response.data;
         useAuthStore.getState().setAuth(accessToken);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-       
 
         return api(originalRequest);
       } catch (err) {

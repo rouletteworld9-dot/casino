@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
-const VerifyOtp = () => {
+const VerifyOtp = ({ phone }) => {
   const navigate = useNavigate();
-  const [codeSent, setCodeSent] = useState(false); // Track if code is sent
+  const { verifyOtpFn } = useAuth();
+  const [codeSent, setCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
   const handleCodeSubmit = () => {
@@ -11,10 +13,14 @@ const VerifyOtp = () => {
       alert("Please enter a valid verification code");
       return;
     }
-    // Simulate verification
-    setTimeout(() => {
-      navigate("/home");
-    }, 500);
+    verifyOtpFn(
+      { phone, otp: verificationCode },
+      {
+        onSuccess: () => {
+          navigate("/");
+        },
+      }
+    );
   };
 
   return (
