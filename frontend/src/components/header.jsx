@@ -1,17 +1,8 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Gift, Trophy, Search, Settings, Globe, Menu, X } from "lucide-react";
 import { useState } from "react";
 
-interface HeaderProps {
-  isLoggedIn: boolean;
-  user: any;
-  onNavigate: (page: string) => void;
-  onLogout: () => void;
-}
-
-const NavButton = ({ children, onClick, className = "" }: any) => (
+const NavButton = ({ children, onClick, className = "" }) => (
   <motion.button
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
@@ -22,19 +13,13 @@ const NavButton = ({ children, onClick, className = "" }: any) => (
   </motion.button>
 );
 
-const IconButton = ({ icon: Icon, onClick, className = "" }: any) => (
+const IconButton = ({ icon: Icon, onClick, className = "" }) => (
   <NavButton onClick={onClick} className={`p-2 ${className}`}>
     <Icon size={16} />
   </NavButton>
 );
 
-
-export default function Header({
-  isLoggedIn,
-  user,
-  onNavigate,
-  onLogout,
-}: HeaderProps) {
+export default function Header({ isLoggedIn, user, onNavigate, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -55,9 +40,9 @@ export default function Header({
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       style={{ backgroundColor: "#17071D" }}
-      className="border-b border-purple-800 sticky top-0 z-50"
+      className="border-b sticky top-0 z-50 border-[#2A1033]"
     >
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-1">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <NavButton
@@ -126,14 +111,8 @@ export default function Header({
             ) : (
               <div className="flex items-center space-x-3">
                 <NavButton
-                  onClick={() => onNavigate("register")}
-                  className="hidden sm:block font-semibold text-xs"
-                >
-                  Sign Up
-                </NavButton>
-                <NavButton
                   onClick={() => onNavigate("login")}
-                  className="bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded font-semibold text-xs uppercase"
+                  className="bg-purple-700 hover:bg-purple-800 px-4 py-1 rounded font-semibold text-xs uppercase"
                 >
                   Log in
                 </NavButton>
@@ -144,7 +123,7 @@ export default function Header({
             <IconButton
               icon={mobileMenuOpen ? X : Menu}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden" 
+              className="lg:hidden"
             />
           </div>
         </div>

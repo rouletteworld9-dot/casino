@@ -10,9 +10,9 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "./components/header";
+import Footer from "./components/footer.jsx";
 import RegisterScreen from "./components/register";
 import LandingPage from "./components/landing-page";
-import Footer from "./components/footer";
 import LoginScreen from "./components/login";
 import CasinoDashboard from "./pages/casino-game";
 import AdminLayout from "./components/admin/AdminLayout.jsx";
@@ -27,24 +27,14 @@ import Settings from "./components/admin/Settings.jsx";
 import Games from "./components/admin/Games.jsx";
 import Transactions from "./components/admin/Transactions.jsx";
 
-export default function CasinoApp() {
+export default function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  const handleLogin = (userData) => {
-    setIsLoggedIn(true);
-    setUser(userData);
-  };
-
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
-  };
-
-  const handleRegister = (userData) => {
-    setIsLoggedIn(true);
-    setUser(userData);
   };
 
   return (
@@ -65,26 +55,8 @@ export default function CasinoApp() {
         >
           <Routes>
             <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} />} />
-            <Route
-              path="/login"
-              element={
-                <LoginScreen
-                  onLogin={handleLogin}
-                  onSwitchToRegister={() =>
-                    (window.location.href = "/register")
-                  }
-                />
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <RegisterScreen
-                  onRegister={handleRegister}
-                  onSwitchToLogin={() => (window.location.href = "/login")}
-                />
-              }
-            />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
             <Route path="/casino/game" element={<CasinoDashboard />} />
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
@@ -95,7 +67,10 @@ export default function CasinoApp() {
               <Route path="browse-recharge" element={<BrowseRecharge />} />
               <Route path="recharge-approve" element={<RechargeApprove />} />
               <Route path="withdrawals" element={<Withdrawals />} />
-              <Route path="withdrawals-settings" element={<WithdrawlsSettings />} />
+              <Route
+                path="withdrawals-settings"
+                element={<WithdrawlsSettings />}
+              />
               <Route path="live-game" element={<LiveGame />} />
               <Route path="settings" element={<Settings />} />
               <Route path="" element={<Navigate to="dashboard" />} />
@@ -104,7 +79,7 @@ export default function CasinoApp() {
           </Routes>
         </motion.main>
       </AnimatePresence>
-      <Footer />
+      <Footer/>
     </div>
   );
 }
