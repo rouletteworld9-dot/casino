@@ -18,7 +18,7 @@ const GameCard = ({ game }) => {
       }}
       variants={itemVariants}
       whileHover={{ scale: 1.02, y: -2 }}
-      className={`relative rounded-lg overflow-hidden cursor-pointer group ${game.image} aspect-[4/4]`}
+      className={`relative rounded-lg overflow-hidden cursor-pointer group ${game.image} aspect-[3/4]`}
     >
       {game.isTop && (
         <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded font-bold z-10">
