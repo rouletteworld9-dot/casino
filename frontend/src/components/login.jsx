@@ -100,6 +100,17 @@ export default function LoginScreen() {
               </button>
             </p>
           </motion.div>
+           <motion.div {...motionFade} className="mt-3 text-center">
+            <p className="text-gray-400">
+              Forgot Password?{" "}
+              <button
+                onClick={() => navigate("/forgot-password")}
+                className="text-purple-600 hover:text-purple-500 font-medium transition-colors"
+              >
+                click here
+              </button>
+            </p>
+          </motion.div>
         </div>
       </motion.div>
     </div>

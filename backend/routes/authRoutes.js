@@ -22,5 +22,8 @@ router.post("/request-reset-otp", authController.requestResetOtp);
 // ✅ Reset password using OTP
 router.post("/reset-password", authController.resetPassword);
 
+// Referesh Token
+router.post("/refresh-token", authController.refreshToken);
+
 
 module.exports = router;

@@ -2,8 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "../stores/useAuthStore";
 
 const api = axios.create({
-  // baseURL: "https://craveon-backend.onrender.com/api", // eskills development
-  baseURL: "http://localhost:8080/api", // for development
+
+  baseURL: "https://casino-6w78.onrender.com/api", // eskills development
+  // baseURL: "http://localhost:8080/api", // for development
   withCredentials: true,
 });
 
@@ -27,19 +28,25 @@ api.interceptors.response.use(
     const state = useAuthStore.getState();
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Do not attempt token refresh for /auth/* routes (like login, register, forgot-password)
+      if (originalRequest?.url?.startsWith("/auth/")) {
+        return Promise.reject(error);
+      }
+
       if (state.isRefreshing) return Promise.reject(error);
       originalRequest._retry = true;
 
       try {
         state.isRefreshing = true;
-        const response = await api.get("/auth/refresh", {
+        const response = await api.post("/auth/refresh-token", {}, {
           withCredentials: true,
         });
         state.isRefreshing = false;
 
-        const { accessToken } = response.data;
-        useAuthStore.getState().setAuth(accessToken);
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        const { token } = response.data;
+        if (!token) throw new Error("No token received from refresh-token endpoint");
+        useAuthStore.getState().setAuth(token);
+        originalRequest.headers.Authorization = `Bearer ${token}`;
 
         return api(originalRequest);
       } catch (err) {

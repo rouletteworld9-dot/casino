@@ -21,19 +21,32 @@ const register = async (userData) => {
   }
 };
 
-const verifyOtp = async ({otp, phone}) => {
+const verifyOtp = async ({ otp, phone }) => {
   try {
-    const response = await api.post("/auth/verify-otp", {otp, phone});
+    const response = await api.post("/auth/verify-otp", { otp, phone });
     return response.data;
   } catch (error) {
     console.error("OTP verification failed:", error);
     throw error;
   }
 };
+
+const forgotPassword = async ({ phone }) => {
+  const res = await api.post("/auth/forgot-password", { phone });
+  return res.data;
+};
+
+const resetPassword = async ({ phone, otp, newPassword }) => {
+  const res = await api.post("/auth/reset-password", { phone, otp, newPassword });
+  return res.data;
+};
+
 const authApi = {
   login,
   verifyOtp,
   register,
+  forgotPassword,
+  resetPassword,
 };
 
 export default authApi;
