@@ -10,7 +10,7 @@ function setRefreshTokenCookie(res, token) {
   const cookieOptions = {
     httpOnly: true,
     // secure true in production when using https
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "Strict", // adjust if needed for cross-site use
     // cookie expiry in ms — set to 30 days by default (match REFRESH_TOKEN_EXPIRES)
     maxAge: 30 * 24 * 60 * 60 * 1000,
