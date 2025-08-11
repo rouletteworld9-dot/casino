@@ -24,7 +24,7 @@ import Withdrawals from "./components/admin/Withdrawals.jsx";
 import WithdrawlsSettings from "./components/admin/WithdrawlsSettings.jsx";
 import LiveGame from "./components/admin/LiveGame.jsx";
 import Settings from "./components/admin/Settings.jsx";
-import Games from "./components/admin/Games.jsx";
+// import Games from "./components/admin/Games.jsx";
 import Transactions from "./components/admin/Transactions.jsx";
 
 export default function App() {
@@ -62,7 +62,7 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="members" element={<Members />} />
-              <Route path="games" element={<Games />} />
+              {/* <Route path="games" element={<Games />} /> */}
               <Route path="transactions" element={<Transactions />} />
               <Route path="browse-recharge" element={<BrowseRecharge />} />
               <Route path="recharge-approve" element={<RechargeApprove />} />
