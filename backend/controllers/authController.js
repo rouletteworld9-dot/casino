@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const { verifyRefreshToken, signAccessToken, signRefreshToken } = require("../utils/jwt");
 const sendOtpWhatsApp = require("../utils/sendOtpWhatsApp");
 const { setRefreshTokenCookie, hashToken } = require("../utils/authHelpers");
+const cryptoModule = require("crypto");
 
 // Helper to generate random 6-digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -225,7 +226,7 @@ exports.login = async (req, res) => {
 
     // Enforce single-device login:
     // create a new session token (random), store it on user
-    const newSessionToken = crypto.randomBytes(32).toString("hex");
+    const newSessionToken = cryptoModule.randomBytes(32).toString("hex");
     user.sessionToken = newSessionToken;
     user.lastLogin = new Date();
 
