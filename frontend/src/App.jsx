@@ -1,5 +1,3 @@
-"use client";
-
 import {
   BrowserRouter as Router,
   Route,
@@ -10,31 +8,17 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "./components/header";
-import RegisterScreen from "./components/register";
 import LandingPage from "./components/landing-page";
 import LoginScreen from "./components/login";
 import CasinoDashboard from "./pages/casino-game";
+import RegisterScreen from "./components/register";
 
 export default function App() {
-
-  const navigate= useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-  };
-
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
-      <Header
-        isLoggedIn={isLoggedIn}
-        user={user}
-        onLogout={handleLogout}
-        onNavigate={(path) => navigate(`/${path}`)}
-      />
+      <Header onNavigate={(path) => navigate(`/${path}`)} />
       <AnimatePresence mode="wait">
         <motion.main
           initial={{ opacity: 0, y: 20 }}
@@ -44,29 +28,14 @@ export default function App() {
           className="min-h-screen"
         >
           <Routes>
-            <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} />} />
-            <Route
-              path="/login"
-              element={
-                <LoginScreen
-                 
-                />
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <RegisterScreen
-                 
-                />
-              }
-            />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
             <Route path="/casino/game" element={<CasinoDashboard />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
-   
     </div>
   );
 }

@@ -1,12 +1,12 @@
-import { create } from 'zustand';
-import { jwtDecode } from 'jwt-decode';
-import api from '../utils/axios';
+import { create } from "zustand";
+import { jwtDecode } from "jwt-decode";
+import api from "../utils/axios";
 
 export const useAuthStore = create((set) => ({
   user: null,
   accessToken: null,
   isLoading: false,
-  isRefreshing: false, 
+  isRefreshing: false,
   otpToken: null,
   isPhoneVerified: false,
   registrationData: {},
@@ -23,13 +23,14 @@ export const useAuthStore = create((set) => ({
   setAuth: (token) => {
     if (token) {
       const user = jwtDecode(token);
-      if (!user) throw new Error('Invalid token');
+      console.log(user, "user from setAuth");
+      if (!user) throw new Error("Invalid token");
       set({ user, accessToken: token, isLoading: false });
     }
   },
 
   logout: async () => {
-    await api.post('/auth/logout', {}, { withCredentials: true });
+    await api.post("/auth/logout", {}, { withCredentials: true });
     set({ accessToken: null, user: null, isLoading: false });
   },
 
@@ -41,7 +42,9 @@ export const useAuthStore = create((set) => ({
       if (state.isRefreshing) return;
       set({ isRefreshing: true });
 
-      const response = await api.get('/auth/refresh', { withCredentials: true });
+      const response = await api.get("/auth/refresh", {
+        withCredentials: true,
+      });
       const { accessToken } = response.data;
 
       if (accessToken) {
