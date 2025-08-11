@@ -9,8 +9,9 @@ const userSchema = new mongoose.Schema({
     otpExpiresAt: Date,
     isVerified: { type: Boolean, default: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
-    sessionToken: String, // single-device login
+    sessionToken: { type: String, default: null }, // single-device login
     tokenVersion: { type: Number, default: 0 },
+    refreshTokenHash: { type: String, default: null },
     status: { type: String, enum: ["active", "banned", "deleted"], default: "active" },
     lastLogin: Date,
     createdAt: { type: Date, default: Date.now },
