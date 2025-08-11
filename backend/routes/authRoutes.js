@@ -19,9 +19,6 @@ router.post("/logout", authController.logout)
 // ✅ Forgot password (send OTP again)
 router.post("/forgot-password", authController.forgotPassword);
 
-// send otp to phone number for reset password first
-router.post("/request-reset-otp", authController.requestResetOtp);
-
 // ✅ Reset password using OTP
 router.post("/reset-password", authController.resetPassword);
 
