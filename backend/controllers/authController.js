@@ -145,31 +145,6 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-exports.requestResetOtp = async (req, res) => {
-  const { phone } = req.body;
-
-  if (!phone) return res.status(400).json({ message: "Phone number is required." });
-
-  try {
-    const user = await User.findOne({ phone });
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    const otp = generateOTP();
-    const otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 min expiry
-
-    user.otp = otp;
-    user.otpExpiresAt = otpExpiresAt;
-    await user.save();
-
-    await sendOtpWhatsApp(phone, otp);
-
-    return res.json({ message: "OTP sent to your WhatsApp." });
-  } catch (err) {
-    console.error("requestResetOtp error:", err);
-    return res.status(500).json({ message: "Server error." });
-  }
-};
-
 exports.resetPassword = async (req, res) => {
   const { phone, otp, newPassword } = req.body;
 

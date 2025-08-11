@@ -13,6 +13,9 @@ router.post("/verify-otp", authController.verifyOTP);
 // ✅ Login (phone, password)
 router.post("/login", authController.login);
 
+// LogOut 
+router.post("/logout", authController.logout)
+
 // ✅ Forgot password (send OTP again)
 router.post("/forgot-password", authController.forgotPassword);
 
