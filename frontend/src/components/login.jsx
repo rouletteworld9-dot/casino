@@ -3,6 +3,7 @@ import InputField from "./ui/InputField";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../stores/useAuthStore";
 const motionFade = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
