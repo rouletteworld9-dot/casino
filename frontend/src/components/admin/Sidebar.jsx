@@ -45,7 +45,7 @@ const Sidebar = () => {
       name: "Go to Website",
       path: "/",
       icon: <FaExternalLinkAlt />,
-      external: true,
+      // external: true,
     },
   ];
 
