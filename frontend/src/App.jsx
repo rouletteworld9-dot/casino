@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "./components/header";
-// import Footer from "./components/footer.jsx";
+import Footer from "./components/footer.jsx";
 import RegisterScreen from "./components/register";
 import LandingPage from "./components/landing-page";
 import LoginScreen from "./components/login";
@@ -72,6 +72,7 @@ export default function App() {
             </Routes>
           </motion.main>
         </AnimatePresence>
+        <Footer/>
       </div>
     </AuthProvider>
   );

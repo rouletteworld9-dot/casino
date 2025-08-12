@@ -50,6 +50,29 @@ export const useAuth = () => {
     },
   });
 
+
+  // const accountSettingsMutation = useMutation({
+  //   mutationFn: authApi.account,
+  //   onSuccess: (data) =>{
+  //     setAuth(data.token);
+  //     setAccountData(data);
+  //   },
+  //   onError: (error) =>{
+  //     console.log("Account settings error:", error);
+  //   }
+  // }).
+
+  const accountSettingsMutation = useMutation({
+    mutationFn: authApi.account,
+    onSuccess: (data) =>{
+      setAuth(data.token);
+      setAccountData(data);
+    },
+    onError: (error) =>{
+      console.log("Account settings error:", error);
+    }
+  })
+
   return {
     registerUser: registerMutation.mutate,
     registerLoading: registerMutation.isPending,
@@ -63,5 +86,7 @@ export const useAuth = () => {
     // verifyResetOtpLoading: verifyResetOtpMutation.isPending,
     resetPassword: resetPasswordMutation.mutate,
     resetPasswordLoading: resetPasswordMutation.isPending,
+    // accountSettings: accountSettingsMutation.mutate,
+    // accountSettingsLoading: accountSettingsMutation.isPending,
   };
 };

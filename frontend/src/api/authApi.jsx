@@ -32,21 +32,70 @@ const verifyOtp = async ({ otp, phone }) => {
 };
 
 const forgotPassword = async ({ phone }) => {
-  const res = await api.post("/auth/forgot-password", { phone });
-  return res.data;
+  try {
+    const res = await api.post("/auth/forgot-password", { phone });
+    return res.data;
+  } catch (error) {
+    console.log("forgot password error", error);
+    throw error;
+  }
 };
 
 const resetPassword = async ({ phone, otp, newPassword }) => {
-  const res = await api.post("/auth/reset-password", { phone, otp, newPassword });
-  return res.data;
+  try {
+    const res = await api.post("/auth/reset-password", {
+      phone,
+      otp,
+      newPassword,
+    });
+    return res.data;
+  } catch (error) {
+    console.log("reset password error", error);
+    throw error;
+  }
 };
 
+// const account = async () => {
+//   try {
+//     const res = await api.post("/admin/account");
+//     return res.data;
+//   } catch (error) {
+//     console.log("account error", error);
+//     throw error;
+//   }
+// };
+
+// Payment Settings APIs
+const getPaymentSettings = async () => {
+  try {
+    const res = await api.get("/settings/payment");
+    return res.data;
+  } catch (error) {
+    console.log("get payment settings error", error);
+    throw error;
+  }
+};
+
+const updatePaymentSettings = async (formData) => {
+  try {
+    const res = await api.post("/settings/payment", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  } catch (error) {
+    console.log("update payment settings error", error);
+    throw error;
+  }
+};
 const authApi = {
   login,
   verifyOtp,
   register,
   forgotPassword,
   resetPassword,
+  // account,
+  getPaymentSettings,
+  updatePaymentSettings,
 };
 
 export default authApi;
