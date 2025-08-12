@@ -1,9 +1,20 @@
 import { motion } from "framer-motion";
-import { Gift, Trophy, Search, Settings, Globe, Menu, X, CircleUser } from "lucide-react";
+import {
+  Gift,
+  Trophy,
+  Search,
+  Settings,
+  Globe,
+  Menu,
+  X,
+  CircleUser,
+} from "lucide-react";
 import { useState } from "react";
 import NavButton from "./ui/NavButton";
 // import IconButton from "./ui/IconButton";
 import { useAuthStore } from "../stores/useAuthStore";
+import UserHeaderDropdown from "./ui/UserHeaderDropdown";
+import { Navigate } from "react-router-dom";
 
 const IconButton = ({ icon: Icon, onClick, className = "" }) => (
   <NavButton onClick={onClick} className={`p-2 ${className}`}>
@@ -13,6 +24,7 @@ const IconButton = ({ icon: Icon, onClick, className = "" }) => (
 
 export default function Header({ onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navItems = [
     { name: "CASINO", key: "casino" },
@@ -33,8 +45,8 @@ export default function Header({ onNavigate }) {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      style={{ backgroundColor: "#17071D" }}
-      className="border-b sticky top-0 z-50 border-[#2A1033]"
+      // style={{ backgroundColor: "#17071D" }}
+      className="border-b sticky top-0 bg-[#1E0E24] z-50 border-[#2A1033]"
     >
       <div className="container mx-auto px-4 py-1">
         <div className="flex items-center justify-between">
@@ -43,7 +55,7 @@ export default function Header({ onNavigate }) {
             onClick={() => onNavigate("/")}
             className="flex items-center space-x-2"
           >
-            <div className="w-8 h-8  rounded flex items-center justify-center">
+            <div className="w-8 h-8 px-10 rounded flex items-center justify-center">
               Casinoo
             </div>
           </NavButton>
@@ -88,19 +100,24 @@ export default function Header({ onNavigate }) {
 
             {/* Auth Section */}
             {user ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-white flex space-x-2 text-xs">
+              <div
+                className="relative"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+              >
+                <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />
                   <span className="font-semibold text-purple-300">
                     {user?.name || "Player"}
                   </span>
                 </span>
-                <NavButton
-                  // onClick={onLogout}
-                  className="bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded font-semibold text-xs"
-                >
-                  Logout
-                </NavButton>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <UserHeaderDropdown
+                    onNavigate={onNavigate}
+                    setIsDropdown={setIsDropdownOpen}
+                  />
+                )}
               </div>
             ) : (
               <div className="flex items-center space-x-3">

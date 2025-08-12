@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ phone, name, password: hashedPassword });
+      user = new User({ phone, name, password: hashedPassword, playTokens: 1500, });
     }
 
     const otp = generateOTP();
@@ -141,31 +141,6 @@ exports.forgotPassword = async (req, res) => {
     return res.json({ message: "OTP sent for password reset." });
   } catch (err) {
     console.error("Forgot password error:", err);
-    return res.status(500).json({ message: "Server error." });
-  }
-};
-
-exports.requestResetOtp = async (req, res) => {
-  const { phone } = req.body;
-
-  if (!phone) return res.status(400).json({ message: "Phone number is required." });
-
-  try {
-    const user = await User.findOne({ phone });
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    const otp = generateOTP();
-    const otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 min expiry
-
-    user.otp = otp;
-    user.otpExpiresAt = otpExpiresAt;
-    await user.save();
-
-    await sendOtpWhatsApp(phone, otp);
-
-    return res.json({ message: "OTP sent to your WhatsApp." });
-  } catch (err) {
-    console.error("requestResetOtp error:", err);
     return res.status(500).json({ message: "Server error." });
   }
 };
@@ -362,7 +337,7 @@ exports.logout = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "None",
     });
 
     return res.json({ message: "Logged out." });

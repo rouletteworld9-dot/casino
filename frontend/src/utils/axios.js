@@ -2,8 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "../stores/useAuthStore";
 
 const api = axios.create({
-  // baseURL: "https://craveon-backend.onrender.com/api", // eskills development
-  baseURL: "http://localhost:8080/api", // for development
+
+  baseURL: "https://casino-6w78.onrender.com/api", // eskills development
+  // baseURL: "http://localhost:8080/api", // for development
   withCredentials: true,
 });
 
