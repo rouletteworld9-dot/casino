@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ phone, name, password: hashedPassword });
+      user = new User({ phone, name, password: hashedPassword, playTokens: 1500, });
     }
 
     const otp = generateOTP();
@@ -145,6 +145,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+
 exports.requestResetOtp = async (req, res) => {
   const { phone } = req.body;
 
@@ -169,7 +170,6 @@ exports.requestResetOtp = async (req, res) => {
     return res.status(500).json({ message: "Server error." });
   }
 };
-
 exports.resetPassword = async (req, res) => {
   const { phone, otp, newPassword } = req.body;
 
@@ -362,7 +362,8 @@ exports.logout = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "None",
+
     });
 
     return res.json({ message: "Logged out." });

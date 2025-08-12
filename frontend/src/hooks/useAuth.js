@@ -3,7 +3,14 @@ import authApi from "../api/authApi";
 import { useAuthStore } from "../stores/useAuthStore";
 
 export const useAuth = () => {
-  const { setAuth, setRegistrationData , setOtpToken , setIsPhoneVerified}  = useAuthStore.getState();
+  const {
+    setAuth,
+    setUser,
+    setRegistrationData,
+    setOtpToken,
+    setIsPhoneVerified,
+    logout,
+  } = useAuthStore.getState();
   const registerMutation = useMutation({
     mutationFn: authApi.register,
     onSuccess: (data) => {
@@ -19,6 +26,7 @@ export const useAuth = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setAuth(data.token);
+      setUser(data.user)
     },
     onError: (error) => {
       console.log("Login error:", error);
@@ -26,7 +34,7 @@ export const useAuth = () => {
   });
 
   const verifyOTPMutation = useMutation({
-    mutationFn:  authApi.verifyOtp,
+    mutationFn: authApi.verifyOtp,
     onSuccess: (data) => {
       setOtpToken(data.token);
       setIsPhoneVerified(true);
@@ -80,6 +88,8 @@ export const useAuth = () => {
     loginLoading: loginMutation.isPending,
     verifyOtpFn: verifyOTPMutation.mutate,
     verifyOtpLoading: verifyOTPMutation.isPending,
+
+    logoutUser: logout,
     forgotPassword: forgotPasswordMutation.mutate,
     forgotPasswordLoading: forgotPasswordMutation.isPending,
     // verifyResetOtp: verifyResetOtpMutation.mutate,
