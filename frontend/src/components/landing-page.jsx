@@ -1,5 +1,7 @@
+import Footer from "./footer";
 import GameCards from "./gameCards";
 import CasinoGamesUI from "./games";
+import Header from "./header";
 import HeroSlider from "./ui/HeroSlider";
 import { motion } from "framer-motion";
 
@@ -48,6 +50,7 @@ export default function LandingPage({ isLoggedIn }) {
 
   return (
     <div className="min-h-screen">
+      <Header />
       {/* Hero Section */}
       <HeroSlider className="rounded-none h-[80vh]" />
 
@@ -131,6 +134,7 @@ export default function LandingPage({ isLoggedIn }) {
           </div>
         </section>
       )}
+      <Footer />
     </div>
   );
 }

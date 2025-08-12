@@ -8,7 +8,7 @@ const Members = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   // Mock data to match the image - replace with actual API call
   const mockUsers = [

@@ -3,7 +3,6 @@ import api from "../utils/axios";
 const login = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
-    console.log(response.data, "response from api");
     return response.data;
   } catch (error) {
     console.error("Login failed:", error);

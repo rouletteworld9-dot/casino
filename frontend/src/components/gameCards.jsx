@@ -126,7 +126,7 @@ const GameCards = () => {
   ];
 
   return (
-    <div className="py-10 bg-gradient-to-br from-[#17071D] via-[#17071D] to-[#17071D] px-4">
+    <div className="py-10 bg-gradient-to-br from-deepPurple via-deepPurple to-deepPurple px-4">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -143,7 +143,7 @@ const GameCards = () => {
             key={index}
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -5 }}
-            className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${category.bgGradient} p-3 shadow-2xl cursor-pointer group min-h-[150px]`}
+            className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${category.bgGradient} p-3 shadow-2xl cursor-pointer group min-h-[150px]`}
           >
             {/* Decorative Image */}
             <img

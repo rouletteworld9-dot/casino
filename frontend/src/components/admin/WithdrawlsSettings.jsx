@@ -7,7 +7,7 @@ const WithdrawalSettings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
+    try { 
       const token = localStorage.getItem('token');
       await axios.put('/api/admin/withdrawal-settings', settings, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
