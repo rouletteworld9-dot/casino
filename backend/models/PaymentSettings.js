@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const paymentSettingsSchema = new mongoose.Schema(
     {
-        qrLink: {
+        qrCodeUrl: {
             type: String,
             required: true
         },
