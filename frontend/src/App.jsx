@@ -32,6 +32,7 @@ import { AuthProvider } from "./components/auth/AuthProvider.jsx";
 export default function App() {
   const navigate = useNavigate();
 
+
   return (
     <AuthProvider>
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">

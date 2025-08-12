@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import authApi from "../../api/authApi";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -15,6 +16,10 @@ const imageFade = {
 
 const Settings = () => {
   const queryClient = useQueryClient();
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isRefreshing = useAuthStore((s) => s.isRefreshing);
+  const isAuthLoading = useAuthStore((s) => s.isLoading);
+  const checkAuth = useAuthStore((s) => s.checkAuth);
 
   const [editMode, setEditMode] = useState(false);
   const [upiId, setUpiId] = useState("");
@@ -24,12 +29,14 @@ const Settings = () => {
   const fileInputRef = useRef(null);
 
   // Fetch current payment details
-  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching, error } = useQuery({
     queryKey: ["paymentDetails"],
     queryFn: async () => {
       return await authApi.getPaymentSettings();
     },
+    enabled: !!accessToken && !isRefreshing,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const currentPayment = useMemo(
@@ -48,10 +55,18 @@ const Settings = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
       queryClient.invalidateQueries({ queryKey: ["paymentDetails"] });
     },
-    onError: () => {
-      setToast({ show: true, type: "error", message: "Failed to update payment details" });
+    onError: (err) => {
+      const message = err?.response?.data?.message || "Failed to update payment details";
+      setToast({ show: true, type: "error", message });
     },
   });
+
+  // Ensure we try to restore session on mount if no token
+  useEffect(() => {
+    if (!accessToken) {
+      checkAuth().catch(() => {});
+    }
+  }, [accessToken, checkAuth]);
 
   // When entering edit mode, seed inputs with current values
   const handleEnterEdit = () => {
@@ -87,6 +102,11 @@ const Settings = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("upiId", upiId);
+    // If there is no existing QR on server and no new file selected, block to avoid possible backend 500s
+    if (!currentPayment.qrCodeUrl && !qrFile) {
+      setToast({ show: true, type: "error", message: "Please select a QR image (PNG/JPG) for first-time setup." });
+      return;
+    }
     if (qrFile) formData.append("qrCode", qrFile);
     mutate(formData);
   };
@@ -134,14 +154,18 @@ const Settings = () => {
       >
         <h3 className="mb-6 text-center text-gray-800 font-bold text-lg">Account Settings</h3>
 
-        {/* {isLoading || isFetching ? (
+        {!accessToken ? (
+          <div className="text-center text-gray-600 py-8">
+            {isAuthLoading || isRefreshing ? "Checking session..." : "Please log in to view settings."}
+          </div>
+        ) : isLoading || isFetching ? (
           <div className="text-center text-gray-500 py-8">Loading payment details...</div>
         ) : isError ? (
           <div className="flex items-center justify-between gap-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded">
-            <span>Failed to load payment details.</span>
+            <span>{error?.response?.data?.message || "Failed to load payment details."}</span>
             <button onClick={() => refetch()} className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Retry</button>
           </div>
-        ) : ( */}
+        ) : (
           <>
             {!editMode ? (
               <motion.div
@@ -252,7 +276,7 @@ const Settings = () => {
               </motion.form>
             )}
           </>
-        {/* )} */}
+        )}
       </motion.div>
 
       {toast.show && (
