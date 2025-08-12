@@ -104,6 +104,15 @@ export default function LoginScreen() {
                   Register
                 </button>
               </p>
+              <p className="text-gray-400">
+                Forgot Password?{" "}
+                <button
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-purple-400 mt-3 hover:text-purple-300 font-medium transition-colors"
+                >
+                  Click here
+                </button>
+              </p>
             </motion.div>
           </div>
         </motion.div>

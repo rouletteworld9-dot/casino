@@ -8,8 +8,8 @@ export default function App() {
     <AuthProvider>
       <div className="min-h-screen bg-deepPurple">
         <RouterProvider router={router} />
-
       </div>
+      
     </AuthProvider>
   );
 }
