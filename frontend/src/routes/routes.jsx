@@ -25,6 +25,9 @@ import UserBalance from "../components/user/UserBalance.jsx";
 import UserHistory from "../components/user/UserHistory.jsx";
 import CasinoDashboard from "../pages/casino-game.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
+import { Import } from "lucide-react";
+import ForgetPassword from "../components/ForgotPassword.jsx";
+import VerifyResetOtp from "../components/VerifyResetOtp.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +46,14 @@ const router = createBrowserRouter([
     path: "/casino/game",
     element: <CasinoDashboard />,
   },
+  {
+    path: "/forgot-password",
+    element: <ForgetPassword/>
+  },
+  {
+    path: "/verify-reset-otp",
+  element: <VerifyResetOtp/> 
+},
   {
     path: "/admin",
     element: (
