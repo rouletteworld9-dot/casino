@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ phone, name, password: hashedPassword });
+      user = new User({ phone, name, password: hashedPassword, playTokens: 1500, });
     }
 
     const otp = generateOTP();

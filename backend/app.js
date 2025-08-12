@@ -2,11 +2,12 @@ const express = require("express");
 const cors = require("cors")
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
+const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
 
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173","https://casino-mu-one.vercel.app"],
+    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app"],
     credentials: true
 }));
 
@@ -23,6 +24,9 @@ app.use("/api/auth", authRoutes);
 
 // ✅ Middleware for Protected Routes
 app.use("/api", authMiddleware);
+
+// Transaction routes
+app.use("/paymentSettings", paymentSettingRoutes)
 
 // Global Error Handler 
 app.use((err, req, res) => {
