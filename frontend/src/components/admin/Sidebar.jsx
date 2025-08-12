@@ -18,7 +18,7 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaTachometerAlt /> },
     { name: "Members", path: "/admin/members", icon: <FaUsers /> },
-    { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
+    // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
       name: "Transactions",
       path: "/admin/transactions",

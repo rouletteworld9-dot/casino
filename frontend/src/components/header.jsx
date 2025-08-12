@@ -13,11 +13,11 @@ import {
 import { useState } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import NavButton from "./ui/NavButton";
-
 import UserHeaderDropdown from "./ui/UserHeaderDropdown";
 import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
+
 
 const IconButton = ({ icon: Icon, ...props }) => (
   <NavButton {...props} className="p-2">
@@ -38,6 +38,7 @@ export default function Header() {
     }
     navigate(path);
   };
+
 
   const specials = [
     { name: "PROMOTIONS", key: "promotions", icon: Gift },
@@ -74,14 +75,17 @@ export default function Header() {
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />{" "}
+
                   <span className="font-semibold text-purple-300">
                     {userData?.name || "Player"}
                   </span>
                 </span>
+
                 {dropdownOpen && (
                   <UserHeaderDropdown
                     onNavigate={handleNavigate}
                     setIsDropdown={setDropdownOpen}
+
                   />
                 )}
               </div>

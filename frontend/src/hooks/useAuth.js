@@ -44,6 +44,43 @@ export const useAuth = () => {
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authApi.forgotPassword,
+    onError: (error) => {
+      console.log("Forgot password error:", error);
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: authApi.resetPassword,
+    onError: (error) => {
+      console.log("Reset password error:", error);
+    },
+  });
+
+
+  // const accountSettingsMutation = useMutation({
+  //   mutationFn: authApi.account,
+  //   onSuccess: (data) =>{
+  //     setAuth(data.token);
+  //     setAccountData(data);
+  //   },
+  //   onError: (error) =>{
+  //     console.log("Account settings error:", error);
+  //   }
+  // }).
+
+  const accountSettingsMutation = useMutation({
+    mutationFn: authApi.account,
+    onSuccess: (data) =>{
+      setAuth(data.token);
+      setAccountData(data);
+    },
+    onError: (error) =>{
+      console.log("Account settings error:", error);
+    }
+  })
+
   return {
     registerUser: registerMutation.mutate,
     registerLoading: registerMutation.isPending,
@@ -51,6 +88,15 @@ export const useAuth = () => {
     loginLoading: loginMutation.isPending,
     verifyOtpFn: verifyOTPMutation.mutate,
     verifyOtpLoading: verifyOTPMutation.isPending,
+
     logoutUser: logout,
+    forgotPassword: forgotPasswordMutation.mutate,
+    forgotPasswordLoading: forgotPasswordMutation.isPending,
+    // verifyResetOtp: verifyResetOtpMutation.mutate,
+    // verifyResetOtpLoading: verifyResetOtpMutation.isPending,
+    resetPassword: resetPasswordMutation.mutate,
+    resetPasswordLoading: resetPasswordMutation.isPending,
+    // accountSettings: accountSettingsMutation.mutate,
+    // accountSettingsLoading: accountSettingsMutation.isPending,
   };
 };
