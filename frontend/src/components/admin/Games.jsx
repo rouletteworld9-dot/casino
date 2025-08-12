@@ -11,7 +11,7 @@ const initialGames = [
 
 const Games = () => {
   const [games, setGames] = useState(initialGames);
-
+ 
   const toggleStatus = (id) => {
     setGames((prev) =>
       prev.map((g) => (g.id === id ? { ...g, status: !g.status } : g))

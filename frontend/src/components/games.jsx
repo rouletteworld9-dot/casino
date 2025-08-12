@@ -4,17 +4,36 @@ import GameCategories from "./ui/GameCategories";
 
 const CasinoGamesUI = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#17071D] via-[#17071D] to-gray-900 text-white">
-      <div className="container mx-auto px-4 py-6 max-w-[97%] rounded-2xl bg-[#2c023b]">
-        <GameTabs className="text-3xl" />
-        <div className="">
-          <GameCategories
-            className="flex-row pt-6 px-6"
-            buttonClassName="min-w-[50px]"
-          />
-          <div className="flex-1">
+    <div className="min-h-screen  text-white">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[97%] rounded-2xl bg-[#231528]">
+        {/* Game Tabs */}
+        <div className="overflow-x-auto sm:overflow-visible custom-scroll ">
+          <GameTabs className="text-lg sm:text-xl md:text-3xl" />
+        </div>
+
+        <div>
+          {/* Categories - Scrollable on small screens */}
+          <div className="overflow-x-auto sm:overflow-visible custom-scroll">
+            <GameCategories
+              className="flex flex-row gap-3 sm:gap-1 pt-4 sm:pt-6 sm:x-0 px-2"
+              buttonClassName="min-w-[50px] sm:min-w-[70px]"
+            />
+          </div>
+
+          {/* Game Grid */}
+          <div className="flex-1 mt-4">
+            {/* Example SearchBar Placeholder */}
             {/* <SearchBar /> */}
-            <GameContainer className="md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8" />
+
+            <GameContainer
+              className="
+                grid grid-cols-2
+                sm:grid-cols-3
+                lg:grid-cols-4
+                xl:grid-cols-8
+                gap-3 sm:gap-4
+              "
+            />
           </div>
         </div>
       </div>
