@@ -39,6 +39,11 @@ const transactionSchema = new mongoose.Schema(
             trim: true
         },
 
+        adminNote: {
+            type: String,
+            trim: true
+        },
+
         // Stores the static QR used for this payment
         qrLink: {
             type: String,

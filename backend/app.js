@@ -4,19 +4,20 @@ const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
 const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
 const transactionRoutes = require("./routes/transactionRoutes");
+const adminOnly = require("./middlewares/adminOnly");
+const cookieParser = require("cookie-parser");
+
 
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173","https://casino-mu-one.vercel.app"],
+    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app"],
     credentials: true
 }));
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.js / server.js
-const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 
@@ -28,7 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api", authMiddleware);
 
 // Transaction routes
-app.use("/api/paymentSettings", paymentSettingRoutes)
+app.use("/api/paymentSettings", adminOnly, paymentSettingRoutes) // (Admin ONlY)
 app.use("/api/transactions", transactionRoutes);
 
 // Global Error Handler 
