@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import authApi from "../../api/authApi";
 import { useAuthStore } from "../../stores/useAuthStore";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -135,8 +135,6 @@ const Settings = () => {
       transition={{ duration: 0.35 }}
       className="bg-white/80 text-gray-900 p-3 rounded-md"
     >
-      <Toaster position="top-right" reverseOrder={false} />
-
       <h2 className="text-2xl font-bold text-gray-900 mb-7">Settings</h2>
 
       <motion.div

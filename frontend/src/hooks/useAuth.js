@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import authApi from "../api/authApi";
 import { useAuthStore } from "../stores/useAuthStore";
-import { Toaster, toast } from "react-hot-toast";
+import {toast } from "react-hot-toast";
 
 export const useAuth = () => {
   const {
