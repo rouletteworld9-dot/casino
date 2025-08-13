@@ -61,7 +61,7 @@ exports.createWithdraw = async (req, res) => {
 // 📌 3. Get All Transactions (Admin)
 exports.getAllTransactions = async (req, res) => {
     try {
-        const transactions = await Transaction.find()
+        const transactions = await Transaction.find({ transactionStatus: "pending" })
             .populate('user', 'name phone wallet')
             .sort({ createdAt: -1 });
         res.status(200).json(transactions);
