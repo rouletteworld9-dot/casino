@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const fade = {
   initial: { opacity: 0, y: 12 },
@@ -16,7 +17,7 @@ export default function ForgetPassword() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!phone) return alert("Enter phone number");
+    if (!phone) return toast.error("Enter phone number");
     
     forgotPassword(
       { phone },
@@ -25,7 +26,7 @@ export default function ForgetPassword() {
           navigate("/verify-reset-otp", { state: { phone } });
         },
         onError: (error) => {
-          alert(error?.response?.data?.message || "Failed to send OTP");
+          toast.error(error?.response?.data?.message || "Failed to send OTP");
         },
       }
     );
@@ -67,7 +68,14 @@ export default function ForgetPassword() {
               disabled={forgotPasswordLoading}
               className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50"
             >
-              {forgotPasswordLoading ? "Sending..." : "Send OTP"}
+              {forgotPasswordLoading ?  (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Sending...
+                  </div>
+                ) : (
+                  "Send OTP"
+                )}
             </motion.button>
           </form>
 

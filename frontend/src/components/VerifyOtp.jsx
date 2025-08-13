@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const VerifyOtp = ({ phone }) => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const VerifyOtp = ({ phone }) => {
 
   const handleCodeSubmit = () => {
     if (verificationCode.length < 4) {
-      alert("Please enter a valid verification code");
+      toast.error("Please enter a valid verification code");
       return;
     }
     verifyOtpFn(
