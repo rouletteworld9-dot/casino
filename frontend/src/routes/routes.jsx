@@ -48,12 +48,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/forgot-password",
-    element: <ForgetPassword/>
+    element: <ForgetPassword />,
   },
   {
     path: "/verify-reset-otp",
-  element: <VerifyResetOtp/> 
-},
+    element: <VerifyResetOtp />,
+  },
   {
     path: "/admin",
     element: (
@@ -66,9 +66,9 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "members", element: <Members /> },
       { path: "games", element: <Games /> },
-      { path: "transactions", element: <Transactions /> },
-      { path: "browse-recharge", element: <BrowseRecharge /> },
-      { path: "recharge-approve", element: <RechargeApprove /> },
+      { path: "deposits", element: <Transactions /> },
+      { path: "withdrawals", element: <BrowseRecharge /> },
+      { path: "deposits-approve", element: <RechargeApprove /> },
       { path: "withdrawals", element: <Withdrawals /> },
       { path: "withdrawals-settings", element: <WithdrawalSettings /> },
       { path: "live-game", element: <LiveGame /> },
