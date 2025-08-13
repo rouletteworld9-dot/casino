@@ -25,6 +25,7 @@ export default function RegisterScreen() {
     registerUser(formData, {
       onSuccess: () => {
         setCodeSent(true);
+        
       },
     });
   };
