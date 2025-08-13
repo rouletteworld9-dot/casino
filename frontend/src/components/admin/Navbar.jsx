@@ -67,6 +67,7 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={handleLogout}
+
                   className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
                 >
                   <span className="mr-2">

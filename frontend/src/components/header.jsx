@@ -30,6 +30,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const userData = useAuthStore((s) => s.userData);
+  console.log(user , "userr")
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     // Make sure we have a leading slash
