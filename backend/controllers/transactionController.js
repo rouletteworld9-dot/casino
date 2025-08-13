@@ -20,7 +20,8 @@ exports.createDeposit = async (req, res) => {
             transactionType: 'deposit',
             amount,
             utr,
-            qrLink: settings.qrLink,
+            
+            qrLink: settings.qrCodeUrl,
             upiId: settings.upiId
         });
 
