@@ -67,7 +67,6 @@ const router = createBrowserRouter([
       { path: "members", element: <Members /> },
       { path: "games", element: <Games /> },
       { path: "deposits", element: <Transactions /> },
-      { path: "withdrawals", element: <BrowseRecharge /> },
       { path: "deposits-approve", element: <RechargeApprove /> },
       { path: "withdrawals", element: <Withdrawals /> },
       { path: "withdrawals-settings", element: <WithdrawalSettings /> },

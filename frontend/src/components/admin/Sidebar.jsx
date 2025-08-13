@@ -19,23 +19,23 @@ const Sidebar = () => {
     {
       name: "Deposit Requests",
       path: "/admin/deposits",
-      icon: <FaExchangeAlt />,
+      icon:  <Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "withdrawal Requests",
       path: "/admin/withdrawals",
-      icon: <FaMoneyCheckAlt />,
+      icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth/>,
 
     },
     {
       name: "Withdrawal (Approved)",
-      path: "/admin/withdrawals",
+      path: "/admin/withdrawals-settings",
       icon:<BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "Deposits (Approved)",
       path: "/admin/deposits-approve",
-      icon: <FaMoneyCheckAlt />,
+      icon:  <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />,
 
     },
     { name: "Settings", path: "/admin/settings", icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth /> },
