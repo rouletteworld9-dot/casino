@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/useAuthStore";
 import Header from "./header";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const motionFade = {
   initial: { opacity: 0, y: 20 },
@@ -28,7 +28,7 @@ export default function LoginScreen() {
     if (!formData.phone || !formData.password) {
       return toast.error("Please fill in all fields");
     }
-    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length >= 13) {
+    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length !== 10) {
       return toast.error("Please enter a valid phone number");
     }
 
@@ -44,7 +44,6 @@ export default function LoginScreen() {
   };
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <Header />
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div
