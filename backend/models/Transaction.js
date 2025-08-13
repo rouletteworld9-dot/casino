@@ -28,6 +28,7 @@ const transactionSchema = new mongoose.Schema(
 
         paymentMethod: {
             type: String,
+            default: 'upi',
             enum: ['upi', 'card', 'netbanking', 'cash'],
             required: true
         },
@@ -35,6 +36,11 @@ const transactionSchema = new mongoose.Schema(
         utr: {
             type: String,
             required: true,
+            trim: true
+        },
+
+        adminNote: {
+            type: String,
             trim: true
         },
 

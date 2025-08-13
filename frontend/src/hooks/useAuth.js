@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import authApi from "../api/authApi";
 import { useAuthStore } from "../stores/useAuthStore";
 
+
 export const useAuth = () => {
   const {
     setAuth,
@@ -58,20 +59,8 @@ export const useAuth = () => {
     },
   });
 
-
-  // const accountSettingsMutation = useMutation({
-  //   mutationFn: authApi.account,
-  //   onSuccess: (data) =>{
-  //     setAuth(data.token);
-  //     setAccountData(data);
-  //   },
-  //   onError: (error) =>{
-  //     console.log("Account settings error:", error);
-  //   }
-  // }).
-
   const accountSettingsMutation = useMutation({
-    mutationFn: authApi.account,
+    mutationFn: authApi.getPaymentSettings,
     onSuccess: (data) =>{
       setAuth(data.token);
       setAccountData(data);
