@@ -1,137 +1,27 @@
 import React, { useState } from "react";
 import { ChevronDown, Minus, Plus } from "lucide-react";
+import UserHeaderTabs from "./UserHeaderTabs";
+import UserPaymentMethods from "../ui/UserPaymentMethods";
+import PaymentMethodDetails from "./PaymentMethodDetails";
 
 const DepositInterface = () => {
-  const [activeTab, setActiveTab] = useState("deposit");
-  const [selectedMethod, setSelectedMethod] = useState("upi-safepay");
-  const [amount, setAmount] = useState(3000);
 
-  const tabs = [
-    { id: "deposit", label: "Deposit" },
-    { id: "withdrawal", label: "Withdrawal" },
-    { id: "requests", label: "Your requests" },
-  ];
 
-  const paymentMethods = [
-    {
-      id: "upi",
-      name: "UPI",
-      logo: "🔺",
-      minAmount: 300,
-      colors: "bg-gradient-to-r from-blue-600 to-green-600",
-    },
-    {
-      id: "upi-baterybet",
-      name: "Card",
-      logo: "🔺",
-      minAmount: 300,
-      colors: "bg-gradient-to-r from-blue-600 to-green-600",
-    },
-    {
-      id: "bank-transfer",
-      name: "Netbanking",
-      logo: "🔺",
-      minAmount: 500,
-      colors: "bg-gradient-to-r from-orange-600 to-red-600",
-    },
-    {
-      id: "usdt-trc20",
-      name: "Cash",
-      logo: "💎",
-      minAmount: 300,
-      colors: "bg-gradient-to-r from-teal-600 to-green-600",
-    },
-  ];
 
-  const quickAmounts = [5000, 7500, 10000, 12500, 15000];
 
-  const decreaseAmount = () => {
-    if (amount > 300) {
-      setAmount(Math.max(300, amount - 100));
-    }
-  };
-
-  const increaseAmount = () => {
-    if (amount < 50000) {
-      setAmount(Math.min(50000, amount + 100));
-    }
-  };
+  
 
   return (
-    <div
-      className="w-full min-h-screen text-white p-6"
-      style={{ backgroundColor: "var(--color-deepPurple)" }}
-    >
+    <div className="w-full bg-deepPurple min-h-screen text-white p-6">
       {/* Header Tabs */}
-      <div
-        className="flex space-x-8 mb-8 border-b border-deepPurple"
-        // style={{ borderColor: "var(--color-deepBorder)" }}
-      >
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`pb-3 px-1 text-lg font-medium border-b-2 transition-colors ${
-              activeTab === tab.id
-                ? "text-yellow-500"
-                : "text-gray-400 hover:text-white"
-            }`}
-            style={{
-              borderBottomColor:
-                activeTab === tab.id
-                  ? "var(--color-casinoGold)"
-                  : "transparent",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <UserHeaderTabs />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl">
         {/* Left Panel - Payment Methods */}
-        <div>
-          <h2 className="text-xl font-bold mb-6">Choose a method</h2>
-
-          <div className="space-y-4">
-            {paymentMethods.map((method) => (
-              <div
-                key={method.id}
-                className={`relative p-4 rounded-lg cursor-pointer transition-all border-2 ${
-                  selectedMethod === method.id
-                    ? "border-yellow-500"
-                    : "border-transparent hover:border-gray-600"
-                }`}
-                style={{ backgroundColor: "var(--color-lightPurple)" }}
-                onClick={() => setSelectedMethod(method.id)}
-              >
-                <div className="flex items-center space-x-4">
-                  <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${method.colors}`}
-                  >
-                    {method.logo}
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="text-white font-semibold">
-                        {method.name}
-                      </h3>
-                    </div>
-                    <p className="text-gray-400 text-sm">
-                      from ₹{method.minAmount}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <UserPaymentMethods />
 
         {/* Right Panel - Payment Details */}
-        <div
-          className="p-6 rounded-lg"
-          style={{ backgroundColor: "var(--color-lightPurple)" }}
-        >
+        {/* <div className="p-6 rounded-lg bg-lightPurple">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded flex items-center justify-center text-lg">
               🔺
@@ -139,19 +29,15 @@ const DepositInterface = () => {
             <h3 className="text-xl font-bold">UPI</h3>
           </div>
 
-          {/* Payment Method Selector */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-400 mb-2">
               PAYMENT METHOD
             </label>
-            <div
-              className="w-full p-4 rounded-lg flex items-center justify-between cursor-pointer"
-              style={{
-                backgroundColor: "var(--color-darkViolet)",
-                border: "1px solid var(--color-deepBorder)",
-              }}
-            >
-              <div className="flex items-center space-x-3">
+            <div className="w-full p-4 rounded-lg flex items-center justify-between cursor-pointer bg-darkViolet border border-deepBorder">
+              <div
+                onClick={() => setShowQR(true)}
+                className="flex items-center space-x-3"
+              >
                 <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-green-600 rounded flex items-center justify-center text-sm">
                   🔺
                 </div>
@@ -164,7 +50,6 @@ const DepositInterface = () => {
             </div>
           </div>
 
-          {/* Amount Section */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium text-gray-400">
@@ -175,13 +60,7 @@ const DepositInterface = () => {
               </span>
             </div>
 
-            <div
-              className="flex items-center rounded-lg p-1"
-              style={{
-                backgroundColor: "var(--color-darkViolet)",
-                border: "1px solid var(--color-deepBorder)",
-              }}
-            >
+            <div className="flex items-center rounded-lg p-1 bg-darkViolet border border-deepBorder">
               <button
                 onClick={decreaseAmount}
                 className="p-3 hover:bg-gray-700 rounded-lg transition-colors"
@@ -204,25 +83,17 @@ const DepositInterface = () => {
             </div>
           </div>
 
-          {/* Quick Amount Buttons */}
           <div className="mb-8">
             <div className="flex flex-wrap gap-2">
               {quickAmounts.map((quickAmount) => (
                 <button
                   key={quickAmount}
                   onClick={() => setAmount(quickAmount)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                  style={{
-                    backgroundColor:
-                      amount === quickAmount
-                        ? "var(--color-casinoGold)"
-                        : "var(--color-darkViolet)",
-                    color:
-                      amount === quickAmount
-                        ? "black"
-                        : "var(--color-casinoGold)",
-                    border: "1px solid var(--color-deepBorder)",
-                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-deepBorder ${
+                    amount === quickAmount
+                      ? "bg-casinoGold text-black"
+                      : "bg-darkViolet text-casinoGold"
+                  }`}
                 >
                   ₹{quickAmount.toLocaleString()}
                 </button>
@@ -230,16 +101,12 @@ const DepositInterface = () => {
             </div>
           </div>
 
-          {/* Deposit Bonus Section */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-400 mb-4">
               GET YOUR DEPOSIT BONUS
             </label>
 
-            <button
-              className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90"
-              style={{ backgroundColor: "var(--color-brandRed)" }}
-            >
+            <button className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90 bg-brandRed">
               <Plus size={20} />
               <span>Add ₹{amount.toLocaleString()}</span>
             </button>
@@ -249,8 +116,29 @@ const DepositInterface = () => {
               <span className="font-bold">₹{amount.toLocaleString()}</span>
             </div>
           </div>
-        </div>
+        </div> */}
+        <PaymentMethodDetails/>
       </div>
+
+      {/* QR Modal
+      {showQR && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
+            <h2 className="text-lg font-bold mb-4 text-black">Scan to Pay</h2>
+            <img
+              src="/qr-code.png"
+              alt="UPI QR Code"
+              className="w-64 h-64 mx-auto mb-4"
+            />
+            <button
+              onClick={() => setShowQR(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

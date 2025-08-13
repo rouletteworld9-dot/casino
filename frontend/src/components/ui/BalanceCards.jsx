@@ -4,7 +4,7 @@ import React from 'react'
 const BalanceCards = () => {
   return (
     <>
-      <div className="bg-[#322735] rounded p-4 mb-4 relative">
+      <div className="bg-[#322735] rounded p-4 mt-9 mb-4 relative">
         <div className="flex justify-between items-start mb-2">
           <div>
             <p className="text-gray-400 text-sm font-medium">BALANCE</p>
