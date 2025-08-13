@@ -6,7 +6,7 @@ const {
   updateUserStatus,
   deleteUser,
 } = require("../controllers/adminUserController");
-const adminOnly = require("../middleware/adminOnly");
+const adminOnly = require("../middlewares/adminOnly");
 
 // All routes require authentication & admin role
 router.use(adminOnly);
