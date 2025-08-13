@@ -6,6 +6,7 @@ const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
 const transactionRoutes = require("./routes/transactionRoutes");
 const adminOnly = require("./middlewares/adminOnly");
 const cookieParser = require("cookie-parser");
+const adminUserRoutes = require("./routes/adminUserRoutes")
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api", authMiddleware);
 // Transaction routes
 app.use("/api/paymentSettings", adminOnly, paymentSettingRoutes) // (Admin ONlY)
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/users", adminUserRoutes)
 
 // Global Error Handler 
 
