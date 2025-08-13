@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const fade = {
   initial: { opacity: 0, y: 12 },
@@ -21,34 +22,34 @@ export default function VerifyResetOtp() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!phone || !otp || !newPassword || !confirmPassword) return alert("Fill all fields");
-    if (newPassword !== confirmPassword) return alert("Passwords do not match");
-    
+    if (!phone || !otp || !newPassword || !confirmPassword) return toast.error(error?.response?.data?.message || "Fill all fields");
+    if (newPassword !== confirmPassword) return toast.error(error?.response?.data?.message || "Passwords do not match");
+
     resetPassword(
       { phone, otp, newPassword },
       {
         onSuccess: () => {
-          alert("Password reset successful. Please login.");
+          toast.success("Password reset successful. Please login.");
           navigate("/login");
         },
         onError: (error) => {
-          alert(error?.response?.data?.message || "Password reset failed");
+          toast.error(error?.response?.data?.message || "Password reset failed");
         },
       }
     );
   };
 
   const resend = async () => {
-    if (!phone) return alert("Enter phone number");
-    
+    if (!phone) return toast.error( error?.response?.data?.message || "Enter phone number");
+
     forgotPassword(
       { phone },
       {
         onSuccess: () => {
-          alert("OTP resent");
+          toast.success("OTP resent");
         },
         onError: (error) => {
-          alert(error?.response?.data?.message || "Failed to resend OTP");
+          toast.error(error?.response?.data?.message || "Failed to resend OTP");
         },
       }
     );
@@ -120,7 +121,14 @@ export default function VerifyResetOtp() {
               disabled={resetPasswordLoading}
               className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50"
             >
-              {resetPasswordLoading ? "Resetting..." : "Reset Password"}
+              {resetPasswordLoading ?  (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Resetting...
+                  </div>
+                ) : (
+                  "Reset Password"
+                )}
             </motion.button>
           </form>
 

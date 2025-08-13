@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import authApi from "../api/authApi";
 import { useAuthStore } from "../stores/useAuthStore";
-
+import { Toaster, toast } from "react-hot-toast";
 
 export const useAuth = () => {
   const {
@@ -17,31 +17,49 @@ export const useAuth = () => {
     onSuccess: (data) => {
       setAuth(data.token);
       setRegistrationData(data);
+      toast.success("Registration successful");
     },
     onError: (error) => {
       console.log("Registration error:", error);
+      toast.error(error?.response?.data?.message ||"Registration failed. Please try again.");
     },
   });
 
-  const loginMutation = useMutation({
-    mutationFn: authApi.login,
-    onSuccess: (data) => {
-      setAuth(data.token);
-      setUser(data.user)
-    },
-    onError: (error) => {
-      console.log("Login error:", error);
-    },
-  });
+    const loginMutation = useMutation({
+      mutationFn: authApi.login,
+      onSuccess: (data) => {
+        setAuth(data.token);
+        setUser(data.user)
+        toast.success("Login successful!");
+      },
+      onError: (error) => {
+        console.log("Login error:", error);
+        toast.error(error?.response?.data?.message ||"Login failed. Please try again.");
+      },
+    });
+
+    const logoutMutation = useMutation({
+      mutationFn: authApi.logout,
+      onSuccess: () => {
+        logout();
+        toast.success("Logout successful!");
+      },
+      onError: (error) => {
+        console.log("Logout error:", error);
+        toast.error("Logout failed");
+      },
+    });
 
   const verifyOTPMutation = useMutation({
     mutationFn: authApi.verifyOtp,
     onSuccess: (data) => {
       setOtpToken(data.token);
       setIsPhoneVerified(true);
+      toast.success("OTP verified successfully");
     },
     onError: () => {
       console.log("OTP verification error");
+      toast.error(error?.response?.data?.message ||"OTP verification failed. Please try again.");
     },
   });
 
@@ -49,6 +67,7 @@ export const useAuth = () => {
     mutationFn: authApi.forgotPassword,
     onError: (error) => {
       console.log("Forgot password error:", error);
+      toast.error(error?.response?.data?.message ||"Forgot password failed. Please try again.");
     },
   });
 
@@ -56,10 +75,11 @@ export const useAuth = () => {
     mutationFn: authApi.resetPassword,
     onError: (error) => {
       console.log("Reset password error:", error);
+      toast.error(error?.response?.data?.message ||"Reset password failed. Please try again.");
     },
   });
 
-  const accountSettingsMutation = useMutation({
+  const accountSettingsMutation = useMutation({ 
     mutationFn: authApi.getPaymentSettings,
     onSuccess: (data) =>{
       setAuth(data.token);
@@ -67,6 +87,7 @@ export const useAuth = () => {
     },
     onError: (error) =>{
       console.log("Account settings error:", error);
+      toast.error(error?.response?.data?.message ||"Account settings failed. Please try again.");
     }
   })
 
@@ -75,10 +96,10 @@ export const useAuth = () => {
     registerLoading: registerMutation.isPending,
     loginUser: loginMutation.mutate,
     loginLoading: loginMutation.isPending,
+    logoutUser: logoutMutation.mutate,
+    logoutLoading: logoutMutation.isPending,
     verifyOtpFn: verifyOTPMutation.mutate,
     verifyOtpLoading: verifyOTPMutation.isPending,
-
-    logoutUser: logout,
     forgotPassword: forgotPasswordMutation.mutate,
     forgotPasswordLoading: forgotPasswordMutation.isPending,
     // verifyResetOtp: verifyResetOtpMutation.mutate,

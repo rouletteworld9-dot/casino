@@ -21,6 +21,16 @@ const register = async (userData) => {
   }
 };
 
+const logout = async () => {
+  try {
+    const response = await api.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
+  }
+};
+
 const verifyOtp = async ({ otp, phone }) => {
   try {
     const response = await api.post("/auth/verify-otp", { otp, phone });
@@ -83,6 +93,7 @@ const updatePaymentSettings = async (formData) => {
 const authApi = {
   login,
   verifyOtp,
+  logout,
   register,
   forgotPassword,
   resetPassword,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InputField from "./ui/InputField";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
 import VerifyOtp from "./VerifyOtp";
 
@@ -21,11 +21,17 @@ export default function RegisterScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!agreeToTerms) return alert("Please agree to the terms and conditions");
+    if (!formData.name || !formData.phone || !formData.password) {
+      return toast.error("Please fill in all fields");
+    }
+    if (!/^\+91\d{10}$/.test(formData.phone)  || formData.phone.length !== 13) {
+      return toast.error("Please enter a valid phone number");
+    }
+    if (!agreeToTerms) return toast.error("Please agree to the terms and conditions");
     registerUser(formData, {
       onSuccess: () => {
         setCodeSent(true);
-        
+        navigate("/login");
       },
     });
   };
@@ -33,6 +39,7 @@ export default function RegisterScreen() {
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-[#482D60] via-[#412C4D] to-[#19161A] flex flex-col lg:flex-row">
       {/* Left Side - Image */}
+      
       <div className="relative flex-1 flex items-center justify-center p-4 overflow-hidden h-[300px] sm:h-[500px] lg:h-auto">
         <img
           src="./registerbg.webp"

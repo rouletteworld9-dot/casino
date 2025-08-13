@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 const WithdrawalSettings = () => {
   const [settings, setSettings] = useState({ minWithdrawal: 100, maxWithdrawal: 10000 });
@@ -12,9 +13,10 @@ const WithdrawalSettings = () => {
       await axios.put('/api/admin/withdrawal-settings', settings, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      alert('Settings updated');
+      toast.success('Settings updated');
     } catch (error) {
       console.error('Error updating settings:', error);
+      toast.error('Error updating settings');
     }
   };
 

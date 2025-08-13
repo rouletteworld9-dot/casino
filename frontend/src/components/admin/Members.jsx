@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { FaSearch, FaUser, FaLock, FaFolder } from 'react-icons/fa';
+import {Search , Lock, Folder } from 'lucide-react';
 
 const Members = () => {
   const [users, setUsers] = useState([]);
@@ -60,21 +60,21 @@ const Members = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.50 }}
-      className="bg-white p-6 rounded-lg shadow-lg"
+      className="bg-midnightPurple text-white backdrop-blur-3xl p-6 rounded-lg shadow-lg border border-midnightPurple"
     >
       {/* Header */}
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Members list</h2>
+      <h2 className="text-2xl font-bold ">Members list</h2>
       
       {/* Search Bar */}
-      <div className="mb-6">
+      <div className="mt-6 mb-6">
         <div className="relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search className="size-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             placeholder="Enter the member you are looking for"
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full pl-10 pr-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -83,45 +83,45 @@ const Members = () => {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="p-3 font-semibold text-gray-700">Name</th>
-              <th className="p-3 font-semibold text-gray-700">Phone no.</th>
-              <th className="p-3 font-semibold text-gray-700">Bit Coin</th>
-              <th className="p-3 font-semibold text-gray-700">Amount</th>
-              <th className="p-3 font-semibold text-gray-700">Status</th>
-              <th className="p-3 font-semibold text-gray-700">Password</th>
-              <th className="p-3 font-semibold text-gray-700">Action</th>
+            <tr className="bg-deepPurple text-white">
+              <th className="p-2">Name</th>
+              <th className="p-2">Phone no.</th>
+              <th className="p-2">Bit Coin</th>
+              <th className="p-2">Amount</th>
+              <th className="p-2">Status</th>
+              <th className="p-2">Password</th>
+              <th className="p-2">Action</th>
             </tr>
           </thead>
           <tbody>
             {currentUsers.map((user, index) => (
-              <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="p-3 text-gray-700">{user.name}</td>
-                <td className="p-3">
-                  <span className="text-gray-700">{user.phone}</span>
+              <tr key={user.id} className="border-b border-deepPurple">
+                <td className="p-2 text-sm">{user.name}</td>
+                <td className="p-2 text-sm">
+                  <span >{user.phone}</span>
                 </td>
-                <td className="p-3 text-gray-700">{user.bitCoin.toLocaleString('en-IN', { minimumFractionDigits: 2})}</td>
-                <td className="p-3 text-gray-700">{user.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                <td className="p-3">
+                <td className="p-2 text-sm">{user.bitCoin.toLocaleString('en-IN', { minimumFractionDigits: 2})}</td>
+                <td className="p-2 text-sm">{user.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                <td className="p-2">
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
                     {user.status}
                   </span>
                 </td>
-                <td className="p-3 text-gray-700">{user.password}</td>
-                <td className="p-3">
+                <td className="p-2 text-sm">{user.password}</td>
+                <td className="p-2">
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleProfile(user.id)}
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm flex items-center space-x-1 hover:bg-blue-700 transition-colors"
                     >
-                      <FaFolder className="text-xs" />
+                      <Folder size={16} className="-ml-1" />
                       <span>Profile</span>
                     </button>
                     <button
                       onClick={() => handleLockUp(user.id)}
                       className="bg-red-600 text-white px-3 py-1 rounded text-sm flex items-center space-x-1 hover:bg-red-700 transition-colors"
                     >
-                      <FaLock className="text-xs" />
+                      <Lock size={16} className="-ml-1" />
                       <span>Lock Up</span>
                     </button>
                   </div>
@@ -132,25 +132,26 @@ const Members = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-end items-center mt-6 space-x-4 text-gray-900">
-        <button
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Previous
-        </button>
-        <span className="text-gray-700">
-          {currentPage}/{totalPages}
+       <div className="mt-4 flex items-center justify-between text-sm ">
+        <span className=" text-sm">
+          Page {currentPage} of {totalPages}
         </span>
-        <button
-          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </motion.div>
   );
