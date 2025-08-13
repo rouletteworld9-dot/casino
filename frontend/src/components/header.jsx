@@ -29,8 +29,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
-  const userData = useAuthStore((s) => s.userData);
-  console.log(user , "userr")
+  console.log(user , "user")
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     // Make sure we have a leading slash
@@ -76,9 +75,8 @@ export default function Header() {
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />{" "}
-
                   <span className="font-semibold text-purple-300">
-                    {userData?.name || "Player"}
+                    {user?.name || "Player"}
                   </span>
                 </span>
 
@@ -86,7 +84,6 @@ export default function Header() {
                   <UserHeaderDropdown
                     onNavigate={handleNavigate}
                     setIsDropdown={setDropdownOpen}
-
                   />
                 )}
               </div>
@@ -97,7 +94,7 @@ export default function Header() {
           ) : (
             <NavButton
               onClick={() => navigate("login")}
-              className="bg-purple-700 hover:bg-purple-800 px-4 py-1 rounded font-semibold text-xs uppercase"
+              className="bg-gradient-to-r from-red-500 hover:text-white to-purple-600 px-4 py-1 rounded font-semibold text-xs uppercase"
             >
               Log in
             </NavButton>

@@ -4,7 +4,7 @@ import api from "../utils/axios";
 
 export const useAuthStore = create((set) => ({
   user: null,
-  userData: null,
+  // userData: null,
   accessToken: null,
   isLoading: false,
   userDataLoading: false,
@@ -12,7 +12,7 @@ export const useAuthStore = create((set) => ({
   otpToken: null,
   isPhoneVerified: false,
   registrationData: {},
-  setUser: (userData) => set({ userData }),
+  // setUser: (userData) => set({ userData }),
   setOtpToken: (token) => set({ otpToken: token }),
   setIsPhoneVerified: (status) => set({ isPhoneVerified: status }),
   setRegistrationData: (data) => set({ registrationData: data }),
@@ -23,17 +23,18 @@ export const useAuthStore = create((set) => ({
       registrationData: {},
     }),
 
-  setAuth: (token) => {
-    if (token) {
-      const user = jwtDecode(token);
-      if (!user) throw new Error("Invalid token");
-      set({ user, accessToken: token, isLoading: false });
+  setAuth: (data) => {
+    console.log(data , "data")
+    if (data.token) {
+      // const user = jwtDecode(token);
+      if (!data.token) throw new Error("Invalid token");
+      set({ user: data.user, accessToken: data.token, isLoading: false });
     }
   },
 
   logout: async () => {
     await api.post("/auth/logout", {}, { withCredentials: true });
-    set({ accessToken: null, user: null, userData: null, isLoading: false });
+    set({ accessToken: null, user: null, isLoading: false });
   },
 
   checkAuth: async () => {
@@ -49,12 +50,11 @@ export const useAuthStore = create((set) => ({
       });
       const { token, user } = response.data;
 
-      if (token) {
-        const decodedUser = jwtDecode(token);
+      if (user) {
+        // const decodedUser = jwtDecode(token);
         set({
           accessToken: token,
-          user: decodedUser,
-          userData: user,
+          user,
           isLoading: false,
           userDataLoading: false,
         });
@@ -62,7 +62,6 @@ export const useAuthStore = create((set) => ({
         set({
           user: null,
           accessToken: null,
-          userData: null,
           isLoading: false,
           userDataLoading: false,
         });
@@ -71,7 +70,6 @@ export const useAuthStore = create((set) => ({
       set({
         user: null,
         accessToken: null,
-        userData: null,
         isLoading: false,
         userDataLoading: false,
       });

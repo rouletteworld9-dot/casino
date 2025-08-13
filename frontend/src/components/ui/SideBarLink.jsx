@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const SidebarLink = ({ to, exact, icon: Icon, label }) => {
   const navClass = ({ isActive }) =>
-    `rounded p-2 flex items-center space-x-3 transition-colors cursor-pointer ${
+    `rounded p-2 flex items-center space-x-3 text-sm transition-colors cursor-pointer ${
       isActive ? "bg-[#433248]" : "hover:bg-[#433248]"
     }`;
 
