@@ -35,7 +35,7 @@ const Navbar = () => {
             onClick={() => setIsProfileOpen((p) => !p)}
             className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-midnightPurple text-white"
           >
-            <CircleUser size={18}  />
+            <CircleUser size={18} />
             <span className="hidden md:inline text-sm">Admin</span>
             <ChevronDown size={18} />
           </button>
@@ -56,10 +56,10 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
+                  className="w-full flex items-center space-x-1 text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
                 >
-                  <LogOut size={18}/>
-                  Logout
+                  <LogOut size={16} />
+                  <span>Logout</span>
                 </button>
               </motion.div>
             )}

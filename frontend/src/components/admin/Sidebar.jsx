@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaUsers,
@@ -15,28 +15,33 @@ import SidebarItem from "./SidebarItem";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
 
+  useEffect(() => {
+    const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
+    setIsOpen(isLargeScreen);
+  }, []);
+
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaTachometerAlt /> },
     { name: "Members", path: "/admin/members", icon: <FaUsers /> },
     // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
-      name: "Transactions",
-      path: "/admin/transactions",
+      name: "Deposit Requests",
+      path: "/admin/deposits",
       icon: <FaExchangeAlt />,
     },
     {
-      name: "Browse Recharge",
-      path: "/admin/browse-recharge",
-      icon: <FaMoneyCheckAlt />,
-    },
-    {
-      name: "Withdrawal(Approved)",
+      name: "withdrawal Requests",
       path: "/admin/withdrawals",
       icon: <FaMoneyCheckAlt />,
     },
     {
-      name: "Recharge (Approved)",
-      path: "/admin/recharge-approve",
+      name: "Withdrawal (Approved)",
+      path: "/admin/withdrawals",
+      icon: <FaMoneyCheckAlt />,
+    },
+    {
+      name: "Deposits (Approved)",
+      path: "/admin/deposits-approve",
       icon: <FaMoneyCheckAlt />,
     },
     { name: "Settings", path: "/admin/settings", icon: <FaCog /> },
