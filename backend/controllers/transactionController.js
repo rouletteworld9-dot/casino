@@ -34,7 +34,6 @@ exports.createDeposit = async (req, res) => {
   }
 };
 
-
 // ✅ 2. Create Withdraw Transaction
 exports.createWithdraw = async (req, res) => {
   try {
@@ -47,11 +46,9 @@ exports.createWithdraw = async (req, res) => {
       !ifscCode ||
       !recipientName
     ) {
-      return res
-        .status(400)
-        .json({
-          message: "Valid amount and all withdraw details are required",
-        });
+      return res.status(400).json({
+        message: "Valid amount and all withdraw details are required",
+      });
     }
 
     const user = await User.findById(req.user._id);
@@ -71,11 +68,9 @@ exports.createWithdraw = async (req, res) => {
     const pendingAmount = pending[0]?.total || 0;
 
     if (currentBalance - pendingAmount < amount) {
-      return res
-        .status(400)
-        .json({
-          message: "Insufficient balance considering pending withdrawals",
-        });
+      return res.status(400).json({
+        message: "Insufficient balance considering pending withdrawals",
+      });
     }
 
     const transaction = await Transaction.create({
@@ -92,7 +87,6 @@ exports.createWithdraw = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // ✅ 3. Get All Transactions (Admin)
 exports.getAllTransactions = async (req, res) => {
@@ -111,7 +105,6 @@ exports.getAllTransactions = async (req, res) => {
   }
 };
 
-
 // ✅ 4. Get My Transactions (User)
 exports.getMyTransactions = async (req, res) => {
   try {
@@ -123,7 +116,6 @@ exports.getMyTransactions = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // ✅ 5. Approve Transaction (Admin)
 exports.approveTransaction = async (req, res) => {
@@ -152,7 +144,10 @@ exports.approveTransaction = async (req, res) => {
 
     if (transaction.transactionType === "deposit") {
       await User.findByIdAndUpdate(transaction.user, {
-        $inc: { realBalance: transaction.amount },
+        $inc: {
+          realBalance: transaction.amount,
+          playTokens: transaction.amount * 0.1, // ✅ 10% bonus in playTokens
+        },
       });
     } else if (transaction.transactionType === "withdraw") {
       await User.findByIdAndUpdate(transaction.user, {
@@ -166,7 +161,6 @@ exports.approveTransaction = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // ✅ 6. Reject Transaction (Admin)
 exports.rejectTransaction = async (req, res) => {
@@ -192,7 +186,6 @@ exports.rejectTransaction = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // ✅ 7. Delete Transaction (Admin) — safer soft delete
 exports.deleteTransaction = async (req, res) => {
