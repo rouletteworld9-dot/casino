@@ -19,7 +19,7 @@ export default function LoginScreen() {
   });
   const { loginUser, loginLoading } = useAuth();
   const userData = useAuthStore((state) => state.userData);
-    if (userData) return <Navigate to={`/${userData?.role}`} />;
+  if (userData) return <Navigate to={`/${userData?.role}`} />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ export default function LoginScreen() {
   };
   return (
     <>
-    <Header/>
+      <Header />
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -118,6 +118,5 @@ export default function LoginScreen() {
         </motion.div>
       </div>
     </>
-
   );
 }
