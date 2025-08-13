@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-deepPurple: #17071D;
-  --color-casinoGold: #FFD700;
+  --color-deepPurple: #17071d;
+  --color-casinoGold: #ffd700;
   --color-brandRed: #ff0033;
-
-  --color-darkViolet: #1E0E24;
-  --color-deepBorder: #2A1033;
-  --color-midnightPurple: #231528;
+  --color-lightPurple: #231528;
+  --color-darkViolet: #201126;
+  --color-deepBorder: #2a1033;
+  --color-midnightPurple: #332538;
 }
 
 /* @tailwind utilities;  */

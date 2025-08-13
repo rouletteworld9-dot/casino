@@ -3,6 +3,7 @@ const cors = require("cors")
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
 const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
+const transactionRoutes = require("./routes/transactionRoutes");
 
 const app = express();
 
@@ -28,13 +29,14 @@ app.use("/api", authMiddleware);
 
 // Transaction routes
 app.use("/api/paymentSettings", paymentSettingRoutes)
+app.use("/api/transactions", transactionRoutes);
 
 // Global Error Handler 
 
-app.use((err, req, res) => {
-    console.error("Unhandled Error:", err.stack);
-    res.status(500).json({ message: "Something went wrong" });
-});
+// app.use((err, req, res) => {
+//     console.error("Unhandled Error:", err.stack);
+//     res.status(500).json({ message: "Something went wrong" });
+// });
 
 
 module.exports = app;

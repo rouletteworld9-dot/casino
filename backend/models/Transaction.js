@@ -28,6 +28,7 @@ const transactionSchema = new mongoose.Schema(
 
         paymentMethod: {
             type: String,
+            default: 'upi',
             enum: ['upi', 'card', 'netbanking', 'cash'],
             required: true
         },

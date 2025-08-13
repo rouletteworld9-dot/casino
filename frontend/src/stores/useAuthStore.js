@@ -26,7 +26,6 @@ export const useAuthStore = create((set) => ({
   setAuth: (token) => {
     if (token) {
       const user = jwtDecode(token);
-      console.log(user, "user from setAuth");
       if (!user) throw new Error("Invalid token");
       set({ user, accessToken: token, isLoading: false });
     }
@@ -34,7 +33,7 @@ export const useAuthStore = create((set) => ({
 
   logout: async () => {
     await api.post("/auth/logout", {}, { withCredentials: true });
-    set({ accessToken: null, user: null, isLoading: false });
+    set({ accessToken: null, user: null, userData: null, isLoading: false });
   },
 
   checkAuth: async () => {

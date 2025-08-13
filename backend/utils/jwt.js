@@ -2,8 +2,8 @@
 
 const jwt = require("jsonwebtoken");
 
-const ACCESS_TOKEN_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "30m"; // 30 minutes
-const REFRESH_TOKEN_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES || "30d"; // 30 days
+const ACCESS_TOKEN_EXPIRES = "60m"; // 30 minutes
+const REFRESH_TOKEN_EXPIRES = "30d"; // 30 days
 
 const generateToken = (userId, sessionToken, tokenVersion) => {
   return jwt.sign(

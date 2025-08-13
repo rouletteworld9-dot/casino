@@ -1,31 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-
-const mockData = Array.from({ length: 42 }).map((_, i) => ({
-  id: i + 1,
-  type: ["deposit", "withdrawal", "bet", "win"][i % 4],
-  amount: Math.floor(Math.random() * 5000) + 100,
-  user: `User ${i + 1}`,
-  date: new Date(Date.now() - i * 86400000).toISOString(),
-}));
+import { useTransactions } from "../../hooks/useTransactions";
 
 const Transactions = () => {
   const [type, setType] = useState("all");
-  const [data, setData] = useState(mockData);
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  useEffect(() => {
-    // TODO: fetch real transactions
-  }, []);
+  const { allTransactions } = useTransactions();
+  console.log(allTransactions, "alll transactionss");
 
-  const filtered = useMemo(
-    () => (type === "all" ? data : data.filter((t) => t.type === type)),
-    [data, type]
-  );
+  // Filter transactions based on type
+  const filtered = useMemo(() => {
+    if (!allTransactions) return [];
+    if (type === "all") return allTransactions;
+    return allTransactions.filter(
+      (t) => t.transactionType.toLowerCase() === type.toLowerCase()
+    );
+  }, [allTransactions, type]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
 
+  // Paginate filtered data
   const paginated = useMemo(() => {
     const start = (page - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
@@ -36,66 +32,75 @@ const Transactions = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-white text-gray-900 backdrop-blur-3xl p-6 rounded-lg shadow-lg border border-slate-800"
+      className="bg-midnightPurple text-white backdrop-blur-3xl p-6 rounded-lg shadow-lg border border-midnightPurple"
     >
       <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
+        <h2 className="text-2xl font-bold">Transactions</h2>
         <select
           value={type}
           onChange={(e) => {
             setType(e.target.value);
             setPage(1); // reset page when filter changes
           }}
-          className="rounded border border-slate-700 bg-slate-800/80 p-2 text-white"
+          className="rounded border border-midnightPurple bg-deepPurple p-2 text-white"
         >
           <option value="all">All</option>
-          <option value="withdrawal">Withdrawals</option>
+          <option value="withdraw">Withdrawals</option>
+          <option value="deposit">Deposits</option>
           <option value="bet">Bets</option>
           <option value="win">Winnings</option>
         </select>
       </div>
 
-      <table className="w-full h-full text-left text-sm md:text-base">
+      <table className="w-full not-last: h-full text-left text-sm md:text-base">
         <thead>
-          <tr className="bg-slate-800/80 text-slate-200">
+          <tr className="bg-deepPurple text-white">
             <th className="p-2">User</th>
             <th className="p-2">Type</th>
             <th className="p-2">Amount</th>
             <th className="p-2">Date</th>
+            <th className="p-2">Status</th>
+            <th className="p-2">UTR</th>
+            <th className="p-2">UTR</th>
           </tr>
         </thead>
         <tbody>
           {paginated.map((t) => (
-            <tr
-              key={t.id}
-              className="border-b text-gray-900 border-slate-800/80"
-            >
-              <td className="p-2">{t.user}</td>
-              <td className="p-2 capitalize">{t.type}</td>
-              <td className="p-2">{t.amount} INR</td>
-              <td className="p-2">{new Date(t.date).toLocaleString()}</td>
+            <tr key={t._id} className="border-b  border-deepPurple">
+              <td className="p-2 text-sm">
+                {t.user?.name || t.user?.phone || "N/A"}
+              </td>
+              <td className="p-2 text-sm capitalize">{t.transactionType}</td>
+              <td className="p-2 text-sm">{t.amount}</td>
+              <td className="p-2 text-sm">
+                {new Date(t.createdAt).toLocaleString()}
+              </td>
+              <td className="p-2 text-sm capitalize">
+                {t.transactionStatus || "N/A"}
+              </td>
+              <td className="p-2 text-sm">{t.utr || "-"}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex items-center justify-between text-sm text-gray-800">
-        <span>
+      <div className="mt-4 flex items-center justify-between text-sm ">
+        <span className=" text-sm">
           Page {page} of {totalPages}
         </span>
         <div className="flex gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded border border-slate-700 px-3 py-1 disabled:opacity-50"
+            className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50"
           >
             Prev
           </button>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="rounded border border-slate-700 px-3 py-1 disabled:opacity-50"
+            className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50"
           >
             Next
           </button>

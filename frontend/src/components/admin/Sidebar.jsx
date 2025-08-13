@@ -59,11 +59,11 @@ const Sidebar = () => {
       initial="open"
       animate={isOpen ? "open" : "closed"}
       variants={sidebarVariants}
-      className="bg-[#2C023B] backdrop-blur border-r border-slate-800 h-screen p-4 flex flex-col"
+      className="bg-deepPurple backdrop-blur border-r border-midnightPurple h-screen p-4 flex flex-col"
     >
       <div className="flex items-center justify-between mb-6">
         {isOpen && (
-          <span className="text-md font-semibold text-white">Admin Panel</span>
+          <span className="text-lg font-semibold text-white">Admin Panel</span>
         )}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -74,7 +74,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1">
+      <nav className="flex-1 space-y-1 mt-5">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.name}
