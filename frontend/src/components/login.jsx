@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/useAuthStore";
 import Header from "./header";
+import { Toaster, toast } from "react-hot-toast";
+
 const motionFade = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -19,17 +21,19 @@ export default function LoginScreen() {
   });
   const { loginUser, loginLoading } = useAuth();
   const userData = useAuthStore((state) => state.userData);
-    if (userData) return <Navigate to={`/${userData?.role}`} />;
+  if (userData) return <Navigate to={`/${userData?.role}`} />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.phone || !formData.password) {
       alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
     loginUser(formData, {
       onSuccess: () => {
+        toast.success("Login successfull");
         navigate("/");
       },
     });
@@ -40,7 +44,9 @@ export default function LoginScreen() {
   };
   return (
     <>
-    <Header/>
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <Header />
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -118,6 +124,5 @@ export default function LoginScreen() {
         </motion.div>
       </div>
     </>
-
   );
 }

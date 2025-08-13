@@ -54,17 +54,6 @@ const resetPassword = async ({ phone, otp, newPassword }) => {
   }
 };
 
-// const account = async () => {
-//   try {
-//     const res = await api.post("/admin/account");
-//     return res.data;
-//   } catch (error) {
-//     console.log("account error", error);
-//     throw error;
-//   }
-// };
-
-// Payment Settings APIs
 const getPaymentSettings = async () => {
   try {
     const res = await api.get("/paymentSettings");
@@ -96,7 +85,6 @@ const authApi = {
   register,
   forgotPassword,
   resetPassword,
-  // account,
   getPaymentSettings,
   updatePaymentSettings,
 };
