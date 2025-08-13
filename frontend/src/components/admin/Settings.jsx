@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import authApi from "../../api/authApi";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { Toaster, toast } from "react-hot-toast";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -25,7 +26,6 @@ const Settings = () => {
   const [upiId, setUpiId] = useState("");
   const [qrFile, setQrFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [toast, setToast] = useState({ show: false, type: "", message: "" });
   const fileInputRef = useRef(null);
 
   // Fetch current payment details
@@ -48,7 +48,7 @@ const Settings = () => {
   const { mutate, isLoading: isSaving } = useMutation({
     mutationFn: async (formData) => authApi.updatePaymentSettings(formData),
     onSuccess: () => {
-      setToast({ show: true, type: "success", message: "Payment details updated" });
+      toast.success("Account setting updated successfully");
       setEditMode(false);
       setQrFile(null);
       setPreviewUrl("");
@@ -56,8 +56,7 @@ const Settings = () => {
       queryClient.invalidateQueries({ queryKey: ["paymentDetails"] });
     },
     onError: (err) => {
-      const message = err?.response?.data?.message || "Failed to update payment details";
-      setToast({ show: true, type: "error", message });
+      toast.error("Failed to update payment details");
     },
   });
 
@@ -85,8 +84,8 @@ const Settings = () => {
       setPreviewUrl("");
       return;
     }
-    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
-      setToast({ show: true, type: "error", message: "Only PNG/JPG images are allowed" });
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+      toast.warn("Only PNG/JPG images are allowed");
       setQrFile(null);
       setPreviewUrl("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -104,7 +103,7 @@ const Settings = () => {
     formData.append("upiId", upiId);
     // If there is no existing QR on server and no new file selected, block to avoid possible backend 500s
     if (!currentPayment.qrCodeUrl && !qrFile) {
-      setToast({ show: true, type: "error", message: "Please select a QR image (PNG/JPG) for first-time setup." });
+      toast.warn("Please select a QR image (PNG/JPG) for first-time setup.");
       return;
     }
     if (qrFile) formData.append("qrCode", qrFile);
@@ -121,13 +120,6 @@ const Settings = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // Toast auto-hide
-  useEffect(() => {
-    if (!toast.show) return;
-    const t = setTimeout(() => setToast({ show: false, type: "", message: "" }), 2500);
-    return () => clearTimeout(t);
-  }, [toast.show]);
-
   // Cleanup preview URL
   useEffect(() => {
     return () => {
@@ -143,6 +135,8 @@ const Settings = () => {
       transition={{ duration: 0.35 }}
       className="bg-white/80 text-gray-900 p-3 rounded-md"
     >
+      <Toaster position="top-right" reverseOrder={false} />
+
       <h2 className="text-2xl font-bold text-gray-900 mb-7">Settings</h2>
 
       <motion.div
@@ -152,18 +146,32 @@ const Settings = () => {
         transition={{ duration: 0.45 }}
         className="shadow-sm shadow-black p-7 rounded-lg max-w-3xl mx-auto"
       >
-        <h3 className="mb-6 text-center text-gray-800 font-bold text-lg">Account Settings</h3>
+        <h3 className="mb-6 text-center text-gray-800 font-bold text-lg">
+          Account Settings
+        </h3>
 
         {!accessToken ? (
           <div className="text-center text-gray-600 py-8">
-            {isAuthLoading || isRefreshing ? "Checking session..." : "Please log in to view settings."}
+            {isAuthLoading || isRefreshing
+              ? "Checking session..."
+              : "Please log in to view settings."}
           </div>
         ) : isLoading || isFetching ? (
-          <div className="text-center text-gray-500 py-8">Loading payment details...</div>
+          <div className="text-center text-gray-500 py-8">
+            Loading payment details...
+          </div>
         ) : isError ? (
           <div className="flex items-center justify-between gap-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded">
-            <span>{error?.response?.data?.message || "Failed to load payment details."}</span>
-            <button onClick={() => refetch()} className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Retry</button>
+            <span>
+              {error?.response?.data?.message ||
+                "Failed to load payment details."}
+            </span>
+            <button
+              onClick={() => refetch()}
+              className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+            >
+              Retry
+            </button>
           </div>
         ) : (
           <>
@@ -177,7 +185,9 @@ const Settings = () => {
               >
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col items-center">
-                    <span className="text-sm text-gray-600 mb-2">Current QR Code</span>
+                    <span className="text-sm text-gray-600 mb-2">
+                      Current QR Code
+                    </span>
                     {currentPayment.qrCodeUrl ? (
                       <motion.img
                         key={currentPayment.qrCodeUrl}
@@ -196,7 +206,9 @@ const Settings = () => {
                     )}
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="text-sm text-gray-600 mb-2">Current UPI ID</span>
+                    <span className="text-sm text-gray-600 mb-2">
+                      Current UPI ID
+                    </span>
                     <div className="px-4 py-2 rounded bg-slate-100 border border-slate-300 text-slate-900 font-mono text-lg break-all">
                       {currentPayment.upiId || "—"}
                     </div>
@@ -221,7 +233,9 @@ const Settings = () => {
               >
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col items-center">
-                    <span className="text-sm text-gray-600 mb-2">New QR Code</span>
+                    <span className="text-sm text-gray-600 mb-2">
+                      New QR Code
+                    </span>
                     <input
                       type="file"
                       accept="image/png, image/jpeg"
@@ -237,11 +251,21 @@ const Settings = () => {
                       className="w-40 h-40 flex items-center justify-center border border-gray-300 rounded bg-white"
                     >
                       {previewUrl ? (
-                        <img src={previewUrl} alt="Preview" className="w-full h-full object-contain rounded" />
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="w-full h-full object-contain rounded"
+                        />
                       ) : currentPayment.qrCodeUrl ? (
-                        <img src={currentPayment.qrCodeUrl} alt="Current QR" className="w-full h-full object-contain rounded" />
+                        <img
+                          src={currentPayment.qrCodeUrl}
+                          alt="Current QR"
+                          className="w-full h-full object-contain rounded"
+                        />
                       ) : (
-                        <span className="text-xs text-gray-400">No image selected</span>
+                        <span className="text-xs text-gray-400">
+                          No image selected
+                        </span>
                       )}
                     </motion.div>
                   </div>
@@ -278,19 +302,6 @@ const Settings = () => {
           </>
         )}
       </motion.div>
-
-      {toast.show && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 text-white ${
-            toast.type === "success" ? "bg-green-600" : "bg-red-600"
-          }`}
-        >
-          {toast.message}
-        </motion.div>
-      )}
     </motion.div>
   );
 };
