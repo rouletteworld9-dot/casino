@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {ChevronDown, CircleUser, LogOut, Search} from "lucide-react"
+import { ChevronDown, CircleUser, LogOut, Search } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { logoutUser, logoutLoading } = useAuth();
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    logoutUser(undefined, {
+      onSuccess: () => {
+        setIsProfileOpen(false);
+        navigate("/");
+      },
+    });
+  };
 
   return (
     <div className="bg-deepPurple backdrop-blur border-b border-midnightPurple p-4 flex justify-between items-center sticky top-0 z-20">
@@ -56,10 +67,13 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center space-x-1 text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
+
+                  className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
                 >
-                  <LogOut size={16} />
-                  <span>Logout</span>
+                  <span className="mr-2">
+                    <LogOut size={17} />
+                  </span>
+                  Logout
                 </button>
               </motion.div>
             )}

@@ -26,14 +26,14 @@ export default function LoginScreen() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.phone || !formData.password) {
-      alert("Please fill in all fields");
-      toast.error("Please fill in all fields");
-      return;
+      return toast.error("Please fill in all fields");
+    }
+    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length >= 13) {
+      return toast.error("Please enter a valid phone number");
     }
 
     loginUser(formData, {
       onSuccess: () => {
-        toast.success("Login successfull");
         navigate("/");
       },
     });
@@ -45,7 +45,6 @@ export default function LoginScreen() {
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-
       <Header />
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div

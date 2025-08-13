@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  FaUsers,
-  FaMoneyCheckAlt,
-  FaCog,
-  FaExternalLinkAlt,
-  FaTachometerAlt,
-  FaGamepad,
-  FaExchangeAlt,
-  FaBars,
-} from "react-icons/fa";
+
+import {Users,CircleGauge,BadgeDollarSign, Banknote,BanknoteArrowUp,CirclePoundSterling,Settings,ExternalLink,Menu} from 'lucide-react';
 import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
@@ -21,8 +13,8 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: <FaTachometerAlt /> },
-    { name: "Members", path: "/admin/members", icon: <FaUsers /> },
+    { name: "Dashboard", path: "/admin/dashboard", icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth /> },
+    { name: "Members", path: "/admin/members", icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />},
     // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
       name: "Deposit Requests",
@@ -33,23 +25,25 @@ const Sidebar = () => {
       name: "withdrawal Requests",
       path: "/admin/withdrawals",
       icon: <FaMoneyCheckAlt />,
+
     },
     {
       name: "Withdrawal (Approved)",
       path: "/admin/withdrawals",
-      icon: <FaMoneyCheckAlt />,
+      icon:<BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "Deposits (Approved)",
       path: "/admin/deposits-approve",
       icon: <FaMoneyCheckAlt />,
+
     },
-    { name: "Settings", path: "/admin/settings", icon: <FaCog /> },
+    { name: "Settings", path: "/admin/settings", icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth /> },
     // { name: 'Live Ongoing Game', path: '/admin/live-game', icon: <FaMoneyCheckAlt /> },
     {
       name: "Go to Website",
       path: "/",
-      icon: <FaExternalLinkAlt />,
+      icon: <ExternalLink size={16} strokeWidth={2} absoluteStrokeWidth />,
       // external: true,
     },
   ];
@@ -75,7 +69,7 @@ const Sidebar = () => {
           className="text-white hover:text-purple-300 cursor-pointer ml-3"
           aria-label="Toggle sidebar"
         >
-          <FaBars />
+          <Menu size={16} strokeWidth={2} absoluteStrokeWidth />
         </button>
       </div>
 
