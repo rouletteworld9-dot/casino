@@ -5,8 +5,9 @@ const SidebarItem = ({ to, icon, label, collapsed = false, external = false }) =
   const baseClasses =
     'group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors';
 
-  const activeClasses = 'bg-purple-300/20 text-purple-100 font-semibold';
-  const hoverClasses = 'hover:bg-slate-700/60 hover:text-white text-slate-300';
+  const activeClasses = "bg-midnightPurple text-purple-100 font-semibold";
+  const hoverClasses =
+    "hover:bg-lightPurple hover:text-white text-slate-300";
 
   if (external) {
     return (
