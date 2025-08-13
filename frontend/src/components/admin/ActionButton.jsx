@@ -7,18 +7,26 @@ export default function ActionButton({
   loading = false,
   disabled = false,
   color = "blue",
+  icon = null, // optional icon
 }) {
   return (
-    <motion.button  
+    <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`px-3 py-1 bg-${color}-600 hover:bg-${color}-700 
+      className={`flex items-center gap-2 px-3 py-1 bg-${color}-600 hover:bg-${color}-700 
         disabled:bg-gray-500 disabled:cursor-not-allowed 
         text-white rounded text-xs font-medium transition-colors duration-200`}
     >
-      {loading ? "Loading.." : label}
+      {loading ? (
+        "Loading.."
+      ) : (
+        <>
+          {icon && <span className="flex items-center">{icon}</span>}
+          {label}
+        </>
+      )}
     </motion.button>
   );
 }

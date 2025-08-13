@@ -18,7 +18,7 @@ const VerifyOtp = ({ phone }) => {
       { phone, otp: verificationCode },
       {
         onSuccess: () => {
-          navigate("/");
+          navigate("/login");
         },
       }
     );

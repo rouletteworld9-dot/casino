@@ -34,13 +34,7 @@ const Navbar = () => {
             className="bg-transparent outline-none text-sm text-slate-100 placeholder:text-white w-48"
           />
         </div>
-        {/* <button
-          className="relative rounded-full p-2 hover:bg-slate-800 text-slate-200"
-          aria-label="Notifications"
-        >
-          <FaBell />
-          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400"></span>
-        </button> */}
+
         <div className="relative">
           <button
             onClick={() => setIsProfileOpen((p) => !p)}
@@ -67,7 +61,6 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={handleLogout}
-
                   className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
                 >
                   <span className="mr-2">

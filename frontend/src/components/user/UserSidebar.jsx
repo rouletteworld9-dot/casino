@@ -1,5 +1,5 @@
 import React from "react";
-import { User, CreditCard, BarChart3 } from "lucide-react";
+import { User, CreditCard, BarChart3, Notebook } from "lucide-react";
 import BalanceCards from "../ui/BalanceCards";
 import { useAuth } from "../../hooks/useAuth";
 import SidebarLink from "../ui/SideBarLink";
@@ -22,6 +22,7 @@ const UserSidebar = () => {
           icon={BarChart3}
           label="Bet and transaction history"
         />
+        <SidebarLink to="/user/requests" icon={Notebook} label="Requests" />
 
         <div className="w-full flex items-center mt-4">
           <button
