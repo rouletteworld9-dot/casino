@@ -3,14 +3,15 @@ const mongoose = require('mongoose');
 
 const paymentSettingsSchema = new mongoose.Schema(
     {
-        qrCodeUrl: {
-            type: String,
-            required: true
-        },
+       
         upiId: {
             type: String,
             required: true
-        }
+        },
+         qrCodeUrl: {
+            type: String,
+            required: true
+        },
     },
     {
         timestamps: true

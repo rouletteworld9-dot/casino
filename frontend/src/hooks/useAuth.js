@@ -2,8 +2,16 @@ import { useMutation } from "@tanstack/react-query";
 import authApi from "../api/authApi";
 import { useAuthStore } from "../stores/useAuthStore";
 
+
 export const useAuth = () => {
-  const { setAuth, setRegistrationData , setOtpToken , setIsPhoneVerified}  = useAuthStore.getState();
+  const {
+    setAuth,
+    setUser,
+    setRegistrationData,
+    setOtpToken,
+    setIsPhoneVerified,
+    logout,
+  } = useAuthStore.getState();
   const registerMutation = useMutation({
     mutationFn: authApi.register,
     onSuccess: (data) => {
@@ -19,6 +27,7 @@ export const useAuth = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setAuth(data.token);
+      setUser(data.user)
     },
     onError: (error) => {
       console.log("Login error:", error);
@@ -26,7 +35,7 @@ export const useAuth = () => {
   });
 
   const verifyOTPMutation = useMutation({
-    mutationFn:  authApi.verifyOtp,
+    mutationFn: authApi.verifyOtp,
     onSuccess: (data) => {
       setOtpToken(data.token);
       setIsPhoneVerified(true);
@@ -36,6 +45,31 @@ export const useAuth = () => {
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authApi.forgotPassword,
+    onError: (error) => {
+      console.log("Forgot password error:", error);
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: authApi.resetPassword,
+    onError: (error) => {
+      console.log("Reset password error:", error);
+    },
+  });
+
+  const accountSettingsMutation = useMutation({
+    mutationFn: authApi.getPaymentSettings,
+    onSuccess: (data) =>{
+      setAuth(data.token);
+      setAccountData(data);
+    },
+    onError: (error) =>{
+      console.log("Account settings error:", error);
+    }
+  })
+
   return {
     registerUser: registerMutation.mutate,
     registerLoading: registerMutation.isPending,
@@ -43,5 +77,15 @@ export const useAuth = () => {
     loginLoading: loginMutation.isPending,
     verifyOtpFn: verifyOTPMutation.mutate,
     verifyOtpLoading: verifyOTPMutation.isPending,
+
+    logoutUser: logout,
+    forgotPassword: forgotPasswordMutation.mutate,
+    forgotPasswordLoading: forgotPasswordMutation.isPending,
+    // verifyResetOtp: verifyResetOtpMutation.mutate,
+    // verifyResetOtpLoading: verifyResetOtpMutation.isPending,
+    resetPassword: resetPasswordMutation.mutate,
+    resetPasswordLoading: resetPasswordMutation.isPending,
+    // accountSettings: accountSettingsMutation.mutate,
+    // accountSettingsLoading: accountSettingsMutation.isPending,
   };
 };

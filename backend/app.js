@@ -3,6 +3,10 @@ const cors = require("cors")
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
 const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
+const transactionRoutes = require("./routes/transactionRoutes");
+const adminOnly = require("./middlewares/adminOnly");
+const cookieParser = require("cookie-parser");
+
 
 const app = express();
 
@@ -11,10 +15,9 @@ app.use(cors({
     credentials: true
 }));
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.js / server.js
-const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 
@@ -26,9 +29,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api", authMiddleware);
 
 // Transaction routes
-app.use("/api/paymentSettings", paymentSettingRoutes)
+app.use("/api/paymentSettings", adminOnly, paymentSettingRoutes) // (Admin ONlY)
+app.use("/api/transactions", transactionRoutes);
 
 // Global Error Handler 
+
 // app.use((err, req, res) => {
 //     console.error("Unhandled Error:", err.stack);
 //     res.status(500).json({ message: "Something went wrong" });

@@ -20,7 +20,7 @@ exports.createDeposit = async (req, res) => {
             transactionType: 'deposit',
             amount,
             utr,
-            qrLink: settings.qrLink,
+            qrLink: settings.qrCodeUrl,
             upiId: settings.upiId
         });
 
@@ -89,7 +89,7 @@ exports.approveTransaction = async (req, res) => {
             return res.status(404).json({ message: 'Transaction not found' });
         }
 
-        transaction.status = 'approved';
+        transaction.transactionStatus = 'approved';
 
         // If deposit → add money to wallet
         if (transaction.transactionType === 'deposit') {
@@ -119,7 +119,7 @@ exports.rejectTransaction = async (req, res) => {
             return res.status(404).json({ message: 'Transaction not found' });
         }
 
-        transaction.status = 'rejected';
+        transaction.transactionStatus = 'rejected';
         transaction.adminNote = adminNote || '';
 
         await transaction.save();
