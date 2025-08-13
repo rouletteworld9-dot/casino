@@ -15,7 +15,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUserStatus = async (req, res) => {
     try {
         const { status } = req.body; // "active" or "banned"
-        if (!['active', 'banned'].includes(status)) {
+        if (!['active', 'banned', "deleted"].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
