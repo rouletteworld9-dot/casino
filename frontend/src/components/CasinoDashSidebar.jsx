@@ -7,7 +7,7 @@ const CasinoDashSidebar = () => {
       {/* Bonuses */}
       <div className="mb-6">
         <h3 className="text-xl font-bold mb-4">Bonuses</h3>
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-4 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-4 relative overflow-hidden cursor-pointer">
           <div className="absolute top-0 right-0 text-6xl opacity-20">🎰</div>
           <div className="relative z-10">
             <div className="text-sm text-purple-200 mb-1">
@@ -40,7 +40,7 @@ const CasinoDashSidebar = () => {
           <MoreHorizontal className="text-gray-400" size={20} />
         </div>
 
-        <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-4 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-4 relative overflow-hidden cursor-pointer">
           <div className="absolute top-0 right-0 w-24 h-24 opacity-30">
             <div className="w-full h-full rounded-full bg-gradient-to-br from-yellow-400 to-orange-500" />
           </div>
@@ -49,7 +49,7 @@ const CasinoDashSidebar = () => {
             <div className="font-bold text-lg mb-2">
               Get ₹300 + 50 FS <br /> for each verified friend
             </div>
-            <button className="bg-black/20 hover:bg-black/30 px-4 py-2 rounded-lg text-sm">
+            <button className="bg-black/20 hover:bg-black/30 px-4 py-2 rounded-lg text-sm cursor-pointer">
               More
             </button>
           </div>

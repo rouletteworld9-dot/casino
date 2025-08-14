@@ -41,7 +41,7 @@ const Navbar = () => {
             className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-midnightPurple text-white"
           >
             <CircleUser size={18} />
-            <span className="hidden md:inline text-sm">Admin</span>
+            <span className="hidden md:inline text-sm cursor-pointer">Admin</span>
             <ChevronDown size={18} />
           </button>
           <AnimatePresence>
@@ -55,13 +55,13 @@ const Navbar = () => {
               >
                 <button
                   onClick={() => navigate("/admin/settings")}
-                  className="w-full text-left rounded px-2 py-1.5 text-sm text-slate-200 hover:bg-midnightPurple"
+                  className="w-full text-left rounded px-2 py-1.5 text-sm text-slate-200 hover:bg-midnightPurple cursor-pointer"
                 >
                   Profile & Settings
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
+                  className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10 cursor-pointer"
                 >
                   <span className="mr-2">
                     <LogOut size={17} />

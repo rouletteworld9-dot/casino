@@ -21,7 +21,7 @@ const GameTabs = ({ className = "" }) => {
           key={tab.name}
           onClick={() => setActiveTab(tab.name)}
           whileHover={{ scale: 1.05 }}
-          className={` font-bold transition-colors ${
+          className={` font-bold transition-colors cursor-pointer ${
             activeTab === tab.name
               ? "text-white"
               : "text-gray-500 hover:text-gray-300"
