@@ -28,6 +28,7 @@ import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { Import } from "lucide-react";
 import ForgetPassword from "../components/ForgotPassword.jsx";
 import VerifyResetOtp from "../components/VerifyResetOtp.jsx";
+import DepositInterface from "../components/user/UserBalance.jsx";
 
 const router = createBrowserRouter([
   {
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <UserProfile /> },
-      { path: "deposits-withdrawals", element: <UserBalance /> },
+      { path: "deposits-withdrawals", element: <DepositInterface /> },
       { path: "history", element: <UserHistory /> },
     ],
   },

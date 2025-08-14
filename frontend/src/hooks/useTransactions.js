@@ -19,16 +19,22 @@ export const useTransactions = (transactionStatus) => {
     },
   });
 
-   const rejectTransactionRequest = useMutation({
-     mutationFn: transactionApi.rejectTransaction,
-     onSuccess: () => {
-       toast.success("Trasaction Rejected Successfully!");
-       queryClient.invalidateQueries(["transactions"]);
-     },
-     onError: (error) => {
-       toast.error(error.message || "Something Went Wrong!!");
-     },
-   });
+  const rejectTransactionRequest = useMutation({
+    mutationFn: transactionApi.rejectTransaction,
+    onSuccess: () => {
+      toast.success("Trasaction Rejected Successfully!");
+      queryClient.invalidateQueries(["transactions"]);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Something Went Wrong!!");
+    },
+  });
+  const depositRequestMutation = useMutation({
+    mutationFn: transactionApi.depositRequest,
+    onSuccess: () => {
+      toast.success("Deposit Request Sent!");
+    },
+  });
 
   return {
     allTransactions: fetchAllTransactions.data,
@@ -37,5 +43,7 @@ export const useTransactions = (transactionStatus) => {
     approvetransactionLoading: approveTransactionRequest.isPending,
     rejectTransactionFn: rejectTransactionRequest.mutate,
     rejecttransactionLoading: rejectTransactionRequest.isPending,
+    depositRequestFn: depositRequestMutation.mutate,
+    depositRequestLoading: depositRequestMutation.isPending,
   };
 };

@@ -56,7 +56,7 @@ const GameCategories = ({
             className={`${baseClasses} ${activeClasses} ${buttonClassName}`}
           >
             {category.icon}
-            <span className="text-xs font-medium text-center">
+            <span className="text-xs font-medium text-center cursor-pointer">
               {category.name}
             </span>
           </motion.button>

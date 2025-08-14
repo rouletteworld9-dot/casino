@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FaCheck, FaTimes, FaEye } from "react-icons/fa";
-import { Banknote } from "lucide-react";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import RejectPopup from "./RejectPopup";
+import ActionButton from "./ActionButton";
+import Pagination from "../ui/Pagination";
 import {
   getCoreRowModel,
   useReactTable,
@@ -14,6 +16,11 @@ const Withdrawals = () => {
   const [withdrawals, setWithdrawals] = useState([]);
   const [activeTab, setActiveTab] = useState("BANK CARD");
   const [viewingRow, setViewingRow] = useState(null);
+  const [loadingAction, setLoadingAction] = useState(null);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     const fetchWithdrawals = async () => {
@@ -61,10 +68,12 @@ const Withdrawals = () => {
     fetchWithdrawals();
   }, []);
 
-  const handleAction = async (id, action) => {
+  const handleAction = async (id, action, reason) => {
+    setLoadingAction({ id, action });
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`/api/admin/transactions/${id}/${action}`, {}, {
+      const body = action === "reject" && reason ? { adminNote: reason } : {};
+      await axios.post(`/api/admin/transactions/${id}/${action}`, body, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setWithdrawals((prev) =>
@@ -74,6 +83,8 @@ const Withdrawals = () => {
       );
     } catch (error) {
       console.error(`Error ${action} withdrawal:`, error);
+    } finally {
+      setLoadingAction(null);
     }
   };
 
@@ -110,7 +121,11 @@ const Withdrawals = () => {
       }),
       columnHelper.accessor("amount", {
         header: () => "Amount",
-        cell: (info) => <span>{info.getValue()} </span>,
+        cell: (info) => (
+          <span className="tabular-nums font-semibold">
+            ₹{Number(info.getValue() || 0).toLocaleString("en-IN")}
+          </span>
+        ),
       }),
       columnHelper.accessor("date", {
         header: () => "Date",
@@ -118,34 +133,60 @@ const Withdrawals = () => {
       }),
       columnHelper.accessor("status", {
         header: () => "Status",
-        cell: (info) => (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-400 text-gray-900 text-xs font-medium">
-            Waiting...
-          </span>
-        ),
+        cell: (info) => {
+          const status = String(info.getValue() || "pending").toLowerCase();
+          const styles =
+            status === "approved"
+              ? "bg-green-100 text-green-800"
+              : status === "rejected"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800";
+          const label =
+            status === "approved" ? "Approved" : status === "rejected" ? "Rejected" : "Pending";
+          return (
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${styles}`}>
+              {label}
+            </span>
+          );
+        },
       }),
       columnHelper.display({
         id: "actions",
-        header: () => "Accept/Reject",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-          
-            <button
-              onClick={() => handleAction(row.original.id, "approve")}
-              className="inline-flex items-center justify-center w-8 h-8 rounded bg-green-500 text-white hover:bg-green-600"
-              aria-label="Approve"
-            >
-              <FaCheck />
-            </button>
-            <button
-              onClick={() => handleAction(row.original.id, "reject")}
-              className="inline-flex items-center justify-center w-8 h-8 rounded bg-red-500 text-white hover:bg-red-600"
-              aria-label="Reject"
-            >
-              <FaTimes />
-            </button>
-          </div>
-        ),
+        header: () => "Approve / Reject",
+        cell: ({ row }) => {
+          const currentStatus = String(row.original.status || "pending").toLowerCase();
+          const isPending = currentStatus === "pending";
+          if (!isPending) {
+            return <div className="text-center">-</div>;
+          }
+          return (
+            <div className="flex gap-2 ">
+              <ActionButton
+                label="Approve"
+                color="green"
+                onClick={() => handleAction(row.original.id, "approve")}
+                loading={
+                  loadingAction?.id === row.original.id &&
+                  loadingAction?.action === "approve"
+                }
+                disabled={loadingAction?.id === row.original.id}
+              />
+              <ActionButton
+                label="Reject"
+                color="red"
+                onClick={() => {
+                  setSelectedWithdrawal(row.original);
+                  setShowRejectModal(true);
+                }}
+                loading={
+                  loadingAction?.id === row.original.id &&
+                  loadingAction?.action === "reject"
+                }
+                disabled={loadingAction?.id === row.original.id}
+              />
+            </div>
+          );
+        },
       }),
     ],
     [columnHelper]
@@ -157,25 +198,23 @@ const Withdrawals = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const totalPages = Math.ceil(withdrawals.length / pageSize) || 1;
+  const start = (page - 1) * pageSize;
+  const paginated = withdrawals.slice(start, start + pageSize);
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white text-gray-900 backdrop-blur p-4 md:p-8 rounded-2xl shadow-xl border border-slate-200 max-w-full"
-    >
-      <div className="flex items-center gap-2 mb-4">
-        
-        <h2 className="text-2xl md:text-2xl font-bold tracking-tight">Withdrawal Requests</h2>
+    <motion.div className="bg-midnightPurple text-white p-4 sm:p-6 rounded-lg shadow-lg border border-midnightPurple overflow-x-auto">
+      <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+        <h2 className="text-xl sm:text-2xl font-bold">Withdrawals</h2>
       </div>
 
-      <div className="overflow-x-auto w-full max-w-full scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-100 rounded-lg shadow border border-slate-200">
-        <table className="min-w-[900px] w-full text-left text-sm md:text-base bg-white rounded-lg">
-          <thead className="bg-slate-100 text-gray-900 sticky top-0 z-10">
+      <div className="overflow-x-auto pb-2">
+        <table className="min-w-[1100px] w-full text-left text-xs sm:text-sm md:text-base">
+          <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <tr key={headerGroup.id} className="bg-deepPurple text-white">
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-3 border-b border-slate-200 font-semibold bg-slate-100 sticky top-0 z-10 text-xs md:text-sm uppercase tracking-wider">
+                  <th key={header.id} className="p-2">
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
@@ -183,44 +222,39 @@ const Withdrawals = () => {
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b border-slate-200 hover:bg-slate-50 even:bg-slate-50/60 transition-colors">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-3 whitespace-nowrap text-xs md:text-sm">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>)
-                )}
-              </tr>
-            ))}
+            {table
+              .getRowModel()
+              .rows.slice(start, start + pageSize)
+              .map((row) => (
+                <tr key={row.id} className="border-b border-deepPurple">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="p-2 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
 
-      {viewingRow && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 md:p-8 border border-slate-200">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Withdrawal Details</h3>
-              <button
-                onClick={() => setViewingRow(null)}
-                className="px-3 py-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300 font-semibold"
-              >
-                Close
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div><span className="font-sm">Phone:</span> {viewingRow.phoneNumber}</div>
-              <div><span className="font-sm">Bank:</span> {viewingRow.bankName}</div>
-              <div><span className="font-sm">Recipient:</span> {viewingRow.recipientName}</div>
-              <div><span className="font-sm">Account No:</span> {viewingRow.accountNumber}</div>
-              <div><span className="font-sm">IFSC:</span> {viewingRow.ifsc}</div>
-              <div><span className="font-sm">UPI Id:</span> {viewingRow.upiId}</div>
-              <div><span className="font-sm">Amount:</span> {viewingRow.amount}</div>
-              <div><span className="font-sm">Date:</span> {new Date(viewingRow.date).toLocaleString()}</div>
-            </div>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPrev={() => setPage(page > 1 ? page - 1 : 1)}
+        onNext={() => setPage(page < totalPages ? page + 1 : totalPages)}
+      />
+
+      <RejectPopup
+        isOpen={showRejectModal}
+        onClose={() => setShowRejectModal(false)}
+        onConfirm={(reason) => {
+          if (selectedWithdrawal) {
+            handleAction(selectedWithdrawal.id, "reject", reason);
+          }
+          setShowRejectModal(false);
+        }}
+      />
     </motion.div>
   );
 };

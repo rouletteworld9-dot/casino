@@ -166,7 +166,7 @@ const Settings = () => {
             </span>
             <button
               onClick={() => refetch()}
-              className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+              className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 cursor-pointer"
             >
               Retry
             </button>
@@ -215,7 +215,7 @@ const Settings = () => {
                 <button
                   type="button"
                   onClick={handleEnterEdit}
-                  className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+                  className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition cursor-pointer"
                 >
                   Edit
                 </button>
@@ -283,14 +283,14 @@ const Settings = () => {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="rounded bg-green-600 px-5 py-2 text-white hover:bg-green-700 transition disabled:opacity-60"
+                    className="rounded bg-green-600 px-5 py-2 text-white hover:bg-green-700 transition disabled:opacity-60 cursor-pointer"
                   >
                     {isSaving ? "Saving..." : "Save"}
                   </button>
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="rounded bg-gray-400 px-5 py-2 text-white hover:bg-gray-500 transition"
+                    className="rounded bg-gray-400 px-5 py-2 text-white hover:bg-gray-500 transition cursor-pointer"
                   >
                     Cancel
                   </button>

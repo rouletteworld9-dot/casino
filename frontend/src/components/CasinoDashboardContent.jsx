@@ -21,13 +21,13 @@ const CasinoDashboardContent = () => {
           <IconButton
             label="All providers"
             icon={<ChevronRight size={16} className="rotate-90" />}
-            className="flex-shrink-0 w-[40%] sm:w-[25%]"
+            className="flex-shrink-0 w-[40%] sm:w-[25%] cursor-pointer"
           />
 
           <IconButton
             label="Filters"
             icon={<ChevronRight size={16} className="rotate-90" />}
-            className="flex-shrink-0 w-[40%] sm:w-[25%]"
+            className="flex-shrink-0 w-[40%] sm:w-[25%] cursor-pointer"
           />
 
           <IconButton

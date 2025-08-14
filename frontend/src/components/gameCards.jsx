@@ -172,7 +172,7 @@ const GameCards = () => {
                 whileTap={{ scale: 0.95 }}
                 className="bg-black/20 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black/30 transition-colors flex items-center justify-center space-x-2 w-fit"
               >
-                <span>{category.buttonText}</span>
+                <span className="cursor-pointer">{category.buttonText}</span>
                 <ChevronRight className="w-4 h-4" />
               </motion.button>
             </div>

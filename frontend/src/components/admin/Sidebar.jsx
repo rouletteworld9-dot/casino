@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-import {Users,CircleGauge,BadgeDollarSign, Banknote,BanknoteArrowUp,CirclePoundSterling,Settings,ExternalLink,Menu} from 'lucide-react';
+import {
+  Users,
+  CircleGauge,
+  BadgeDollarSign,
+  Banknote,
+  BanknoteArrowUp,
+  CirclePoundSterling,
+  Settings,
+  ExternalLink,
+  Menu,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
@@ -13,32 +23,44 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth /> },
-    { name: "Members", path: "/admin/members", icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />},
+    {
+      name: "Dashboard",
+      path: "/admin/dashboard",
+      icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
+    {
+      name: "Members",
+      path: "/admin/members",
+      icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
     // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
       name: "Deposit Requests",
       path: "/admin/deposits",
-      icon:  <Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
+      icon: (
+        <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />
+      ),
     },
     {
       name: "withdrawal Requests",
       path: "/admin/withdrawals",
-      icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth/>,
-
+      icon: <BadgeDollarSign size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "Withdrawal (Approved)",
       path: "/admin/withdrawals-settings",
-      icon:<BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
+      icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "Deposits (Approved)",
       path: "/admin/deposits-approve",
-      icon:  <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />,
-
+      icon: <Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
-    { name: "Settings", path: "/admin/settings", icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth /> },
+    {
+      name: "Settings",
+      path: "/admin/settings",
+      icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
     // { name: 'Live Ongoing Game', path: '/admin/live-game', icon: <FaMoneyCheckAlt /> },
     {
       name: "Go to Website",

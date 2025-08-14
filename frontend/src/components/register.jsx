@@ -9,7 +9,7 @@ export default function RegisterScreen() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    phone: "+91 ",
+    phone: "",
     password: "",
   });
   const { registerUser, registerLoading } = useAuth();
@@ -17,8 +17,8 @@ export default function RegisterScreen() {
   const [codeSent, setCodeSent] = useState(false);
 
   const handleChange = (e) => {
-    if (e.target.name === "phone" && !e.target.value.startsWith("+91 ")) {
-      e.target.value = "+91 ";
+    if (e.target.name === "phone" && !e.target.value.startsWith("")) {
+      e.target.value = "";
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -29,7 +29,7 @@ export default function RegisterScreen() {
     }
 
     // Remove +91 and spaces for validation
-    const phoneNumber = formData.phone.replace("+91", "").replace(/\s/g, "");
+    const phoneNumber = formData.phone.replace("", "").replace(/\s/g, "");
 
     if (!/^\d{10}$/.test(phoneNumber)) {
       return toast.error("Please enter a valid phone number");

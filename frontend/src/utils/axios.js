@@ -38,15 +38,20 @@ api.interceptors.response.use(
 
       try {
         state.isRefreshing = true;
-        const response = await api.post("/auth/refresh-token", {}, {
-          withCredentials: true,
-        });
+        const response = await api.post(
+          "/auth/refresh-token",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
         state.isRefreshing = false;
 
-        const { token } = response.data;
-        if (!token) throw new Error("No token received from refresh-token endpoint");
-        useAuthStore.getState().setAuth(token);
-        originalRequest.headers.Authorization = `Bearer ${token}`;
+        const data = response.data;
+        if (!data.token)
+          throw new Error("No token received from refresh-token endpoint");
+        useAuthStore.getState().setAuth(data);
+        originalRequest.headers.Authorization = `Bearer ${data.token}`;
 
         return api(originalRequest);
       } catch (err) {

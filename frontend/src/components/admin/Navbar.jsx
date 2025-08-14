@@ -34,20 +34,14 @@ const Navbar = () => {
             className="bg-transparent outline-none text-sm text-slate-100 placeholder:text-white w-48"
           />
         </div>
-        {/* <button
-          className="relative rounded-full p-2 hover:bg-slate-800 text-slate-200"
-          aria-label="Notifications"
-        >
-          <FaBell />
-          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400"></span>
-        </button> */}
+
         <div className="relative">
           <button
             onClick={() => setIsProfileOpen((p) => !p)}
             className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-midnightPurple text-white"
           >
             <CircleUser size={18} />
-            <span className="hidden md:inline text-sm">Admin</span>
+            <span className="hidden md:inline text-sm cursor-pointer">Admin</span>
             <ChevronDown size={18} />
           </button>
           <AnimatePresence>
@@ -61,14 +55,13 @@ const Navbar = () => {
               >
                 <button
                   onClick={() => navigate("/admin/settings")}
-                  className="w-full text-left rounded px-2 py-1.5 text-sm text-slate-200 hover:bg-midnightPurple"
+                  className="w-full text-left rounded px-2 py-1.5 text-sm text-slate-200 hover:bg-midnightPurple cursor-pointer"
                 >
                   Profile & Settings
                 </button>
                 <button
                   onClick={handleLogout}
-
-                  className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10"
+                  className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10 cursor-pointer"
                 >
                   <span className="mr-2">
                     <LogOut size={17} />

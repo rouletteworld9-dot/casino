@@ -20,8 +20,8 @@ export default function LoginScreen() {
     password: "",
   });
   const { loginUser, loginLoading } = useAuth();
-  const userData = useAuthStore((state) => state.userData);
-  if (userData) return <Navigate to={`/${userData?.role}`} />;
+  const user = useAuthStore((state) => state.user);
+  if (user) return <Navigate to={`/${user?.role}`} />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
