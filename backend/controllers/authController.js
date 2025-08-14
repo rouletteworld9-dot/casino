@@ -60,7 +60,6 @@ exports.register = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
   const { phone, otp } = req.body;
-  console.log("phone", phone, "and", otp);
 
   if (!phone || !otp) {
     return res.status(400).json({ message: "Phone and OTP are required." });
@@ -355,7 +354,12 @@ exports.refreshToken = async (req, res) => {
 
     return res.json({
       token: newAccessToken,
-      user: { name: user.name, phone: user.phone, role: user.role },
+      user: {
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        _id: user._id,
+      },
       expiresIn: 30 * 60,
     });
   } catch (err) {
