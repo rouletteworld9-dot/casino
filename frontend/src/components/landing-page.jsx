@@ -93,7 +93,7 @@ export default function LandingPage({ isLoggedIn }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="mt-4 w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg font-semibold transition-all"
+                  className="mt-4 w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg font-semibold transition-all cursor-pointer"
                 >
                   Claim Now
                 </motion.button>
