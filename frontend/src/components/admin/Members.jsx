@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Search, Lock, Folder, Trash } from "lucide-react";
 import { useAdminUsers } from "../../hooks/useAdminUsers";
@@ -6,7 +7,7 @@ import ActionButton from "./ActionButton";
 import Pagination from "../ui/Pagination";
 
 const Members = () => {
-  const { adminAllUsers = [], adminAllUsersLoading } = useAdminUsers();
+  const { adminAllUsers = [], adminAllUsersLoading, deleteUser } = useAdminUsers();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
@@ -116,7 +117,16 @@ const Members = () => {
                     <ActionButton
                       label="Delete User"
                       color="red"
+                      onClick={async () => {
+                        try {
+                          await deleteUser.mutateAsync(user._id);
+                          toast.success("User deleted successfully");
+                        } catch (err) {
+                          toast.error("Failed to delete user");
+                        }
+                      }}
                       icon={<Trash size={16} className="-ml-1" />}
+                      disabled={deleteUser.isLoading}
                     />
                   </div>
                 </td>
