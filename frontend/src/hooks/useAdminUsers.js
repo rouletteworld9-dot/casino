@@ -9,16 +9,28 @@ export const useAdminUsers = () => {
     queryFn: () => adminUsersApi.getAllUsers(),
   });
 
-  const deleteUserMutation = useMutation({
+    const deleteUserMutation = useMutation({
     mutationFn: adminUsersApi.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(["AllUsers"]);
     },
   });
-
   return {
     adminAllUsers: getAllUsers.data,
-    adminAllUsersLoading: getAllUsers.isLoading,
     deleteUser: deleteUserMutation,
+    adminAllUsersLoading: getAllUsers.isLoading,
+    
+    
   };
+};
+
+export const useSingleUser = (id) => {
+  const getSingleUser = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => adminUsersApi.getSingleUser(id),
+    enabled: !!id,
+  });
+  return {
+    singleUser: getSingleUser.data,
+
 };

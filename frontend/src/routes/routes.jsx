@@ -17,18 +17,16 @@ import RechargeApprove from "../components/admin/RechargeApprove.jsx";
 import Settings from "../components/admin/Settings.jsx";
 import Transactions from "../components/admin/Transactions.jsx";
 import Withdrawals from "../components/admin/Withdrawals.jsx";
-import WithdrawalSettings from "../components/admin/WithdrawlsSettings.jsx";
 import BrowseRecharge from "../components/admin/BrowseRecharge.jsx";
 import UserLayout from "../components/user/UserLayout.jsx";
 import UserProfile from "../components/user/UserProfile.jsx";
-import UserBalance from "../components/user/UserBalance.jsx";
 import UserHistory from "../components/user/UserHistory.jsx";
 import CasinoDashboard from "../pages/casino-game.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
-import { Import } from "lucide-react";
 import ForgetPassword from "../components/ForgotPassword.jsx";
 import VerifyResetOtp from "../components/VerifyResetOtp.jsx";
 import DepositInterface from "../components/user/UserBalance.jsx";
+import WithdrawlApproved from "../components/admin/WithdrawlApproved.jsx";
 
 const router = createBrowserRouter([
   {
@@ -70,7 +68,7 @@ const router = createBrowserRouter([
       { path: "deposits", element: <Transactions /> },
       { path: "deposits-approve", element: <RechargeApprove /> },
       { path: "withdrawals", element: <Withdrawals /> },
-      { path: "withdrawals-settings", element: <WithdrawalSettings /> },
+      { path: "withdrawal-approve", element: <WithdrawlApproved /> },
       { path: "live-game", element: <LiveGame /> },
       { path: "settings", element: <Settings /> },
     ],

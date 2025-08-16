@@ -1,199 +1,108 @@
-import { User, Edit } from "lucide-react";
 import React, { useState } from "react";
+import { User, Coins, Edit2, Save } from "lucide-react";
+import { useSingleUser } from "../../hooks/useAdminUsers";
+import { useAuthStore } from "../../stores/useAuthStore";
 
-const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState("personal");
+const UserProfilePage = () => {
+  const user = useAuthStore((state) => state.user);
+  const { singleUser } = useSingleUser(user?._id);
 
-  const tabs = [
-    { id: "personal", label: "Personal details" },
-    { id: "phone", label: "Change phone number" },
-    { id: "email", label: "Set email" },
-    { id: "password", label: "Change password" },
-    { id: "keys", label: "Access keys" },
-  ];
+  const [editedStatus, setEditedStatus] = useState(singleUser?.status);
+  const [activeTab, setActiveTab] = useState("Personal Info");
+
+  const handleStatusUpdate = () =>
+    setUser({ ...singleUser, status: editedStatus });
+
+  const tabs = ["Personal Info", "Balance", "Status"];
+
+  const InfoRow = ({ label, value }) => (
+    <div className="flex space-x-10 items-center border-b border-midnightPurple py-2">
+      <p className="text-xs text-gray-400">{label}:</p>
+      <p className="text-sm font-medium text-gray-200">{value}</p>
+    </div>
+  );
 
   return (
-    <div
-      className="w-full min-h-screen text-white"
-      style={{ backgroundColor: "var(--color-deepPurple)" }}
-    >
-      <div className="p-6">
+    <div className="min-h-screen p-6 bg-gradient-to-br from-[#17071d] to-[#201126] text-white">
+      <div className="mx-auto">
         {/* Header */}
-        <div className="flex items-center space-x-2 mb-8">
-          <div className=" rounded-full ">
-            <User size={26} className="text-yellow-600" />
+        <div className="flex items-center gap-4 ">
+          <div className="w-16 h-16 text-yellow-600 rounded-full flex items-center justify-center">
+            <User size={32} />
           </div>
-          <h1 className="text-2xl font-bold">My profile</h1>
+          <div>
+            <h1 className="text-2xl font-bold">{singleUser?.name}</h1>
+          </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div
-          className="flex space-x-8 mb-8 border-b"
-          style={{ borderColor: "var(--color-deepBorder)" }}
-        >
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-gray-700">
           {tabs.map((tab) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === tab.id
-                  ? "border-yellow-500 text-yellow-500"
-                  : "border-transparent text-gray-400 hover:text-white"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 text-sm font-medium transition ${
+                activeTab === tab
+                  ? "border-b-2 border-yellow-500 text-yellow-500"
+                  : "text-gray-300 hover:text-white"
               }`}
             >
-              {tab.label}
+              {tab}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        <div className="">
-          {/* Personal Data Section */}
-          <div className="mb-8">
-            <h2 className="text-sm font-semibold text-gray-400 mb-6">
-              PERSONAL DATA
-            </h2>
-
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300">Account number:</span>
-                <span className="text-white font-medium">67038631</span>
+        {/* Panels */}
+        <div>
+          {activeTab === "Personal Info" && (
+            <div className="space-y-4">
+              <div className="bg-darkViolet  p-4 shadow-md">
+                <h2 className="text-gray-200 font-semibold mb-3">
+                  Personal Data
+                </h2>
+                <InfoRow label="Account Number" value={singleUser?._id} />
+                <InfoRow label="Phone" value={singleUser?.phone} />
+                <InfoRow
+                  label="Verified"
+                  value={singleUser?.isVerified ? "Yes" : "No"}
+                />
               </div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300">Currency:</span>
-                <span className="text-white font-medium">₹</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Contacts Section */}
-          <div className="mb-8">
-            <h2 className="text-sm font-semibold text-gray-400 mb-6">
-              CONTACTS
-            </h2>
-
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300">Phone:</span>
-                <div className="flex items-center space-x-3">
-                  <span className="text-white font-medium">+918871713199</span>
-                  <button
-                    className="flex items-center space-x-1 px-3 py-1.5 text-sm rounded-md transition-colors"
-                    style={{
-                      backgroundColor: "var(--color-lightPurple)",
-                      border: "1px solid var(--color-deepBorder)",
-                    }}
-                  >
-                    <Edit size={14} />
-                    <span>Change</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300">Email:</span>
-                <button
-                  className="flex items-center space-x-1 px-3 py-1.5 text-sm rounded-md transition-colors"
-                  style={{
-                    backgroundColor: "var(--color-lightPurple)",
-                    border: "1px solid var(--color-deepBorder)",
-                  }}
-                >
-                  <Edit size={14} />
-                  <span>Set</span>
-                </button>
+              <div className="bg-darkViolet p-4 shadow-md">
+                <h2 className="text-gray-200 font-semibold mb-3">
+                  Contact Details
+                </h2>
+                <InfoRow label="Phone Number" value={singleUser?.phone} />
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Marketing Preferences Section */}
-          <div>
-            <h2 className="text-sm font-semibold text-gray-400 mb-6">
-              MARKETING PREFERENCES
-            </h2>
+          {activeTab === "Balance" && (
+            <div className="bg-darkViolet p-4 shadow-md">
+              <h2 className="flex items-center gap-2 text-gray-200 font-semibold mb-3">
+                <Coins size={18} /> Balance
+              </h2>
+              <InfoRow label="Bonus Tokens" value={singleUser?.playTokens} />
+              <InfoRow label="Balance" value={`₹${singleUser?.realBalance}`} />
+            </div>
+          )}
 
-            <div className="mb-6">
-              <p className="text-white mb-6">
-                Get notifications about promotions and news:
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Email</span>
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="sr-only"
-                      id="email-toggle"
-                    />
-                    <label
-                      htmlFor="email-toggle"
-                      className="flex items-center cursor-pointer"
-                    >
-                      <div
-                        className="w-12 h-6 rounded-full p-1 transition-colors"
-                        style={{ backgroundColor: "var(--color-casinoGold)" }}
-                      >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">SMS</span>
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="sr-only"
-                      id="sms-toggle"
-                    />
-                    <label
-                      htmlFor="sms-toggle"
-                      className="flex items-center cursor-pointer"
-                    >
-                      <div
-                        className="w-12 h-6 rounded-full p-1 transition-colors"
-                        style={{ backgroundColor: "var(--color-casinoGold)" }}
-                      >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Push notifications</span>
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="sr-only"
-                      id="push-toggle"
-                    />
-                    <label
-                      htmlFor="push-toggle"
-                      className="flex items-center cursor-pointer"
-                    >
-                      <div
-                        className="w-12 h-6 rounded-full p-1 transition-colors"
-                        style={{ backgroundColor: "var(--color-casinoGold)" }}
-                      >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></div>
-                      </div>
-                    </label>
-                  </div>
+          {activeTab === "Status" && (
+            <div className="bg-darkViolet p-4 shadow-md">
+              <h2 className="flex items-center gap-2 text-gray-200 font-semibold mb-3">
+                <Edit2 size={18} /> Status
+              </h2>
+              <div className="space-y-3">
+                <div>
+                  <InfoRow label="Current Status:" value={singleUser?.status} />
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default UserProfile;
+export default UserProfilePage;

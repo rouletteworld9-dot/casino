@@ -1,30 +1,26 @@
-import React, { useState } from "react";
 import { User, CreditCard, BarChart3, Notebook, Menu, X } from "lucide-react";
 import BalanceCards from "../ui/BalanceCards";
 import { useAuth } from "../../hooks/useAuth";
 import SidebarLink from "../ui/SideBarLink";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthStore } from "../../stores/useAuthStore";
 
-const NAVBAR_HEIGHT = 64; // 64px ~ h-16 (adjust if header changes)
-
-const UserSidebar = () => {
+const UserSidebar = ({ isOpen, setIsOpen }) => {
+  
   const { logoutUser } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
   return (
-    <div>
-      {/* Hamburger Button */}
+    <>
+      {/* Toggle Button - works on all screen sizes */}
       <button
         onClick={toggleSidebar}
-        // style={{ top: NAVBAR_HEIGHT / 2 - 20 }} // vertically centered in navbar
-        className="fixed left-4 z-50 p-2 bg-midnightPurple rounded-lg text-white hover:bg-[#3a2044] transition"
+        className="fixed left-4 top-14 z-50 p-2 bg-midnightPurple rounded-lg text-white hover:bg-[#3a2044] transition"
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar - AnimatePresence handles both mobile & desktop */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -33,8 +29,7 @@ const UserSidebar = () => {
             animate={{ x: 0 }}
             exit={{ x: -260 }}
             transition={{ duration: 0.3 }}
-            // style={{ top: NAVBAR_HEIGHT }}
-            className="fixed left-0 w-60 bg-[#1E0E24] text-white min-h-screen py-6 px-4 z-40 "
+            className="fixed md:relative left-0 w-60 bg-[#1E0E24] text-white min-h-screen py-6 px-4 z-40"
           >
             <BalanceCards />
             <div className="space-y-2 mt-4">
@@ -54,7 +49,6 @@ const UserSidebar = () => {
                 icon={Notebook}
                 label="Requests"
               />
-
               <div className="w-full flex items-center mt-4">
                 <button
                   onClick={logoutUser}
@@ -67,8 +61,9 @@ const UserSidebar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
 export default UserSidebar;
+ 

@@ -48,7 +48,7 @@ const Sidebar = () => {
     },
     {
       name: "Withdrawal (Approved)",
-      path: "/admin/withdrawals-settings",
+      path: "/admin/withdrawal-approve",
       icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {

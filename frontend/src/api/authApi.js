@@ -55,39 +55,13 @@ const resetPassword = async ({ phone, otp, newPassword }) => {
   }
 };
 
-const getPaymentSettings = async () => {
-  try {
-    const res = await api.get("/paymentSettings");
-    // Backend returns { success, data }
-    return res.data?.data;
-  } catch (error) {
-    // If not found, treat as empty settings so UI can create fresh
-    if (error?.response?.status === 404) {
-      return { qrCodeUrl: "", upiId: "" };
-    }
-    console.log("get payment settings error", error);
-    throw error;
-  }
-};
 
-const updatePaymentSettings = async (formData) => {
-  try {
-    // Do NOT set Content-Type manually; let the browser set proper boundary
-    const res = await api.post("/paymentSettings", formData);
-    return res.data?.data;
-  } catch (error) {
-    console.log("update payment settings error", error);
-    throw error;
-  }
-};
 const authApi = {
   login,
   verifyOtp,
   register,
   forgotPassword,
   resetPassword,
-  getPaymentSettings,
-  updatePaymentSettings,
 };
 
 export default authApi;

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-const UserHeaderTabs = () => {
-  const [activeTab, setActiveTab] = useState("deposit");
-
+const UserHeaderTabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: "deposit", label: "Deposit" },
     { id: "withdrawal", label: "Withdrawal" },
