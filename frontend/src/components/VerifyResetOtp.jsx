@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import OtpTimer from "./ui/OtpTimer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
@@ -19,6 +20,7 @@ export default function VerifyResetOtp() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { resetPassword, resetPasswordLoading, forgotPassword, forgotPasswordLoading } = useAuth();
+  const [timerKey, setTimerKey] = useState(Date.now());
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -41,12 +43,12 @@ export default function VerifyResetOtp() {
 
   const resend = async () => {
     if (!phone) return toast.error( error?.response?.data?.message || "Enter phone number");
-
     forgotPassword(
       { phone },
       {
         onSuccess: () => {
           toast.success("OTP resent");
+          setTimerKey(Date.now()); // reset timer
         },
         onError: (error) => {
           toast.error(error?.response?.data?.message || "Failed to resend OTP");
@@ -84,13 +86,20 @@ export default function VerifyResetOtp() {
             </div>
             <div>
               <label className="block text-sm text-gray-300 mb-1">OTP</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="6-digit code"
-                className="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="6-digit code"
+                  className="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <OtpTimer
+                  durationMs={60000}
+                  keyTrigger={timerKey}
+                  onExpire={() => {}}
+                />
+              </div>
             </div>
             <div>
               <label className="block text-sm text-gray-300 mb-1">New Password</label>
@@ -119,7 +128,7 @@ export default function VerifyResetOtp() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={resetPasswordLoading}
-              className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50 cursor-pointer"
             >
               {resetPasswordLoading ?  (
                   <div className="flex items-center justify-center">
@@ -136,13 +145,13 @@ export default function VerifyResetOtp() {
             <button
               onClick={resend}
               disabled={forgotPasswordLoading}
-              className="text-blue-400 hover:text-blue-300 disabled:opacity-50"
+              className="text-blue-400 hover:text-blue-300 disabled:opacity-50 cursor-pointer"
             >
               {forgotPasswordLoading ? "Resending..." : "Resend Code"}
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-400 hover:text-gray-200 cursor-pointer"
             >
               Back to Login
             </button>

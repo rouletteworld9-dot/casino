@@ -103,7 +103,7 @@ export default function LoginScreen() {
                 Don't have an account?{" "}
                 <button
                   onClick={() => navigate("/register")}
-                  className="text-red-400 hover:text-red-300 font-medium transition-colors"
+                  className="text-red-400 hover:text-red-300 font-medium transition-colors cursor-pointer"
                 >
                   Register
                 </button>
@@ -112,7 +112,7 @@ export default function LoginScreen() {
                 Forgot Password?{" "}
                 <button
                   onClick={() => navigate("/forgot-password")}
-                  className="text-purple-400 mt-3 hover:text-purple-300 font-medium transition-colors"
+                  className="text-purple-400 mt-3 hover:text-purple-300 font-medium transition-colors cursor-pointer"
                 >
                   Click here
                 </button>
