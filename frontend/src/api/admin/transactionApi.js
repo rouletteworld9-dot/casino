@@ -1,8 +1,8 @@
 import api from "../../utils/axios";
 
-const getAllTransactions = async (transactionStatus) => {
+const getAllTransactions = async (transactionStatus, transactionType) => {
   const response = await api.get("/transactions", {
-    params: { transactionStatus },
+    params: { transactionStatus, transactionType },
   });
   return response.data;
 };
@@ -16,28 +16,36 @@ const approveTransaction = async (id) => {
   }
 };
 
-const rejectTransaction = async ({id  , adminNote}) => {
+const rejectTransaction = async ({ id, adminNote }) => {
   try {
-    const response = await api.put(`/transactions/${id}/reject` , {adminNote});
+    const response = await api.put(`/transactions/${id}/reject`, { adminNote });
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-const depositRequest = async(formData)=>{
+const depositRequest = async (formData) => {
   try {
-    const response = await api.post("/transactions/deposit" , formData);
-    console.log(response.data , "response from api")
-    return response.data 
+    const response = await api.post("/transactions/deposit", formData);
+    return response.data;
   } catch (error) {
-    
+    throw error;
   }
-}
+};
+const withdrawlRequest = async (formData) => {
+  try {
+    const response = await api.post("/transactions/withdraw", formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 const transactionApi = {
   getAllTransactions,
   approveTransaction,
   rejectTransaction,
+  withdrawlRequest,
   depositRequest,
 };
 

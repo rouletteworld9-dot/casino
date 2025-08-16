@@ -6,7 +6,19 @@ export const useAdminUsers = () => {
     queryKey: ["AllUsers"],
     queryFn: () => adminUsersApi.getAllUsers(),
   });
+
   return {
-    adminAllUsers : getAllUsers.data
-  }
+    adminAllUsers: getAllUsers.data,
+  };
+};
+
+export const useSingleUser = (id) => {
+  const getSingleUser = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => adminUsersApi.getSingleUser(id),
+    enabled: !!id,
+  });
+  return {
+    singleUser: getSingleUser.data,
+  };
 };

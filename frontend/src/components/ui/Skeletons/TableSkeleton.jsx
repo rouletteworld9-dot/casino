@@ -18,13 +18,13 @@ const TableSkeleton = () => {
       <table className="w-full text-left text-sm md:text-base">
         <thead>
           <tr className="bg-deepPurple text-white">
-            <th className="p-2">User</th>
-            <th className="p-2">Type</th>
-            <th className="p-2">Amount</th>
-            <th className="p-2">Date</th>
-            <th className="p-2">Status</th>
-            <th className="p-2">UTR</th>
-            <th className="p-2">Accept/Reject</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
+            <th className="px-6 py-2">-</th>
           </tr>
         </thead>
         <tbody>

@@ -5,8 +5,7 @@ import { useTransactions } from "../../hooks/useTransactions";
 import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 import ActionButton from "./ActionButton";
 import Pagination from "../ui/Pagination";
-const Transactions = () => {
-  const [type, setType] = useState("all");
+const WithdrawlApproved = () => {
   const [page, setPage] = useState(1);
   const [loadingAction, setLoadingAction] = useState(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -21,21 +20,18 @@ const Transactions = () => {
     rejectTransactionFn,
     rejecttransactionLoading,
     approvetransactionLoading,
-  } = useTransactions(type === "all" ? undefined : type, "deposit");
+  } = useTransactions("approved", "withdraw");
 
   const totalPages = Math.ceil(allTransactions.length / pageSize) || 1;
   const start = (page - 1) * pageSize;
   const paginated = allTransactions.slice(start, start + pageSize);
 
   const handleAction = async (transactionId, action, reason) => {
-    console.log("handleAction called with:", transactionId, action, reason);
     setLoadingAction({ id: transactionId, action });
     try {
       if (action === "approve") {
-        console.log("aprove called");
         await approveTransactionFn(transactionId);
       } else if (action === "reject") {
-        console.log("reject called");
         await rejectTransactionFn({ id: transactionId, adminNote: reason });
       }
     } finally {
@@ -55,19 +51,7 @@ const Transactions = () => {
       <motion.div className="bg-midnightPurple text-white p-4 sm:p-6 rounded-lg shadow-lg border border-midnightPurple overflow-x-auto">
         {/* Header & Filter */}
         <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-          <h2 className="text-xl sm:text-2xl font-bold">Deposits</h2>
-          <select
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value);
-              setPage(1);
-            }}
-            className="rounded border border-midnightPurple bg-deepPurple p-2 text-white text-sm sm:text-base"
-          >
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-          </select>
+          <h2 className="text-xl sm:text-2xl font-bold">Withdrawals (Approved)</h2>
         </div>
 
         {/* Table */}
@@ -81,7 +65,6 @@ const Transactions = () => {
                 <th className="p-2">Date</th>
                 <th className="p-2">Status</th>
                 <th className="p-2">UTR</th>
-                <th className="p-2">Approve / Reject</th>
               </tr>
             </thead>
             <tbody>
@@ -99,34 +82,6 @@ const Transactions = () => {
                     {t.transactionStatus || "N/A"}
                   </td>
                   <td className="p-2">{t.utr || "-"}</td>
-                  <td className="p-2">
-                    {t.transactionStatus === "pending" ? (
-                      <div className="flex gap-2 flex-wrap">
-                        <ActionButton
-                          label="Approve"
-                          color="green"
-                          onClick={() => handleAction(t._id, "approve")}
-                          loading={
-                            loadingAction?.id === t._id &&
-                            loadingAction?.action === "approve"
-                          }
-                          disabled={loadingAction?.id === t._id}
-                        />
-                        <ActionButton
-                          label="Reject"
-                          color="red"
-                          onClick={() => openRejectModal(t)}
-                          loading={
-                            loadingAction?.id === t._id &&
-                            loadingAction?.action === "reject"
-                          }
-                          disabled={loadingAction?.id === t._id}
-                        />
-                      </div>
-                    ) : (
-                      <div className="text-center">-</div>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -155,4 +110,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default WithdrawlApproved;

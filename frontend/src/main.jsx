@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Toaster position="bottom-right" reverseOrder={false} />
+    <Toaster position="top-right" reverseOrder={false} />
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
