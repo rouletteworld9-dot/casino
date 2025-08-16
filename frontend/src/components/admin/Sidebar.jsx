@@ -42,7 +42,7 @@ const Sidebar = () => {
       ),
     },
     {
-      name: "withdrawal Requests",
+      name: "Withdrawal Requests",
       path: "/admin/withdrawals",
       icon: <BadgeDollarSign size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
