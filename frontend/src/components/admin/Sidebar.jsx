@@ -42,13 +42,13 @@ const Sidebar = () => {
       ),
     },
     {
-      name: "withdrawal Requests",
+      name: "Withdrawal Requests",
       path: "/admin/withdrawals",
       icon: <BadgeDollarSign size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
       name: "Withdrawal (Approved)",
-      path: "/admin/withdrawals-settings",
+      path: "/admin/withdrawal-approve",
       icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {

@@ -1,7 +1,10 @@
 import { Eye } from 'lucide-react';
 import React from 'react'
+import { useAuthStore } from '../../stores/useAuthStore';
 
 const BalanceCards = () => {
+  const user = useAuthStore((state)=> state.user)
+  console.log(user , "userr")
   return (
     <>
       <div className="bg-[#322735] rounded p-4 mt-9 mb-4 relative">

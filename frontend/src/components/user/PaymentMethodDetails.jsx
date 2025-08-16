@@ -97,7 +97,7 @@ const PaymentMethodDetails = () => {
           className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90 bg-brandRed"
         >
           <Plus size={20} />
-          <span>Add ₹{amount.toLocaleString()}</span>
+          <span>Deposit ₹{amount.toLocaleString()}</span>
         </button>
 
         <div className="text-center mt-3">

@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import transactionApi from "../api/admin/transactionApi";
+import toast from "react-hot-toast";
 
-export const useTransactions = (transactionStatus) => {
+export const useTransactions = (transactionStatus , transactionType) => {
   const queryClient = useQueryClient();
 
   const fetchAllTransactions = useQuery({
-    queryKey: ["transactions", transactionStatus],
-    queryFn: () => transactionApi.getAllTransactions(transactionStatus),
+    queryKey: ["transactions", transactionStatus, transactionType],
+    queryFn: () =>
+      transactionApi.getAllTransactions(transactionStatus, transactionType),
   });
   const approveTransactionRequest = useMutation({
     mutationFn: transactionApi.approveTransaction,
@@ -29,12 +31,6 @@ export const useTransactions = (transactionStatus) => {
       toast.error(error.message || "Something Went Wrong!!");
     },
   });
-  const depositRequestMutation = useMutation({
-    mutationFn: transactionApi.depositRequest,
-    onSuccess: () => {
-      toast.success("Deposit Request Sent!");
-    },
-  });
 
   return {
     allTransactions: fetchAllTransactions.data,
@@ -43,7 +39,6 @@ export const useTransactions = (transactionStatus) => {
     approvetransactionLoading: approveTransactionRequest.isPending,
     rejectTransactionFn: rejectTransactionRequest.mutate,
     rejecttransactionLoading: rejectTransactionRequest.isPending,
-    depositRequestFn: depositRequestMutation.mutate,
-    depositRequestLoading: depositRequestMutation.isPending,
+   
   };
 };

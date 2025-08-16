@@ -20,21 +20,18 @@ const RechargeApprove = () => {
     rejectTransactionFn,
     rejecttransactionLoading,
     approvetransactionLoading,
-  } = useTransactions("approved");
+  } = useTransactions("approved" , "deposit");
 
   const totalPages = Math.ceil(allTransactions.length / pageSize) || 1;
   const start = (page - 1) * pageSize;
   const paginated = allTransactions.slice(start, start + pageSize);
 
   const handleAction = async (transactionId, action, reason) => {
-    console.log("handleAction called with:", transactionId, action, reason);
     setLoadingAction({ id: transactionId, action });
     try {
       if (action === "approve") {
-        console.log("aprove called");
         await approveTransactionFn(transactionId);
       } else if (action === "reject") {
-        console.log("reject called");
         await rejectTransactionFn({ id: transactionId, adminNote: reason });
       }
     } finally {
@@ -54,7 +51,7 @@ const RechargeApprove = () => {
       <motion.div className="bg-midnightPurple text-white p-4 sm:p-6 rounded-lg shadow-lg border border-midnightPurple overflow-x-auto">
         {/* Header & Filter */}
         <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-          <h2 className="text-xl sm:text-2xl font-bold">Transactions</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Deposits (Approved)</h2>
         </div>
 
         {/* Table */}

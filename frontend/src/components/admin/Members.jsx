@@ -4,6 +4,7 @@ import { Search, Lock, Folder, Trash } from "lucide-react";
 import { useAdminUsers } from "../../hooks/useAdminUsers";
 import ActionButton from "./ActionButton";
 import Pagination from "../ui/Pagination";
+import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 
 const Members = () => {
   const { adminAllUsers = [], adminAllUsersLoading } = useAdminUsers();
@@ -34,7 +35,7 @@ const Members = () => {
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
 
   if (adminAllUsersLoading) {
-    return <p className="text-white">Loading members...</p>;
+    return <TableSkeleton />;
   }
 
   return (
