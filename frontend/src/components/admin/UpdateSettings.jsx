@@ -106,14 +106,14 @@ const UpdateSettings = ({
         <button
           type="submit"
           disabled={updateSettingsLoading}
-          className="rounded bg-green-600 px-5 py-2 text-white hover:bg-green-700 transition disabled:opacity-60"
+          className="rounded bg-green-600 px-5 py-2 text-white hover:bg-green-700 transition disabled:opacity-60 cursor-pointer"
         >
           {updateSettingsLoading ? "Saving..." : "Save"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded bg-gray-400 px-5 py-2 text-white hover:bg-gray-500 transition"
+          className="rounded bg-gray-400 px-5 py-2 text-white hover:bg-gray-500 transition cursor-pointer"
         >
           Cancel
         </button>

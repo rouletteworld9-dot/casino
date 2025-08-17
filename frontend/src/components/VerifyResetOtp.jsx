@@ -21,6 +21,7 @@ export default function VerifyResetOtp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const { resetPassword, resetPasswordLoading, forgotPassword, forgotPasswordLoading } = useAuth();
   const [timerKey, setTimerKey] = useState(Date.now());
+  const [timerExpired, setTimerExpired] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -42,13 +43,15 @@ export default function VerifyResetOtp() {
   };
 
   const resend = async () => {
-    if (!phone) return toast.error( error?.response?.data?.message || "Enter phone number");
+    if (!timerExpired) return;
+    if (!phone) return toast.error(error?.response?.data?.message || "Enter phone number");
     forgotPassword(
       { phone },
       {
         onSuccess: () => {
           toast.success("OTP resent");
           setTimerKey(Date.now()); // reset timer
+          setTimerExpired(false);
         },
         onError: (error) => {
           toast.error(error?.response?.data?.message || "Failed to resend OTP");
@@ -97,7 +100,7 @@ export default function VerifyResetOtp() {
                 <OtpTimer
                   durationMs={60000}
                   keyTrigger={timerKey}
-                  onExpire={() => {}}
+                  onExpire={() => setTimerExpired(true)}
                 />
               </div>
             </div>
@@ -141,10 +144,10 @@ export default function VerifyResetOtp() {
             </motion.button>
           </form>
 
-          <div className="flex justify-between items-center mt-4 text-sm">
+          <div className={`flex justify-between items-center mt-4 text-sm cursor-pointer ${!timerExpired ? 'opacity-50 cursor-not-allowed' : ''}`}>
             <button
               onClick={resend}
-              disabled={forgotPasswordLoading}
+              disabled={forgotPasswordLoading || !timerExpired}
               className="text-blue-400 hover:text-blue-300 disabled:opacity-50 cursor-pointer"
             >
               {forgotPasswordLoading ? "Resending..." : "Resend Code"}
