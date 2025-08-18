@@ -109,7 +109,7 @@ const UserWithdrawlTab = () => {
         <button
           type="submit"
           disabled={withdrawlRequestLoading}
-          className={`w-full py-2 rounded text-white font-semibold transition ${
+          className={`w-full py-2 rounded text-white font-semibold transition cursor-pointer ${
             withdrawlRequestLoading
               ? "bg-gray-500 cursor-not-allowed"
               : "bg-brandRed hover:bg-red-600"

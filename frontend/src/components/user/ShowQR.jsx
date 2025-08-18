@@ -83,7 +83,7 @@ const ShowQR = ({ setShowQR, amount }) => {
           <button
             onClick={handleSubmitPayment}
             disabled={depositRequestLoading}
-            className={`flex-1 px-4 py-2 rounded-lg text-white ${
+            className={`flex-1 px-4 py-2 rounded-lg text-white cursor-pointer ${
               depositRequestLoading
                 ? "bg-gray-400"
                 : "bg-green-500 hover:bg-green-600"
@@ -93,7 +93,7 @@ const ShowQR = ({ setShowQR, amount }) => {
           </button>
           <button
             onClick={() => setShowQR(false)}
-            className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
           >
             Cancel
           </button>
