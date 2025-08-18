@@ -37,14 +37,16 @@ exports.createDeposit = async (req, res) => {
 // ✅ 2. Create Withdraw Transaction
 exports.createWithdraw = async (req, res) => {
   try {
-    const { amount, bankAccountNumber, ifscCode, recipientName } = req.body;
+    const { amount, bankAccountNumber, ifscCode, recipientName, bankName } =
+      req.body;
 
     if (
       !amount ||
       amount <= 0 ||
       !bankAccountNumber ||
       !ifscCode ||
-      !recipientName
+      !recipientName ||
+      !bankName
     ) {
       return res.status(400).json({
         message: "Valid amount and all withdraw details are required",
@@ -80,6 +82,7 @@ exports.createWithdraw = async (req, res) => {
       bankAccountNumber,
       ifscCode,
       recipientName,
+      bankName,
     });
 
     res.status(201).json(transaction);
