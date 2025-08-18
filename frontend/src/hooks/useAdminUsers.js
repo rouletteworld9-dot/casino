@@ -46,5 +46,5 @@ export const useSingleUser = (id) => {
 
   return {
     singleUser: getSingleUser.data,
-  };
+  }
 };

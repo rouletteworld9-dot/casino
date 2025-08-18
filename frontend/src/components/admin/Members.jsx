@@ -51,6 +51,22 @@ const Members = () => {
   if (adminAllUsersLoading) {
     return <TableSkeleton />;
   }
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const handleDeleteUser = (id) => {
+    setConfirmDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    try {
+      await deleteUser.mutateAsync(confirmDeleteId);
+      toast.success("User deleted successfully");
+    } catch (err) {
+      toast.error("Failed to delete user");
+    } finally {
+      setConfirmDeleteId(null);
+    }
+  };
 
   return (
     <motion.div
@@ -136,17 +152,35 @@ const Members = () => {
                     <ActionButton
                       label="Delete User"
                       color="red"
-                      onClick={async () => {
-                        try {
-                          await deleteUser.mutateAsync(user._id);
-                          toast.success("User deleted successfully");
-                        } catch (err) {
-                          toast.error("Failed to delete user");
-                        }
-                      }}
+                      onClick={() => handleDeleteUser(user._id)}
                       icon={<Trash size={16} className="-ml-1" />}
                       disabled={deleteUser.isLoading}
                     />
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-xs">
+          <div className="bg-midnightPurple border border-deepPurple rounded-2xl shadow-2xl p-7 w-full max-w-xs text-center">
+            <h3 className="text-xl font-bold mb-2 text-white">Confirm Delete</h3>
+            <p className="text-gray-300 mb-5">Are you sure you want to delete this user?</p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={confirmDelete}
+                className="px-5 py-2 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold hover:from-red-700 hover:to-pink-700 transition disabled:opacity-60 cursor-pointer"
+                disabled={deleteUser.isLoading}
+              >
+                {deleteUser.isLoading ? "Deleting..." : "Yes, Delete"}
+              </button>
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="px-5 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 text-white font-semibold hover:from-gray-600 hover:to-gray-800 transition disabled:opacity-60 cursor-pointer"
+                disabled={deleteUser.isLoading}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
                   </div>
                 </td>
               </tr>

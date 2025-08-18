@@ -15,7 +15,7 @@ export default function ActionButton({
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`flex items-center gap-2 px-3 py-1 bg-${color}-600 hover:bg-${color}-700 
+      className={`flex items-center gap-2 px-3 py-1 cursor-pointer bg-${color}-600 hover:bg-${color}-700 
         disabled:bg-gray-500 disabled:cursor-not-allowed 
         text-white rounded text-xs font-medium transition-colors duration-200`}
     >
