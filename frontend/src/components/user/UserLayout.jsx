@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../header";
 import UserSidebar from "./UserSidebar";
@@ -24,7 +24,7 @@ const UserLayout = () => {
 
         {/* Content */}
         <div
-          className={`flex-1 overflow-auto min-h-0 transition-all duration-300 
+          className={`flex-1 p-3 overflow-auto min-h-0 transition-all duration-300 
             ${isSidebarOpen ? "ml-60" : "pt-10 ml-0"} 
             md:ml-0`}
         >

@@ -275,7 +275,7 @@ exports.login = async (req, res) => {
 
     return res.json({
       token: accessToken,
-      user: { name: user.name, phone: user.phone, role: user.role },
+      user: { name: user.name, phone: user.phone, role: user.role , _id:user._id },
       expiresIn: 30 * 60, // seconds, client can use to know expiry (30 minutes)
     });
   } catch (err) {
