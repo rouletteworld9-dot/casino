@@ -91,9 +91,14 @@ exports.createWithdraw = async (req, res) => {
 // ✅ 3. Get All Transactions (Admin)
 exports.getAllTransactions = async (req, res) => {
   try {
-    const { transactionStatus } = req.query;
+    const { transactionStatus , transactionType} = req.query;
     let filter = {};
-    if (transactionStatus) filter.transactionStatus = transactionStatus;
+      if (transactionStatus) {
+      filter.transactionStatus = transactionStatus;
+    }
+    if (transactionType) {
+      filter.transactionType = transactionType;
+    }
 
     const transactions = await Transaction.find(filter)
       .populate("user", "name phone realBalance")

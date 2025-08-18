@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   getAllUsers,
   updateUserStatus,
-  deleteUser,
+  deleteUser
 } = require("../controllers/adminUserController");
 const adminOnly = require("../middlewares/adminOnly");
 
