@@ -62,14 +62,13 @@ const Members = () => {
   if (adminAllUsersLoading) {
     return <TableSkeleton />;
   }
-  const handleDeleteUser = (id) => {
-    setConfirmDeleteId(id);
-  };
+
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const confirmDelete = async () => {
     if (!confirmDeleteId) return;
     try {
-      await deleteUser.mutateAsync(confirmDeleteId);
+      await deleteUserFn(confirmDeleteId);
       toast.success("User deleted successfully");
     } catch (err) {
       toast.error("Failed to delete user");
