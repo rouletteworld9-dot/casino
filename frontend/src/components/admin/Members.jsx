@@ -18,7 +18,7 @@ const Members = () => {
     deleteUserLoading,
     updateStatusFn,
   } = useAdminUsers();
-
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
@@ -62,6 +62,7 @@ const Members = () => {
   if (adminAllUsersLoading) {
     return <TableSkeleton />;
   }
+
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const confirmDelete = async () => {
