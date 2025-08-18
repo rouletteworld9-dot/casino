@@ -167,7 +167,9 @@ export default function RegisterScreen() {
           </div>
 
           {/* OTP Verification */}
-          {codeSent && <VerifyOtp phone={formData.phone} />}
+          {codeSent && (
+            <VerifyOtp phone={formData.phone} resendOtp={handleSubmit} />
+          )}
         </div>
       </div>
     </div>

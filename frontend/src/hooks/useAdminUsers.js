@@ -13,6 +13,7 @@ export const useAdminUsers = () => {
   const deleteUserMutation = useMutation({
     mutationFn: adminUsersApi.deleteUser,
     onSuccess: () => {
+      toast.success("User deleted successfully");
       queryClient.invalidateQueries(["AllUsers"]);
     },
   });
@@ -20,10 +21,9 @@ export const useAdminUsers = () => {
   const updateUserStatus = useMutation({
     mutationFn: ({ id, status }) => adminUsersApi.updateStatus(id, status),
     onSuccess: () => {
-      console.log("calledd")
+      console.log("calledd");
       queryClient.invalidateQueries(["AllUsers"]);
       toast.success("User Status Updated Successfully!");
-
     },
     onError: () => {
       toast.error("Failed to update user status");
@@ -31,9 +31,11 @@ export const useAdminUsers = () => {
   });
   return {
     adminAllUsers: getAllUsers.data,
-    deleteUser: deleteUserMutation,
+    deleteUserFn: deleteUserMutation.mutate,
+    deleteUserLoading:deleteUserMutation.isPending,
     adminAllUsersLoading: getAllUsers.isLoading,
     updateStatusFn: updateUserStatus.mutate,
+    updateStatusLoading :updateUserStatus.isPending
   };
 };
 
@@ -46,5 +48,6 @@ export const useSingleUser = (id) => {
 
   return {
     singleUser: getSingleUser.data,
+    singleUserLoading: getSingleUser.isLoading,
   };
 };

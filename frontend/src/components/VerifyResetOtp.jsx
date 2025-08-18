@@ -19,13 +19,22 @@ export default function VerifyResetOtp() {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { resetPassword, resetPasswordLoading, forgotPassword, forgotPasswordLoading } = useAuth();
+  const {
+    resetPassword,
+    resetPasswordLoading,
+    forgotPassword,
+    forgotPasswordLoading,
+  } = useAuth();
   const [timerKey, setTimerKey] = useState(Date.now());
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!phone || !otp || !newPassword || !confirmPassword) return toast.error(error?.response?.data?.message || "Fill all fields");
-    if (newPassword !== confirmPassword) return toast.error(error?.response?.data?.message || "Passwords do not match");
+    if (!phone || !otp || !newPassword || !confirmPassword) {
+      return toast.error("Please Fill All the Fields");
+    }
+    if (newPassword !== confirmPassword) {
+      return toast.error("Passwords do not match");
+    }
 
     resetPassword(
       { phone, otp, newPassword },
@@ -35,19 +44,23 @@ export default function VerifyResetOtp() {
           navigate("/login");
         },
         onError: (error) => {
-          toast.error(error?.response?.data?.message || "Password reset failed");
+          toast.error(
+            error?.response?.data?.message || "Password reset failed"
+          );
         },
       }
     );
   };
 
   const resend = async () => {
-    if (!phone) return toast.error( error?.response?.data?.message || "Enter phone number");
+    if (!phone || !otp)
+      return toast.error(
+        error?.response?.data?.message || "Enter phone number"
+      );
     forgotPassword(
       { phone },
       {
         onSuccess: () => {
-          toast.success("OTP resent");
           setTimerKey(Date.now()); // reset timer
         },
         onError: (error) => {
@@ -75,12 +88,14 @@ export default function VerifyResetOtp() {
 
           <form onSubmit={onSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm text-gray-300 mb-1">Phone Number</label>
+              <label className="block text-sm text-gray-300 mb-1">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="e.g. +15551234567"
+                placeholder="+91 XXXXX XXXXX"
                 className="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
@@ -102,7 +117,9 @@ export default function VerifyResetOtp() {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-1">New Password</label>
+              <label className="block text-sm text-gray-300 mb-1">
+                New Password
+              </label>
               <input
                 type="password"
                 value={newPassword}
@@ -112,7 +129,9 @@ export default function VerifyResetOtp() {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-1">Confirm Password</label>
+              <label className="block text-sm text-gray-300 mb-1">
+                Confirm Password
+              </label>
               <input
                 type="password"
                 value={confirmPassword}
@@ -130,14 +149,14 @@ export default function VerifyResetOtp() {
               disabled={resetPasswordLoading}
               className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50 cursor-pointer"
             >
-              {resetPasswordLoading ?  (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Resetting...
-                  </div>
-                ) : (
-                  "Reset Password"
-                )}
+              {resetPasswordLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Resetting...
+                </div>
+              ) : (
+                "Reset Password"
+              )}
             </motion.button>
           </form>
 
@@ -161,5 +180,3 @@ export default function VerifyResetOtp() {
     </div>
   );
 }
-
-

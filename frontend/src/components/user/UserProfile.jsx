@@ -3,16 +3,16 @@ import { useParams } from "react-router-dom";
 import { User, Coins, Edit2 } from "lucide-react";
 import { useSingleUser } from "../../hooks/useAdminUsers";
 import { useAuthStore } from "../../stores/useAuthStore";
+import UserProfileSkeleton from "../ui/Skeletons/UserProfileSkeleton";
 
 const UserProfilePage = () => {
   const { id: paramId } = useParams();
   const loggedInUser = useAuthStore((state) => state.user);
 
-  // if admin → profileId from params, else → own profile
   const profileId =
     loggedInUser?.role === "admin" ? paramId : loggedInUser?._id;
 
-  const { singleUser } = useSingleUser(profileId);
+  const { singleUser, singleUserLoading } = useSingleUser(profileId);
 
   const [activeTab, setActiveTab] = useState("Personal Info");
 
@@ -21,12 +21,13 @@ const UserProfilePage = () => {
   const InfoRow = ({ label, value }) => (
     <div className="flex space-x-10 items-center border-b border-midnightPurple py-2">
       <p className="text-xs text-gray-400">{label}:</p>
-      <p className="text-sm font-medium text-gray-200">{value}</p>
+      <p className="text-sm font-medium text-gray-200 capitalize">{value}</p>
     </div>
   );
 
-  if (!singleUser) return <p className="text-white">Loading...</p>;
-
+  if (singleUserLoading) {
+    return <UserProfileSkeleton />;
+  }
   return (
     <div className="min-h-screen text-white">
       <div className="mx-auto">

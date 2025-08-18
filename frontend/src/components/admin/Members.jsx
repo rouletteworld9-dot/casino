@@ -7,16 +7,21 @@ import ActionButton from "./ActionButton";
 import Pagination from "../ui/Pagination";
 import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 const Members = () => {
   const {
     adminAllUsers = [],
     adminAllUsersLoading,
-    deleteUser,
+    deleteUserFn,
+    updateStatusLoading,
+    deleteUserLoading,
     updateStatusFn,
   } = useAdminUsers();
 
   const navigate = useNavigate();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -25,11 +30,17 @@ const Members = () => {
     setSearchTerm(e.target.value);
     setPage(1);
   };
-
-  const handleUpdateStatus = async (user) => {
+  const handleUpdateStatus = (user) => {
     const newStatus = user.status === "active" ? "banned" : "active";
+    setConfirmOpen(true);
+    setConfirmAction(updateStatusFn({ id: user._id, status: newStatus }));
+  };
 
-    updateStatusFn({ id: user._id, status: newStatus });
+  const handleDeleteUser = (user) => {
+    setConfirmAction(() => {
+      deleteUserFn(user._id);
+    });
+    setConfirmOpen(true);
   };
 
   // Filtered users (memoized for performance)
@@ -131,21 +142,14 @@ const Members = () => {
                       color={user.status === "active" ? "orange" : "green"}
                       icon={<Lock size={16} className="-ml-1" />}
                       onClick={() => handleUpdateStatus(user)}
-                      disabled={updateStatusFn.isLoading}
+                      disabled={updateStatusLoading}
                     />
                     <ActionButton
                       label="Delete User"
                       color="red"
-                      onClick={async () => {
-                        try {
-                          await deleteUser.mutateAsync(user._id);
-                          toast.success("User deleted successfully");
-                        } catch (err) {
-                          toast.error("Failed to delete user");
-                        }
-                      }}
+                      onClick={() => handleDeleteUser(user)}
                       icon={<Trash size={16} className="-ml-1" />}
-                      disabled={deleteUser.isLoading}
+                      disabled={deleteUserLoading}
                     />
                   </div>
                 </td>
@@ -161,6 +165,17 @@ const Members = () => {
         totalPages={totalPages}
         onPrev={() => setPage((p) => Math.max(1, p - 1))}
         onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Are you sure?"
+        message="This action cannot be undone."
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() => {
+          confirmAction?.();
+          setConfirmOpen(false);
+        }}
       />
     </motion.div>
   );
