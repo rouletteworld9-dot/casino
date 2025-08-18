@@ -47,7 +47,7 @@ const UserProfilePage = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-sm font-medium transition ${
+              className={`px-4 py-2 text-sm font-medium transition cursor-pointer ${
                 activeTab === tab
                   ? "border-b-2 border-yellow-500 text-yellow-500"
                   : "text-gray-300 hover:text-white"

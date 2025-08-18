@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Search, Lock, Folder, Trash } from "lucide-react";
 import { useAdminUsers } from "../../hooks/useAdminUsers";
@@ -19,6 +18,8 @@ const Members = () => {
     updateStatusFn,
   } = useAdminUsers();
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [pendingStatusUser, setPendingStatusUser] = useState(null);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
@@ -31,15 +32,25 @@ const Members = () => {
     setPage(1);
   };
   const handleUpdateStatus = (user) => {
-    const newStatus = user.status === "active" ? "banned" : "active";
-    setConfirmOpen(true);
-    setConfirmAction(updateStatusFn({ id: user._id, status: newStatus }));
+    setPendingStatusUser(user);
+    setStatusDialogOpen(true);
+  };
+
+  const confirmStatusChange = async () => {
+    if (!pendingStatusUser) return;
+    const newStatus =
+      pendingStatusUser.status === "active" ? "banned" : "active";
+    try {
+      await updateStatusFn({ id: pendingStatusUser._id, status: newStatus });
+    } catch (err) {
+    } finally {
+      setPendingStatusUser(null);
+      setStatusDialogOpen(false);
+    }
   };
 
   const handleDeleteUser = (user) => {
-    setConfirmAction(() => {
-      deleteUserFn(user._id);
-    });
+    setConfirmDeleteId(user._id);
     setConfirmOpen(true);
   };
 
@@ -63,16 +74,14 @@ const Members = () => {
     return <TableSkeleton />;
   }
 
-
   const confirmDelete = async () => {
     if (!confirmDeleteId) return;
     try {
       await deleteUserFn(confirmDeleteId);
-      toast.success("User deleted successfully");
     } catch (err) {
-      toast.error("Failed to delete user");
     } finally {
       setConfirmDeleteId(null);
+      setConfirmOpen(false);
     }
   };
 
@@ -157,39 +166,33 @@ const Members = () => {
                       onClick={() => handleUpdateStatus(user)}
                       disabled={updateStatusLoading}
                     />
+                    <ConfirmDialog
+                      open={statusDialogOpen}
+                      title={
+                        pendingStatusUser &&
+                        pendingStatusUser.status === "active"
+                          ? "Confirm Ban"
+                          : "Confirm Activate"
+                      }
+                      message={
+                        pendingStatusUser &&
+                        pendingStatusUser.status === "active"
+                          ? "Are you sure you want to ban this user? They will not be able to access their account."
+                          : "Are you sure you want to activate this user? They will reagain access to their account."
+                      }
+                      onCancel={() => {
+                        setStatusDialogOpen(false);
+                        setPendingStatusUser(null);
+                      }}
+                      onConfirm={confirmStatusChange}
+                    />
                     <ActionButton
                       label="Delete User"
                       color="red"
                       onClick={() => handleDeleteUser(user)}
-
                       icon={<Trash size={16} className="-ml-1" />}
                       disabled={deleteUserLoading}
                     />
-      {/* Delete Confirmation Modal */}
-      {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-xs">
-          <div className="bg-midnightPurple border border-deepPurple rounded-2xl shadow-2xl p-7 w-full max-w-xs text-center">
-            <h3 className="text-xl font-bold mb-2 text-white">Confirm Delete</h3>
-            <p className="text-gray-300 mb-5">Are you sure you want to delete this user?</p>
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={confirmDelete}
-                className="px-5 py-2 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold hover:from-red-700 hover:to-pink-700 transition disabled:opacity-60 cursor-pointer"
-                disabled={deleteUser.isLoading}
-              >
-                {deleteUser.isLoading ? "Deleting..." : "Yes, Delete"}
-              </button>
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-5 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 text-white font-semibold hover:from-gray-600 hover:to-gray-800 transition disabled:opacity-60 cursor-pointer"
-                disabled={deleteUser.isLoading}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
                   </div>
                 </td>
               </tr>
@@ -208,13 +211,13 @@ const Members = () => {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Are you sure?"
-        message="This action cannot be undone."
-        onCancel={() => setConfirmOpen(false)}
-        onConfirm={() => {
-          confirmAction?.();
+        title="Confirm Delete"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        onCancel={() => {
           setConfirmOpen(false);
+          setConfirmDeleteId(null);
         }}
+        onConfirm={confirmDelete}
       />
     </motion.div>
   );

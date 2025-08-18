@@ -11,7 +11,7 @@ const UserHeaderTabs = ({ activeTab, setActiveTab }) => {
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`pb-3 px-1 text-lg font-medium transition-colors ${
+          className={`pb-3 px-1 text-lg font-medium transition-colors cursor-pointer ${
             activeTab === tab.id
               ? "text-yellow-500 border-b-3 border-yellow-600"
               : "text-gray-400 hover:text-white "

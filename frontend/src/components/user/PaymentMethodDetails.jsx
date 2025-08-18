@@ -47,7 +47,7 @@ const PaymentMethodDetails = () => {
         <div className="flex items-center rounded-lg p-1 bg-darkViolet border border-deepBorder">
           <button
             onClick={decreaseAmount}
-            className="p-3 rounded-lg transition-colors"
+            className="p-3 rounded-lg transition-colors cursor-pointer"
           >
             <Minus size={18} className="text-gray-400 hover:text-white" />
           </button>
@@ -60,7 +60,7 @@ const PaymentMethodDetails = () => {
 
           <button
             onClick={increaseAmount}
-            className="p-3 rounded-lg transition-colors"
+            className="p-3 rounded-lg transition-colors cursor-pointer"
           >
             <Plus size={18} className="text-gray-400 hover:text-white" />
           </button>
@@ -74,7 +74,7 @@ const PaymentMethodDetails = () => {
             <button
               key={quickAmount}
               onClick={() => setAmount(quickAmount)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-deepBorder ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-deepBorder cursor-pointer ${
                 amount === quickAmount
                   ? "bg-casinoGold text-black"
                   : "bg-darkViolet text-casinoGold"
@@ -94,7 +94,7 @@ const PaymentMethodDetails = () => {
 
         <button
           onClick={() => setShowQR(true)}
-          className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90 bg-brandRed"
+          className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90 bg-brandRed cursor-pointer"
         >
           <Plus size={20} />
           <span>Deposit ₹{amount.toLocaleString()}</span>

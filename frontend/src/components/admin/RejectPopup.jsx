@@ -37,13 +37,13 @@ const RejectPopup = ({ isOpen, onClose, onConfirm }) => {
         <div className="flex justify-end gap-2 mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded bg-gray-500 hover:bg-gray-600"
+            className="px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 rounded bg-red-600 hover:bg-red-700"
+            className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 cursor-pointer"
           >
             Reject
           </button>
