@@ -104,7 +104,7 @@ const Settings = () => {
                 <button
                   type="button"
                   onClick={() => setEditMode(true)}
-                  className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition cursor-pointer"
+                  className="mt-2  bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 px-7 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all cursor-pointer"
                 >
                   Edit
                 </button>
