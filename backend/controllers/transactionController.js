@@ -91,9 +91,9 @@ exports.createWithdraw = async (req, res) => {
 // ✅ 3. Get All Transactions (Admin)
 exports.getAllTransactions = async (req, res) => {
   try {
-    const { transactionStatus , transactionType} = req.query;
+    const { transactionStatus, transactionType } = req.query;
     let filter = {};
-      if (transactionStatus) {
+    if (transactionStatus) {
       filter.transactionStatus = transactionStatus;
     }
     if (transactionType) {
@@ -112,8 +112,15 @@ exports.getAllTransactions = async (req, res) => {
 
 // ✅ 4. Get My Transactions (User)
 exports.getMyTransactions = async (req, res) => {
+  const { transactionStatus } = req.query;
+  let filter = {
+    user: req.user._id,
+  };
+  if (transactionStatus) {
+    filter.transactionStatus = transactionStatus;
+  }
   try {
-    const transactions = await Transaction.find({ user: req.user._id }).sort({
+    const transactions = await Transaction.find(filter).sort({
       createdAt: -1,
     });
     res.status(200).json(transactions);
