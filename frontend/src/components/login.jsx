@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../stores/useAuthStore";
 import Header from "./header";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const motionFade = {
   initial: { opacity: 0, y: 20 },
@@ -20,15 +20,15 @@ export default function LoginScreen() {
     password: "",
   });
   const { loginUser, loginLoading } = useAuth();
-  const userData = useAuthStore((state) => state.userData);
-  if (userData) return <Navigate to={`/${userData?.role}`} />;
+  const user = useAuthStore((state) => state.user);
+  if (user) return <Navigate to={`/${user?.role}`} />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.phone || !formData.password) {
       return toast.error("Please fill in all fields");
     }
-    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length >= 13) {
+    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length !== 10) {
       return toast.error("Please enter a valid phone number");
     }
 
@@ -44,7 +44,6 @@ export default function LoginScreen() {
   };
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <Header />
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div
@@ -104,7 +103,7 @@ export default function LoginScreen() {
                 Don't have an account?{" "}
                 <button
                   onClick={() => navigate("/register")}
-                  className="text-red-400 hover:text-red-300 font-medium transition-colors"
+                  className="text-red-400 hover:text-red-300 font-medium transition-colors cursor-pointer"
                 >
                   Register
                 </button>
@@ -113,7 +112,7 @@ export default function LoginScreen() {
                 Forgot Password?{" "}
                 <button
                   onClick={() => navigate("/forgot-password")}
-                  className="text-purple-400 mt-3 hover:text-purple-300 font-medium transition-colors"
+                  className="text-purple-400 mt-3 hover:text-purple-300 font-medium transition-colors cursor-pointer"
                 >
                   Click here
                 </button>

@@ -66,7 +66,7 @@ export default function ForgetPassword() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={forgotPasswordLoading}
-              className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-red-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-purple-700 transition-all disabled:opacity-50 cursor-pointer"
             >
               {forgotPasswordLoading ?  (
                   <div className="flex items-center justify-center">
@@ -82,7 +82,7 @@ export default function ForgetPassword() {
           <motion.div {...fade} className="mt-6 text-center">
             <button
               onClick={() => navigate("/login")}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-400 hover:text-gray-200 cursor-pointer"
             >
               Back to Login
             </button>

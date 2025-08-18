@@ -1,37 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-import {Users,CircleGauge,BadgeDollarSign, Banknote,BanknoteArrowUp,CirclePoundSterling,Settings,ExternalLink,Menu} from 'lucide-react';
+import {
+  Users,
+  CircleGauge,
+  BadgeDollarSign,
+  Banknote,
+  BanknoteArrowUp,
+  CirclePoundSterling,
+  Settings,
+  ExternalLink,
+  Menu,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
 
+  useEffect(() => {
+    const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
+    setIsOpen(isLargeScreen);
+  }, []);
+
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth /> },
-    { name: "Members", path: "/admin/members", icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />},
+    {
+      name: "Dashboard",
+      path: "/admin/dashboard",
+      icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
+    {
+      name: "Members",
+      path: "/admin/members",
+      icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
     // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
-      name: "Transactions",
-      path: "/admin/transactions",
+      name: "Deposit Requests",
+      path: "/admin/deposits",
+      icon: (
+        <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />
+      ),
+    },
+    {
+      name: "Withdrawal Requests",
+      path: "/admin/withdrawals",
       icon: <BadgeDollarSign size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      name: "Browse Recharge",
-      path: "/admin/browse-recharge",
-      icon:<Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
+      name: "Withdrawal (Approved)",
+      path: "/admin/withdrawal-approve",
+      icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      name: "Withdrawal(Approved)",
-      path: "/admin/withdrawals",
-      icon:<BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
+      name: "Deposits (Approved)",
+      path: "/admin/deposits-approve",
+      icon: <Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      name: "Recharge (Approved)",
-      path: "/admin/recharge-approve",
-      icon: <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />,
+      name: "Settings",
+      path: "/admin/settings",
+      icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
-    { name: "Settings", path: "/admin/settings", icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth /> },
     // { name: 'Live Ongoing Game', path: '/admin/live-game', icon: <FaMoneyCheckAlt /> },
     {
       name: "Go to Website",

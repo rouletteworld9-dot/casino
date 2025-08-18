@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FaShoppingCart, FaMinus, FaTimes, FaBars } from "react-icons/fa";
 import ResultHistory from "./ResultHistory";
 import ResultAdjuster from "./ResultAdjuster";
 

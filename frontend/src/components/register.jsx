@@ -17,6 +17,9 @@ export default function RegisterScreen() {
   const [codeSent, setCodeSent] = useState(false);
 
   const handleChange = (e) => {
+    if (e.target.name === "phone" && !e.target.value.startsWith("")) {
+      e.target.value = "";
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -24,14 +27,20 @@ export default function RegisterScreen() {
     if (!formData.name || !formData.phone || !formData.password) {
       return toast.error("Please fill in all fields");
     }
-    if (!/^\+91\d{10}$/.test(formData.phone)  || formData.phone.length !== 13) {
+
+    // Remove +91 and spaces for validation
+    const phoneNumber = formData.phone.replace("", "").replace(/\s/g, "");
+
+    if (!/^\d{10}$/.test(phoneNumber)) {
       return toast.error("Please enter a valid phone number");
     }
-    if (!agreeToTerms) return toast.error("Please agree to the terms and conditions");
+
+    if (!agreeToTerms)
+      return toast.error("Please agree to the terms and conditions");
+
     registerUser(formData, {
       onSuccess: () => {
         setCodeSent(true);
-        navigate("/login");
       },
     });
   };
@@ -39,7 +48,7 @@ export default function RegisterScreen() {
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-[#482D60] via-[#412C4D] to-[#19161A] flex flex-col lg:flex-row">
       {/* Left Side - Image */}
-      
+
       <div className="relative flex-1 flex items-center justify-center p-4 overflow-hidden h-[300px] sm:h-[500px] lg:h-auto">
         <img
           src="./registerbg.webp"
@@ -48,7 +57,7 @@ export default function RegisterScreen() {
         />
         <div className="relative z-10 text-white text-center px-4">
           <p className="text-xl sm:text-3xl font-semibold text-yellow-400">
-            WELCOME PACK
+            WELCOME BACK
           </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-yellow-300 my-2">
             500% + 430 FS
@@ -121,7 +130,7 @@ export default function RegisterScreen() {
                   Privacy Policy
                 </button>
                 ,{" "}
-                <button className="text-purple-400 underline">
+                <button className="text-purple-400 underline cursor-pointer">
                   Betting Rules
                 </button>{" "}
                 and confirm I’m over 18.
@@ -132,8 +141,8 @@ export default function RegisterScreen() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={registerLoading}
-              className="w-full bg-gradient-to-r from-pink-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+              disabled={registerLoading || !agreeToTerms}
+              className="w-full bg-gradient-to-r from-pink-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6 cursor-pointer"
             >
               {registerLoading ? (
                 <div className="flex items-center justify-center">
@@ -150,7 +159,7 @@ export default function RegisterScreen() {
               Already have an account?{" "}
               <button
                 onClick={() => navigate("/login")}
-                className="text-purple-400 underline"
+                className="text-purple-400 underline cursor-pointer"
               >
                 Log in
               </button>

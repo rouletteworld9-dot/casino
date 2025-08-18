@@ -4,20 +4,20 @@ import { useAuthStore } from "../stores/useAuthStore";
 
 export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   // console.log(allowedRoles , "allowedRoles from ProtectedRoute");
-  const userData = useAuthStore((state) => state.userData);
+  const user = useAuthStore((state) => state.user);
   // console.log(userData, "user from ProtectedRoute");
   const location = useLocation();
 
-  if (!userData) {
+  if (!user) {
     // If not logged in, always go to home
     return <Navigate to="/" replace />;
   }
 
-  if (!allowedRoles.includes(userData?.role)) {
+  if (!allowedRoles.includes(user?.role)) {
     // Redirect based on role
-    if (userData?.role === "admin") {
+    if (user?.role === "admin") {
       return <Navigate to="/admin" replace />;
-    } else if (userData?.role === "user") {
+    } else if (user?.role === "user") {
       return <Navigate to="/" replace />;
     } else {
       // Any other role just goes to home

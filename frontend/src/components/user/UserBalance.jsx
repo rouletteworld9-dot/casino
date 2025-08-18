@@ -1,11 +1,18 @@
-import React from 'react'
+import UserHeaderTabs from "./UserHeaderTabs";
+import UserDepositTab from "./UserDepositTab";
+import UserwithdrawlTab from "./UserwithdrawlTab";
+import { useState } from "react";
 
-const UserBalance = () => {
+const DepositInterface = () => {
+  const [activeTab, setActiveTab] = useState("deposit");
   return (
-    <div>
-      helloo
-    </div>
-  )
-}
+    <div className="w-full bg-deepPurple min-h-screen text-white p-6">
+      {/* Header Tabs */}
+      <UserHeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-export default UserBalance
+      {activeTab === "deposit" ? <UserDepositTab /> : <UserwithdrawlTab />}
+    </div>
+  );
+};
+
+export default DepositInterface;

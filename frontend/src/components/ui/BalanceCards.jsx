@@ -1,10 +1,13 @@
 import { Eye } from 'lucide-react';
 import React from 'react'
+import { useAuthStore } from '../../stores/useAuthStore';
 
 const BalanceCards = () => {
+  const user = useAuthStore((state)=> state.user)
+  console.log(user , "userr")
   return (
     <>
-      <div className="bg-[#322735] rounded p-4 mb-4 relative">
+      <div className="bg-[#322735] rounded p-4 mt-9 mb-4 relative">
         <div className="flex justify-between items-start mb-2">
           <div>
             <p className="text-gray-400 text-sm font-medium">BALANCE</p>

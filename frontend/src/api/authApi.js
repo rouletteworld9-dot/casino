@@ -3,7 +3,6 @@ import api from "../utils/axios";
 const login = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
-    console.log(response.data , "login response");
     return response.data;
   } catch (error) {
     console.error("Login failed:", error);
@@ -14,20 +13,11 @@ const login = async (credentials) => {
 const register = async (userData) => {
   try {
     const response = await api.post("/auth/register", userData);
+    console.log(response.data , "response form api")
     return response.data;
   } catch (error) {
     console.error("Registration failed:", error);
-    throw error;
-  }
-};
-
-const logout = async () => {
-  try {
-    const response = await api.post("/auth/logout");
-    return response.data;
-  } catch (error) {
-    console.error("Logout failed:", error);
-    throw error;
+    throw error;  
   }
 };
 
@@ -65,40 +55,13 @@ const resetPassword = async ({ phone, otp, newPassword }) => {
   }
 };
 
-const getPaymentSettings = async () => {
-  try {
-    const res = await api.get("/paymentSettings");
-    // Backend returns { success, data }
-    return res.data?.data;
-  } catch (error) {
-    // If not found, treat as empty settings so UI can create fresh
-    if (error?.response?.status === 404) {
-      return { qrCodeUrl: "", upiId: "" };
-    }
-    console.log("get payment settings error", error);
-    throw error;
-  }
-};
 
-const updatePaymentSettings = async (formData) => {
-  try {
-    // Do NOT set Content-Type manually; let the browser set proper boundary
-    const res = await api.post("/paymentSettings", formData);
-    return res.data?.data;
-  } catch (error) {
-    console.log("update payment settings error", error);
-    throw error;
-  }
-};
 const authApi = {
   login,
   verifyOtp,
-  logout,
   register,
   forgotPassword,
   resetPassword,
-  getPaymentSettings,
-  updatePaymentSettings,
 };
 
 export default authApi;
