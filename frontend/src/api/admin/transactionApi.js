@@ -7,6 +7,12 @@ const getAllTransactions = async (transactionStatus, transactionType) => {
   return response.data;
 };
 
+const getUserTransactions = async (transactionStatus) => {
+  const response = await api.get("transactions/my", {
+    params: {transactionStatus},
+  });
+  return response.data;
+};
 const approveTransaction = async (id) => {
   try {
     const response = await api.put(`/transactions/${id}/approve`);
@@ -47,6 +53,7 @@ const transactionApi = {
   rejectTransaction,
   withdrawlRequest,
   depositRequest,
+  getUserTransactions,
 };
 
 export default transactionApi;

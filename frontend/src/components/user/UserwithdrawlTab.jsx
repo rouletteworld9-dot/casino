@@ -11,6 +11,13 @@ const UserWithdrawlTab = () => {
     recipientName: "",
   });
 
+  const resetForm = () =>
+    setFormData({
+      amount: "",
+      bankAccountNumber: "",
+      ifscCode: "",
+      recipientName: "",
+    });
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -28,12 +35,10 @@ const UserWithdrawlTab = () => {
     }
     withdrawlRequestFn(formData, {
       onSuccess: () => {
-        setFormData({
-          amount: "",
-          bankAccountNumber: "",
-          ifscCode: "",
-          recipientName: "",
-        });
+        resetForm()
+      },
+      onError: () => {
+        resetForm()
       },
     });
   };

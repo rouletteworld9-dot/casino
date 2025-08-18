@@ -28,13 +28,20 @@ export default function LoginScreen() {
     if (!formData.phone || !formData.password) {
       return toast.error("Please fill in all fields");
     }
-    if (!/^\d{10}$/.test(formData.phone)  || formData.phone.length !== 10) {
+    if (!/^\d{10}$/.test(formData.phone) || formData.phone.length !== 10) {
       return toast.error("Please enter a valid phone number");
     }
 
     loginUser(formData, {
-      onSuccess: () => {
-        navigate("/");
+      onSuccess: (data) => {
+        // If loginUser returns user details, use that, otherwise rely on store
+        const loggedInUser = data?.user || useAuthStore.getState().user;
+
+        if (loggedInUser?.role === "user") {
+          navigate("/");
+        } else {
+          navigate("/admin/dashboard");
+        }
       },
     });
   };

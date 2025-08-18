@@ -26,14 +26,7 @@ const Navbar = () => {
         Casino Admin
       </h1>
       <div className="flex items-center gap-3 md:gap-4">
-        <div className="hidden md:flex items-center gap-2 rounded-md border border-deepPurple bg-midnightPurple px-3 py-1.5">
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent outline-none text-sm text-slate-100 placeholder:text-white w-48"
-          />
-        </div>
+
 
         <div className="relative">
           <button
@@ -53,12 +46,7 @@ const Navbar = () => {
                 transition={{ duration: 0.15 }}
                 className="absolute right-0 mt-2 w-44 rounded-md border border-midnightPurple bg-deepPurple shadow-xl"
               >
-                <button
-                  onClick={() => navigate("/admin/settings")}
-                  className="w-full text-left rounded px-2 py-1.5 text-sm text-slate-200 hover:bg-midnightPurple cursor-pointer"
-                >
-                  Profile & Settings
-                </button>
+                
                 <button
                   onClick={handleLogout}
                   className="flex w-full text-left rounded px-2 py-1.5 text-sm text-red-300 hover:bg-red-500/10 cursor-pointer"

@@ -16,7 +16,7 @@ export const useAuth = () => {
     mutationFn: authApi.register,
     onSuccess: (data) => {
       setRegistrationData(data);
-      toast.success("Registration successful");
+      toast.success(data?.message || "Registered Successfully!");
     },
     onError: (error) => {
       console.log("Registration error:", error);
@@ -31,7 +31,7 @@ export const useAuth = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setAuth(data);
-      toast.success("Login successful!");
+      toast.success(data.message || "Login successfully!");
     },
     onError: (error) => {
       console.log("Login error:", error);
@@ -41,27 +41,14 @@ export const useAuth = () => {
     },
   });
 
-  // const logoutMutation = useMutation({
-  //   mutationFn: authApi.logout,
-  //   onSuccess: () => {
-  //     logout();
-  //     toast.success("Logout successful!");
-  //   },
-  //   onError: (error) => {
-  //     console.log("Logout error:", error);
-  //     toast.error("Logout failed");
-  //   },
-  // });
-
   const verifyOTPMutation = useMutation({
     mutationFn: authApi.verifyOtp,
     onSuccess: (data) => {
       setOtpToken(data.token);
       setIsPhoneVerified(true);
-      toast.success("Verification successfull!!.. Please login Here.");
+      toast.success(data.message || "Verified Successfully!");
     },
     onError: () => {
-      console.log("OTP verification error");
       toast.error(
         error?.response?.data?.message ||
           "OTP verification failed. Please try again."
@@ -71,8 +58,10 @@ export const useAuth = () => {
 
   const forgotPasswordMutation = useMutation({
     mutationFn: authApi.forgotPassword,
+    onSuccess:(data)=>{
+      toast.success(data?.message || "OTP sent via whatsapp")
+    },
     onError: (error) => {
-      console.log("Forgot password error:", error);
       toast.error(
         error?.response?.data?.message ||
           "Forgot password failed. Please try again."
@@ -83,7 +72,6 @@ export const useAuth = () => {
   const resetPasswordMutation = useMutation({
     mutationFn: authApi.resetPassword,
     onError: (error) => {
-      console.log("Reset password error:", error);
       toast.error(
         error?.response?.data?.message ||
           "Reset password failed. Please try again."
