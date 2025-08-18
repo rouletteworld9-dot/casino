@@ -18,7 +18,6 @@ import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
 
-
 const IconButton = ({ icon: Icon, ...props }) => (
   <NavButton {...props} className="p-2">
     <Icon size={16} />
@@ -29,7 +28,6 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
-  console.log(user , "user")
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     // Make sure we have a leading slash
@@ -38,7 +36,6 @@ export default function Header() {
     }
     navigate(path);
   };
-
 
   const specials = [
     { name: "PROMOTIONS", key: "promotions", icon: Gift },
@@ -87,13 +84,18 @@ export default function Header() {
                   />
                 )}
               </div>
-              <NavButton className="bg-red-700 hover:bg-red-800 px-2 py-1 rounded font-semibold text-xs uppercase flex space-x-1">
-                <CirclePlus size={16} /> <p>Deposit</p>
-              </NavButton>
+              {user?.role === "user" && (
+                <NavButton
+                  onClick={() => navigate("/user/deposits-withdrawals")}
+                  className="bg-red-700 hover:bg-red-800 px-2 py-1 rounded font-semibold text-xs uppercase flex space-x-1"
+                >
+                  <CirclePlus size={16} /> <p>Deposit</p>
+                </NavButton>
+              )}
             </>
           ) : (
             <NavButton
-              onClick={() => navigate("login")}
+              onClick={() => navigate("/login")}
               className="bg-gradient-to-r from-red-500 hover:text-white to-purple-600 px-4 py-1 rounded font-semibold text-xs uppercase"
             >
               Log in

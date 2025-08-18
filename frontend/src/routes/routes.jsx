@@ -27,6 +27,7 @@ import ForgetPassword from "../components/ForgotPassword.jsx";
 import VerifyResetOtp from "../components/VerifyResetOtp.jsx";
 import DepositInterface from "../components/user/UserBalance.jsx";
 import WithdrawlApproved from "../components/admin/WithdrawlApproved.jsx";
+import UserRequests from "../components/user/UserRequests.jsx";
 
 const router = createBrowserRouter([
   {
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
       { index: true, element: <Dashboard /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "members", element: <Members /> },
-      { path: "member/:id", element: <UserProfile/>},
+      { path: "member/:id", element: <UserProfile /> },
       { path: "games", element: <Games /> },
       { path: "deposits", element: <Transactions /> },
       { path: "deposits-approve", element: <RechargeApprove /> },
@@ -85,6 +86,7 @@ const router = createBrowserRouter([
       { index: true, element: <UserProfile /> },
       { path: "deposits-withdrawals", element: <DepositInterface /> },
       { path: "history", element: <UserHistory /> },
+      { path: "requests", element: <UserRequests /> },
     ],
   },
 ]);

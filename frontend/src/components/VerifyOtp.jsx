@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import toast from "react-hot-toast";
 
-const VerifyOtp = ({ phone }) => {
+const VerifyOtp = ({ phone, resendOtp }) => {
   const navigate = useNavigate();
   const { verifyOtpFn } = useAuth();
   const [codeSent, setCodeSent] = useState(false);
@@ -12,10 +12,10 @@ const VerifyOtp = ({ phone }) => {
   const [timerExpired, setTimerExpired] = useState(false);
   const handleResend = () => {
     if (!timerExpired) return;
+    resendOtp();
     // Here you would call your resend OTP API
     setTimerKey(Date.now());
     setTimerExpired(false);
-    toast.success("OTP resent");
   };
   const [verificationCode, setVerificationCode] = useState("");
 
@@ -46,7 +46,6 @@ const VerifyOtp = ({ phone }) => {
         Are you not getting a confirmation code?
       </p>
 
-
       <div className="flex items-center gap-3 mb-4">
         <input
           type="text"
@@ -71,7 +70,7 @@ const VerifyOtp = ({ phone }) => {
 
       <div className="flex flex-col gap-2 mt-2">
         <button
-          className={`text-blue-400 underline text-sm transition-opacity cursor-pointer ${!timerExpired ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`text-blue-400 underline text-sm transition-opacity cursor-pointer ${!timerExpired ? "opacity-50 cursor-not-allowed" : ""}`}
           onClick={handleResend}
           disabled={!timerExpired}
         >

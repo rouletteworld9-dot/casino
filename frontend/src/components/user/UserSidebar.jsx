@@ -3,10 +3,8 @@ import BalanceCards from "../ui/BalanceCards";
 import { useAuth } from "../../hooks/useAuth";
 import SidebarLink from "../ui/SideBarLink";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuthStore } from "../../stores/useAuthStore";
 
 const UserSidebar = ({ isOpen, setIsOpen }) => {
-  
   const { logoutUser } = useAuth();
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
@@ -29,7 +27,7 @@ const UserSidebar = ({ isOpen, setIsOpen }) => {
             animate={{ x: 0 }}
             exit={{ x: -260 }}
             transition={{ duration: 0.3 }}
-            className="fixed md:relative left-0 w-60 bg-[#1E0E24] text-white min-h-screen py-6 px-4 z-40"
+            className="fixed md:sticky top-10 left-0 w-60 h-screen bg-deepPurple text-white py-6 sm:pt-10 px-4 z-40 border-r border-midnightPurple overflow-hidden"
           >
             <BalanceCards />
             <div className="space-y-2 mt-4">
@@ -66,4 +64,3 @@ const UserSidebar = ({ isOpen, setIsOpen }) => {
 };
 
 export default UserSidebar;
- 
