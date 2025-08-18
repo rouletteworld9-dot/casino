@@ -49,6 +49,7 @@ const transactionSchema = new mongoose.Schema({
     bankAccountNumber: String,
     ifscCode: String,
     recipientName: String,
+    bankName : String,
 }, { timestamps: true });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
