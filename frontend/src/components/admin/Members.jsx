@@ -9,7 +9,7 @@ import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 
 const Members = () => {
   const { adminAllUsers = [], adminAllUsersLoading, deleteUser } = useAdminUsers();
-
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -38,7 +38,6 @@ const Members = () => {
   if (adminAllUsersLoading) {
     return <TableSkeleton />;
   }
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const handleDeleteUser = (id) => {
     setConfirmDeleteId(id);
   };
