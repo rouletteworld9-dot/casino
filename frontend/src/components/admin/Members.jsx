@@ -63,10 +63,6 @@ const Members = () => {
     return <TableSkeleton />;
   }
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const handleDeleteUser = (id) => {
-    setConfirmDeleteId(id);
-  };
-
   const confirmDelete = async () => {
     if (!confirmDeleteId) return;
     try {
