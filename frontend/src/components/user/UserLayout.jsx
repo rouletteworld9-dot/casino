@@ -14,7 +14,7 @@ const UserLayout = () => {
         <UserSidebar />
 
         {/* Main content area */}
-        <div className="flex-1 overflow-auto ml-60 min-h-0">
+        <div className="flex-1  overflow-auto ml-60 min-h-0">
           <Outlet />
         </div>
       </div>

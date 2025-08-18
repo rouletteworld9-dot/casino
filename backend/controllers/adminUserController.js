@@ -11,6 +11,8 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
+
+
 // Update user status (ban/unban)
 exports.updateUserStatus = async (req, res) => {
     try {
