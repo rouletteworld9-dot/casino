@@ -4,7 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
 const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
 const transactionRoutes = require("./routes/transactionRoutes");
-const adminOnly = require("./middlewares/adminOnly");
+const adminRoutes = require("./routes/adminRoutes")
 const cookieParser = require("cookie-parser");
 const adminUserRoutes = require("./routes/adminUserRoutes")
 const userRoutes = require("./routes/userRoutes")
@@ -36,12 +36,9 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/users", adminUserRoutes)
 app.use("/api/user" , userRoutes)
 
-// Global Error Handler 
+// Admin Force/Fix result 
+app.use("/api/admin",adminRoutes)
 
-// app.use((err, req, res) => {
-//     console.error("Unhandled Error:", err.stack);
-//     res.status(500).json({ message: "Something went wrong" });
-// });
 
 
 module.exports = app;
