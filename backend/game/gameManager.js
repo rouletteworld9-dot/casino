@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Bet = require("../models/Bet");
 const { validateBet, VALID_BET_TYPES } = require("./betValidator");
 
 let gameState = {
@@ -7,6 +8,7 @@ let gameState = {
   bets: [],
   winningNumber: null,
   nextWinningNumber: null, // Admin override
+  lastResults: [], // store last 5 numbers
 };
 
 function startGame(io) {
@@ -25,8 +27,27 @@ function startGame(io) {
     if (gameState.nextWinningNumber !== null) {
       gameState.winningNumber = gameState.nextWinningNumber;
       gameState.nextWinningNumber = null;
+    } else if (gameState.bets.length > 0) {
+      // Find number with least bets
+      const betCounts = {};
+      gameState.bets.forEach(bet => {
+        bet.numbers.forEach(num => {
+          betCounts[num] = (betCounts[num] || 0) + bet.amount;
+        });
+      });
+
+      let minCount = Infinity;
+      let candidate = null;
+      for (const [num, count] of Object.entries(betCounts)) {
+        if (count < minCount) {
+          minCount = count;
+          candidate = parseInt(num, 10);
+        }
+      }
+      gameState.winningNumber = candidate;
     } else {
-      gameState.winningNumber = Math.floor(Math.random() * 37); // 0–36
+      // no bets → random
+      gameState.winningNumber = Math.floor(Math.random() * 37);
     }
 
     io.emit("spinning", { winningNumber: gameState.winningNumber });
@@ -37,8 +58,15 @@ function startGame(io) {
     gameState.phase = "result";
     await settleBets(io);
 
+    // Push to lastResults (max length = 5)
+    gameState.lastResults.unshift(gameState.winningNumber);
+    if (gameState.lastResults.length > 5) {
+      gameState.lastResults.pop();
+    }
+
     io.emit("roundResult", {
       winningNumber: gameState.winningNumber,
+      lastResults: gameState.lastResults,
     });
 
     // Start next round
@@ -69,16 +97,31 @@ async function settleBets(io) {
   }
 }
 
-function placeBet(socket, data) {
+async function placeBet(socket, data) {
   if (gameState.phase !== "betting") {
     return socket.emit("error", { message: "Betting closed" });
   }
 
-  gameState.bets.push({
+  const bet = {
     ...data,
     socketId: socket.id,
     roundId: gameState.roundId,
+  };
+
+  gameState.bets.push(bet);
+
+  const gameStatus = validateBet(bet, gameState.winningNumber);
+
+  // Save in DB
+  const dbBet = new Bet({
+    user: data.userId,
+    type: data.type,
+    status : gameStatus,
+    numbers: data.numbers,
+    amount: data.amount,
+    roundId: gameState.roundId,
   });
+  await dbBet.save();
 }
 
 function forceResult(num) {

@@ -8,8 +8,7 @@ const gameSocket = require("./sockets/gameSocket");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app"],
-    methods: ["GET", "POST"],
+    origin: "*",
   },
 });
 
@@ -18,6 +17,6 @@ connectDB();
 gameSocket(io);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
