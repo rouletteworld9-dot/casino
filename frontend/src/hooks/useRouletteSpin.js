@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { rouletteData } from "../types";
 
-export const useContinuousRoulette = (data: rouletteData) => {
+export const useContinuousRoulette = (data) => {
   const totalNumbers = 37;
   const singleRotationDegree = 360 / totalNumbers;
 
   const [wheelRotation, setWheelRotation] = useState(0);
   const [ballRotation, setBallRotation] = useState(0);
   const [ballTranslateY, setBallTranslateY] = useState(0);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState(null);
 
-  const requestRef = useRef<number>();
-  const lastTimeRef = useRef<number>(0);
+  const requestRef = useRef();
+  const lastTimeRef = useRef(0);
   const spinning = useRef(true);
-  const startPauseTimeout = useRef<NodeJS.Timeout | null>(null);
-  const resumeTimeout = useRef<NodeJS.Timeout | null>(null);
+  const startPauseTimeout = useRef(null);
+  const resumeTimeout = useRef(null);
 
-  const rotateWheel = useCallback((timestamp: number) => {
+  const rotateWheel = useCallback((timestamp) => {
     if (!lastTimeRef.current) lastTimeRef.current = timestamp;
     const delta = timestamp - lastTimeRef.current;
 

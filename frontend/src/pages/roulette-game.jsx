@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import RouletteWheel from "../components/RouletteWheel";
-import { rouletteData, WheelNumber } from "../types";
 
-const defaultData: rouletteData = {
+const defaultData = {
   numbers: Array.from({ length: 37 }, (_, i) => i),
 };
 
 const SPIN_INTERVAL = 15000; // 15 seconds
 
 const RouletteGame = () => {
-  const [number, setNumber] = useState<WheelNumber>({ next: "" });
-  const [result, setResult] = useState<string | null>(null);
+  const [number, setNumber] = useState({ next: "" });
+  const [result, setResult] = useState(null);
 
   // Trigger new spin every 15 seconds
   useEffect(() => {
