@@ -5,6 +5,8 @@ const {
   gameState,
 } = require("../game/gameManager");
 
+let gameStarted = false;
+
 module.exports = function (io) {
   io.on("connection", (socket) => {
     console.log("User connected", socket.id);
@@ -32,6 +34,9 @@ module.exports = function (io) {
     });
   });
 
-  // Start the first game automatically
-  startGame(io);
+  // Start the first game only once
+  if (!gameStarted) {
+    gameStarted = true;
+    startGame(io);
+  }
 };
