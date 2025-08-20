@@ -30,8 +30,8 @@ function startGame(io) {
     } else if (gameState.bets.length > 0) {
       // Find number with least bets
       const betCounts = {};
-      gameState.bets.forEach(bet => {
-        bet.numbers.forEach(num => {
+      gameState.bets.forEach((bet) => {
+        bet.numbers.forEach((num) => {
           betCounts[num] = (betCounts[num] || 0) + bet.amount;
         });
       });
@@ -80,20 +80,52 @@ async function settleBets(io) {
     if (!user) continue;
 
     const isWin = validateBet(bet, gameState.winningNumber);
+    let payout = 0;
+
     if (isWin) {
-      const payout = bet.amount * VALID_BET_TYPES[bet.type].payout;
-      user.realBalance += payout;
+      payout = bet.amount * VALID_BET_TYPES[bet.type].payout + bet.amount;
+
+      const realCredit = Math.round(payout * 0.9);
+      const tokenCredit = Math.round(payout * 0.1);
+
+      user.realBalance += realCredit;
+      user.playTokens += tokenCredit;
       await user.save();
-      io.to(bet.socketId).emit("betResult", { win: true, payout });
+
+      io.to(bet.socketId).emit("betResult", {
+        win: true,
+        payout,
+        credited: { realBalance: realCredit, playTokens: tokenCredit },
+        balances: {
+          realBalance: user.realBalance,
+          playTokens: user.playTokens,
+        },
+      });
     } else {
-      // Lose → 90% from real, 10% from playTokens
-      user.realBalance -= bet.amount * 0.9;
-      user.playTokens -= bet.amount * 0.1;
-      if (user.realBalance < 0) user.realBalance = 0;
-      if (user.playTokens < 0) user.playTokens = 0;
-      await user.save();
-      io.to(bet.socketId).emit("betResult", { win: false });
+      io.to(bet.socketId).emit("betResult", {
+        win: false,
+        balances: {
+          realBalance: user.realBalance,
+          playTokens: user.playTokens,
+        },
+      });
     }
+
+    // ✅ Save finalized bet in DB
+    const dbBet = new Bet({
+      user: bet.userId,
+      type: bet.type,
+      numbers: bet.numbers,
+      amount: bet.amount,
+      roundId: bet.roundId,
+      status: isWin ? "win" : "lose",
+      payout: payout,
+    });
+    await dbBet.save();
+
+    //clear the game for next round
+
+    gameState.bets = [];
   }
 }
 
@@ -101,6 +133,21 @@ async function placeBet(socket, data) {
   if (gameState.phase !== "betting") {
     return socket.emit("error", { message: "Betting closed" });
   }
+
+  const user = await User.findById(data.userId);
+  if (!user) return;
+
+  const betAmount = data.amount;
+  const realDeduction = Math.round(betAmount * 0.9);
+  const tokenDeduction = Math.round(betAmount * 0.1);
+
+  if (user.realBalance < realDeduction || user.playTokens < tokenDeduction) {
+    return socket.emit("error", { msg: "Insufficient balance" });
+  }
+
+  user.realBalance -= realDeduction;
+  user.playTokens -= tokenDeduction;
+  await user.save();
 
   const bet = {
     ...data,
@@ -110,18 +157,13 @@ async function placeBet(socket, data) {
 
   gameState.bets.push(bet);
 
-  const gameStatus = validateBet(bet, gameState.winningNumber);
-
-  // Save in DB
-  const dbBet = new Bet({
-    user: data.userId,
-    type: data.type,
-    status : gameStatus,
-    numbers: data.numbers,
-    amount: data.amount,
-    roundId: gameState.roundId,
+  socket.emit("betPlaced", {
+    success: true,
+    balances: {
+      realBalance: user.realBalance,
+      playTokens: user.playTokens,
+    },
   });
-  await dbBet.save();
 }
 
 function forceResult(num) {
