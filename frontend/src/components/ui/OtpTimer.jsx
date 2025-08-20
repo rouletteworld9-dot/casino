@@ -1,6 +1,4 @@
-
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 /**
@@ -11,7 +9,6 @@ import toast from "react-hot-toast";
  * @param {function} [props.onTick] - Called every second with remaining seconds
  * @param {string|number} [props.keyTrigger] - When changed, timer resets
  */
-
 export default function OtpTimer({
   durationMs = 60000,
   onExpire,
@@ -60,16 +57,13 @@ export default function OtpTimer({
 
   return (
     <div className="flex items-center justify-center min-h-[2.5rem]">
-      <motion.span
-        key={expired ? 'expired' : remaining}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className={`text-lg md:text-xl font-semibold tracking-widest select-none ${expired ? 'text-red-500' : 'text-purple-600'}`}
+      <span
+        className={`text-lg md:text-xl font-semibold tracking-widest select-none ${
+          expired ? "text-red-500" : "text-purple-600"
+        }`}
       >
         {mm}:{ss}
-      </motion.span>
+      </span>
     </div>
   );
 }

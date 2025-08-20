@@ -33,7 +33,7 @@ const BalanceCards = () => {
 
       {/* Bonus Account Section */}
       <div className="bg-midnightPurple rounded p-4 mb-6">
-        <p className="text-gray-400 text-sm font-medium mb-2">BONUS ACCOUNT</p>
+        <p className="text-gray-400 text-sm font-medium mb-2">PLAY TOKENS</p>
         <p className="text-white text-2xl font-bold">
           {" "}
           {showBalance ? singleUser?.playTokens : "*****"}

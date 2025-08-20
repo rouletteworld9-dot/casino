@@ -16,8 +16,16 @@ import UserAllTransactions from "./UserAllTransactions";
 
 const UserHistory = () => {
   const [activeTab, setActiveTab] = useState("All Transactions");
-  const { userTransactions = [], userTransactionLoading } =
-    useUserTransactions();
+   const transactionType =
+     activeTab === "Deposits"
+       ? "deposit"
+       : activeTab === "Withdrawals"
+         ? "withdraw"
+         : null;
+  const { userTransactions = [], userTransactionLoading } = useUserTransactions(
+    null,
+    transactionType
+  );
 
   const tabs = ["All Transactions", "Deposits", "Withdrawals"];
 

@@ -6,6 +6,7 @@ const UserWithdrawlTab = () => {
   const { withdrawlRequestFn, withdrawlRequestLoading } = useUserTransactions();
   const [formData, setFormData] = useState({
     amount: "",
+    bankName: "",
     bankAccountNumber: "",
     ifscCode: "",
     recipientName: "",
@@ -13,6 +14,7 @@ const UserWithdrawlTab = () => {
 
   const resetForm = () =>
     setFormData({
+      bankName: "",
       amount: "",
       bankAccountNumber: "",
       ifscCode: "",
@@ -28,17 +30,18 @@ const UserWithdrawlTab = () => {
     if (
       !formData.bankAccountNumber ||
       !formData.ifscCode ||
-      !formData.recipientName
+      !formData.recipientName ||
+      !formData.bankName
     ) {
       toast.error("All withdrawal details are required");
       return;
     }
     withdrawlRequestFn(formData, {
       onSuccess: () => {
-        resetForm()
+        resetForm();
       },
       onError: () => {
-        resetForm()
+        resetForm();
       },
     });
   };
@@ -62,6 +65,17 @@ const UserWithdrawlTab = () => {
           />
         </div>
 
+        <div>
+          <label className="block text-sm text-gray-300 mb-1">Bank Name</label>
+          <input
+            type="text"
+            name="bankName"
+            value={formData.bankName}
+            onChange={handleChange}
+            className="w-full p-2 rounded bg-lightPurple border border-deepBorder text-white focus:outline-none focus:ring-2 focus:ring-casinoGold"
+            placeholder="Enter Bank Name"
+          />
+        </div>
         {/* Bank Account Number */}
         <div>
           <label className="block text-sm text-gray-300 mb-1">

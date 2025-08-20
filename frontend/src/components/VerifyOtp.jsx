@@ -20,7 +20,7 @@ const VerifyOtp = ({ phone, resendOtp }) => {
   const [verificationCode, setVerificationCode] = useState("");
 
   const handleCodeSubmit = () => {
-    if (verificationCode.length < 4) {
+    if (verificationCode.length < 6) {
       toast.error("Please enter a valid verification code");
       return;
     }

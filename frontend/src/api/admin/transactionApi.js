@@ -7,9 +7,9 @@ const getAllTransactions = async (transactionStatus, transactionType) => {
   return response.data;
 };
 
-const getUserTransactions = async (transactionStatus) => {
+const getUserTransactions = async (transactionStatus, transactionType) => {
   const response = await api.get("transactions/my", {
-    params: {transactionStatus},
+    params: { transactionStatus, transactionType },
   });
   return response.data;
 };
