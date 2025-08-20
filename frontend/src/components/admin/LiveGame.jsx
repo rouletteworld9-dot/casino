@@ -16,7 +16,7 @@ const LiveGame = () => {
     socketRef.current.on('betPlaced', (bet) => setGameState((prev) => ({ ...prev, bets: [...prev.bets, bet] })));
 
     return () => {
-      socketRef.current?.disconnect();
+      socketRef.current?.disconnect(); 
     };
   }, []);
 

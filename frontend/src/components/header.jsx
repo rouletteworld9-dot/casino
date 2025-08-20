@@ -8,162 +8,118 @@ import {
   Menu,
   X,
   CircleUser,
+  CirclePlus,
 } from "lucide-react";
 import { useState } from "react";
-import NavButton from "./ui/NavButton";
-// import IconButton from "./ui/IconButton";
 import { useAuthStore } from "../stores/useAuthStore";
+import NavButton from "./ui/NavButton";
 import UserHeaderDropdown from "./ui/UserHeaderDropdown";
-import { Navigate } from "react-router-dom";
+import DesktopNav from "./ui/DekstopNav";
+import MobileNav from "./ui/MobileNav";
+import { useNavigate } from "react-router-dom";
 
-const IconButton = ({ icon: Icon, onClick, className = "" }) => (
-  <NavButton onClick={onClick} className={`p-2 ${className}`}>
+const IconButton = ({ icon: Icon, ...props }) => (
+  <NavButton {...props} className="p-2">
     <Icon size={16} />
   </NavButton>
 );
 
-export default function Header({ onNavigate }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+export default function Header() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const navigate = useNavigate();
+  const handleNavigate = (path) => {
+    // Make sure we have a leading slash
+    if (!path.startsWith("/")) {
+      path = `/${path}`;
+    }
+    navigate(path);
+  };
 
-  const navItems = [
-    { name: "CASINO", key: "casino" },
-    { name: "SPORT", key: "sport" },
-    { name: "STATISTICS", key: "statistics" },
-    { name: "RESULTS", key: "results" },
-    { name: "APPS", key: "apps" },
-  ];
-
-  const specialNavItems = [
+  const specials = [
     { name: "PROMOTIONS", key: "promotions", icon: Gift },
     { name: "TOURNAMENTS", key: "tournaments", icon: Trophy },
   ];
-  const user = useAuthStore((state) => state.user);
-  console.log(user, "user from header");
 
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      // style={{ backgroundColor: "#17071D" }}
-      className="border-b sticky top-0 bg-[#1E0E24] z-50 border-[#2A1033]"
+      className="border-b sticky top-0 bg-[#1E0E24] z-70 border-[#2A1033]"
     >
-      <div className="container mx-auto px-4 py-1">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <NavButton
-            onClick={() => onNavigate("/")}
-            className="flex items-center space-x-2"
-          >
-            <div className="w-8 h-8 px-10 rounded flex items-center justify-center">
-              Casinoo
-            </div>
+      <div className="container mx-auto px-4 py-1 flex justify-between items-center">
+        {/* Logo */}
+        <NavButton onClick={() => navigate("/")}>Casinoo</NavButton>
+
+        {/* Desktop Nav */}
+        <DesktopNav onNavigate={handleNavigate} specials={specials} />
+
+        {/* Right Actions */}
+        <div className="flex items-center sm:space-x-3 space-x-1">
+          <IconButton icon={Search} />
+          <IconButton icon={Settings} />
+          <NavButton className="hidden sm:flex items-center space-x-1">
+            <Globe size={16} />{" "}
+            <span className="font-semibold text-xs">EN</span>
           </NavButton>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <NavButton
-                key={item.key}
-                onClick={() => onNavigate(item.key)}
-                className="font-semibold text-xs uppercase tracking-wide"
-              >
-                {item.name}
-              </NavButton>
-            ))}
-          </nav>
-
-          {/* Right Actions */}
-          <div className="flex items-center space-x-3">
-            {/* Special Nav Items */}
-            {specialNavItems.map((item) => (
-              <NavButton
-                key={item.key}
-                onClick={() => onNavigate(item.key)}
-                className="hidden md:flex items-center space-x-2"
-              >
-                <item.icon size={18} />
-                <span className="font-semibold text-xs uppercase">
-                  {item.name}
-                </span>
-              </NavButton>
-            ))}
-
-            {/* Action Icons */}
-            <IconButton icon={Search} onClick={() => {}} />
-            <IconButton icon={Settings} onClick={() => {}} />
-
-            <NavButton className="hidden sm:flex items-center space-x-1">
-              <Globe size={16} />
-              <span className="font-semibold text-xs">EN</span>
-            </NavButton>
-
-            {/* Auth Section */}
-            {user ? (
+          {user ? (
+            <>
               <div
                 className="relative"
-                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseEnter={() => setDropdownOpen(true)}
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
-                  <CircleUser size={18} />
+                  <CircleUser size={18} />{" "}
                   <span className="font-semibold text-purple-300">
                     {user?.name || "Player"}
                   </span>
                 </span>
 
-                {/* Dropdown Menu */}
-                {isDropdownOpen && (
+                {dropdownOpen && (
                   <UserHeaderDropdown
-                    onNavigate={onNavigate}
-                    setIsDropdown={setIsDropdownOpen}
+                    onNavigate={handleNavigate}
+                    setIsDropdown={setDropdownOpen}
                   />
                 )}
               </div>
-            ) : (
-              <div className="flex items-center space-x-3">
+              {user?.role === "user" && (
                 <NavButton
-                  onClick={() => onNavigate("login")}
-                  className="bg-purple-700 hover:bg-purple-800 px-4 py-1 rounded font-semibold text-xs uppercase"
+                  onClick={() => navigate("/user/deposits-withdrawals")}
+                  className="bg-red-700 hover:bg-red-800 px-2 py-1 rounded font-semibold text-xs uppercase flex space-x-1"
                 >
-                  Log in
+                  <CirclePlus size={16} /> <p>Deposit</p>
                 </NavButton>
-              </div>
-            )}
+              )}
+            </>
+          ) : (
+            <NavButton
+              onClick={() => navigate("/login")}
+              className="bg-gradient-to-r from-red-500 hover:text-white to-purple-600 px-4 py-1 rounded font-semibold text-xs uppercase"
+            >
+              Log in
+            </NavButton>
+          )}
 
-            {/* Mobile Menu Toggle */}
+          <div className="lg:hidden">
             <IconButton
-              icon={mobileMenuOpen ? X : Menu}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden"
+              icon={mobileOpen ? X : Menu}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="block lg:hidden"
             />
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="lg:hidden mt-4 pt-4 border-t border-purple-800"
-          >
-            <div className="flex flex-col space-y-3">
-              {[...navItems, ...specialNavItems].map((item) => (
-                <NavButton
-                  key={item.key}
-                  onClick={() => {
-                    onNavigate(item.key);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center space-x-2 text-left font-semibold text-sm uppercase"
-                >
-                  {"icon" in item && <item.icon size={18} />}
-                  <span>{item.name}</span>
-                </NavButton>
-              ))}
-            </div>
-          </motion.nav>
-        )}
       </div>
+
+      {/* Mobile Nav */}
+      {mobileOpen && (
+        <MobileNav
+          onNavigate={handleNavigate}
+          specials={specials}
+          onClose={() => setMobileOpen(false)}
+        />
+      )}
     </motion.header>
   );
 }

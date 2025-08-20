@@ -1,33 +1,42 @@
 import React from "react";
 import { motion } from "framer-motion";
-const UserHeaderDropdown = ({ setIsDropdown }) => {
+import { LogOut } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+const UserHeaderDropdown = ({ setIsDropdown, onNavigate }) => {
+  const { logoutUser, logoutLoading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutUser(undefined, {
+      onSuccess: () => {
+        setIsDropdown(false);
+        navigate("/");
+      },
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -5 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -5 }}
       onMouseLeave={() => setIsDropdown(false)}
-      className="absolute right-0 mt-2 w-44 bg-[#1E0E24]  rounded shadow-lg z-50"
+      className="absolute right-0 mt-2 w-32 bg-deepPurple border-deepBorder rounded shadow-lg z-100"
     >
       <button
-        onClick={() => onNavigate("/my-account")}
-        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+        onClick={() => onNavigate("/user")}
+        className="block w-full text-left px-2 py-2 text-xs hover:bg-midnightPurple text-white cursor-pointer"
       >
         My Account
       </button>
+      
       <button
-        onClick={() => onNavigate("deposit")}
-        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+        onClick={handleLogout}
+        className="space-x-1 flex w-full text-left px-2 py-2 text-xs text-red-300 hover:bg-midnightPurple cursor-pointer"
       >
-        Make a Deposit
-      </button>
-      <button
-        onClick={() => {
-          // onLogout()
-        }}
-        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-      >
-        Logout
+        <LogOut size={16} />
+        <p>Logout</p>
       </button>
     </motion.div>
   );

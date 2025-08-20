@@ -5,9 +5,8 @@ const userSchema = new mongoose.Schema({
     phone: { type: String, unique: true, required: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
-    playTokens: { type: Number, default: 0, min: 0 },
-    // free tokens for games
-    realBalance: Number,       // actual withdrawable money
+    playTokens: { type: Number, default: 0, min: 0 },    // free tokens for games
+    realBalance: { type: Number, default: 0, min: 0 },       // actual withdrawable money
     otp: String,
     otpExpiresAt: Date,
     isVerified: { type: Boolean, default: false },

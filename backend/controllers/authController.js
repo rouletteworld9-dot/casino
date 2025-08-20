@@ -2,19 +2,26 @@
 
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const { verifyRefreshToken, signAccessToken, signRefreshToken } = require("../utils/jwt");
+const {
+  verifyRefreshToken,
+  signAccessToken,
+  signRefreshToken,
+} = require("../utils/jwt");
 const sendOtpWhatsApp = require("../utils/sendOtpWhatsApp");
 const { setRefreshTokenCookie, hashToken } = require("../utils/authHelpers");
 const cryptoModule = require("crypto");
 
 // Helper to generate random 6-digit OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 exports.register = async (req, res) => {
   const { phone, name, password } = req.body;
 
   if (!phone || !name || !password) {
-    return res.status(400).json({ message: "Phone, name, and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Phone, name, and password are required." });
   }
 
   try {
@@ -22,11 +29,18 @@ exports.register = async (req, res) => {
 
     if (user) {
       if (user.isVerified) {
-        return res.status(400).json({ message: "Phone number already registered." });
+        return res
+          .status(400)
+          .json({ message: "Phone number already registered." });
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ phone, name, password: hashedPassword });
+      user = new User({
+        phone,
+        name,
+        password: hashedPassword,
+        playTokens: 1500,
+      });
     }
 
     const otp = generateOTP();
@@ -37,7 +51,6 @@ exports.register = async (req, res) => {
     user.otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 min expiry
     await user.save();
 
-
     return res.json({ message: "OTP sent via WhatsApp." });
   } catch (err) {
     console.error("Registration error:", err);
@@ -47,7 +60,6 @@ exports.register = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
   const { phone, otp } = req.body;
-  console.log("phone", phone, "and", otp)
 
   if (!phone || !otp) {
     return res.status(400).json({ message: "Phone and OTP are required." });
@@ -55,25 +67,21 @@ exports.verifyOTP = async (req, res) => {
 
   try {
     const user = await User.findOne({ phone });
-    console.log("user", user)
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    if (user.isVerified) return res.status(400).json({ message: "User already verified." });
+    if (user.isVerified)
+      return res.status(400).json({ message: "User already verified." });
 
     if (user.otp !== otp || user.otpExpiresAt < new Date()) {
       return res.status(400).json({ message: "Invalid or expired OTP." });
     }
-
-    console.log(user.otp !== otp || user.otpExpiresAt < new Date())
 
     user.isVerified = true;
     user.otp = null;
     user.otpExpiresAt = null;
     await user.save();
 
-    console.log("user verified")
-
-    return res.json({ message: "User verified successfully." });
+    return res.json({ message: "Verification Successful, Login Again" });
   } catch (err) {
     console.error("OTP verify error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -137,19 +145,45 @@ exports.forgotPassword = async (req, res) => {
     user.otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000);
     await user.save();
 
-
-    return res.json({ message: "OTP sent for password reset." });
+    return res.json({ message: "OTP sent to reset password." });
   } catch (err) {
     console.error("Forgot password error:", err);
     return res.status(500).json({ message: "Server error." });
   }
 };
 
+exports.requestResetOtp = async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone)
+    return res.status(400).json({ message: "Phone number is required." });
+
+  try {
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    const otp = generateOTP();
+    const otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 min expiry
+
+    user.otp = otp;
+    user.otpExpiresAt = otpExpiresAt;
+    await user.save();
+
+    await sendOtpWhatsApp(phone, otp);
+
+    return res.json({ message: "OTP sent to your WhatsApp." });
+  } catch (err) {
+    console.error("requestResetOtp error:", err);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
 exports.resetPassword = async (req, res) => {
   const { phone, otp, newPassword } = req.body;
 
   if (!phone || !otp || !newPassword) {
-    return res.status(400).json({ message: "Phone, OTP, and new password are required." });
+    return res
+      .status(400)
+      .json({ message: "Phone, OTP, and new password are required." });
   }
 
   try {
@@ -180,14 +214,18 @@ exports.login = async (req, res) => {
   const { phone, password } = req.body;
 
   if (!phone || !password) {
-    return res.status(400).json({ message: "Phone and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Phone and password are required." });
   }
 
   try {
     const user = await User.findOne({ phone });
 
     if (!user || user.status !== "active") {
-      return res.status(401).json({ message: "Invalid credentials or account disabled." });
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials or account disabled." });
     }
 
     if (!user.isVerified) {
@@ -232,7 +270,12 @@ exports.login = async (req, res) => {
 
     return res.json({
       token: accessToken,
-      user: { name: user.name, phone: user.phone, role: user.role },
+      user: {
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        _id: user._id,
+      },
       expiresIn: 30 * 60, // seconds, client can use to know expiry (30 minutes)
     });
   } catch (err) {
@@ -245,7 +288,8 @@ exports.login = async (req, res) => {
 exports.refreshToken = async (req, res) => {
   try {
     const token = req.cookies?.refreshToken;
-    if (!token) return res.status(401).json({ message: "No refresh token provided." });
+    if (!token)
+      return res.status(401).json({ message: "No refresh token provided." });
 
     let payload;
     try {
@@ -261,18 +305,24 @@ exports.refreshToken = async (req, res) => {
 
     // check tokenVersion
     if (user.tokenVersion !== tokenVersion) {
-      return res.status(401).json({ message: "Token invalidated. Please login again." });
+      return res
+        .status(401)
+        .json({ message: "Token invalidated. Please login again." });
     }
 
     // check sessionToken matches current session (enforce single-login)
     if (!user.sessionToken || user.sessionToken !== sessionToken) {
-      return res.status(401).json({ message: "Session invalid. Please login again." });
+      return res
+        .status(401)
+        .json({ message: "Session invalid. Please login again." });
     }
 
     // check stored hashed refresh token matches the provided one
     const incomingHash = hashToken(token);
     if (!user.refreshTokenHash || user.refreshTokenHash !== incomingHash) {
-      return res.status(401).json({ message: "Refresh token mismatch. Please login again." });
+      return res
+        .status(401)
+        .json({ message: "Refresh token mismatch. Please login again." });
     }
 
     // All good -> rotate refresh token (issue new refresh token) and issue new access token
@@ -304,7 +354,12 @@ exports.refreshToken = async (req, res) => {
 
     return res.json({
       token: newAccessToken,
-      user: { name: user.name, phone: user.phone, role: user.role },
+      user: {
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        _id: user._id,
+      },
       expiresIn: 30 * 60,
     });
   } catch (err) {
@@ -329,7 +384,7 @@ exports.logout = async (req, res) => {
         }
       } catch (e) {
         // ignore decode errors
-        console.log(e)
+        console.log(e);
       }
     }
 

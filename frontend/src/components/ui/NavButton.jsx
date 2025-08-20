@@ -1,14 +1,14 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-const NavButton = ({ children, onClick, className = "" }) => (
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    onClick={onClick}
-    className={`text-white hover:text-purple-300 transition-colors ${className}`}
-  >
-    {children}
-  </motion.button>
-);
+import { motion } from "framer-motion";
 
-export default NavButton
+export default function NavButton({ children, onClick, className = "" }) {
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={onClick}
+      className={`text-white hover:text-purple-300 cursor-pointer transition-colors ${className}`}
+    >
+      {children}
+    </motion.button>
+  );
+}

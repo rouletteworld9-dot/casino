@@ -2,18 +2,24 @@ const express = require("express");
 const cors = require("cors")
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
+const paymentSettingRoutes = require("./routes/paymentSettingsRoutes")
+const transactionRoutes = require("./routes/transactionRoutes");
+const adminRoutes = require("./routes/adminRoutes")
+const cookieParser = require("cookie-parser");
+const adminUserRoutes = require("./routes/adminUserRoutes")
+const userRoutes = require("./routes/userRoutes")
+
 
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173","https://casino-mu-one.vercel.app"],
+    origin: ["http://localhost:5173", "https://casino-mu-one.vercel.app"],
     credentials: true
 }));
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.js / server.js
-const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 
@@ -24,11 +30,15 @@ app.use("/api/auth", authRoutes);
 // ✅ Middleware for Protected Routes
 app.use("/api", authMiddleware);
 
-// Global Error Handler 
-app.use((err, req, res) => {
-    console.error("Unhandled Error:", err.stack);
-    res.status(500).json({ message: "Something went wrong" });
-});
+// Transaction routes
+app.use("/api/paymentSettings", paymentSettingRoutes) // (Admin ONlY)
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/users", adminUserRoutes)
+app.use("/api/user" , userRoutes)
+
+// Admin Force/Fix result 
+app.use("/api/admin",adminRoutes)
+
 
 
 module.exports = app;

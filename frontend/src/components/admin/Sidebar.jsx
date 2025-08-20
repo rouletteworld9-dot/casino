@@ -1,51 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+
 import {
-  FaUsers,
-  FaMoneyCheckAlt,
-  FaCog,
-  FaExternalLinkAlt,
-  FaTachometerAlt,
-  FaGamepad,
-  FaExchangeAlt,
-  FaBars,
-} from "react-icons/fa";
+  Users,
+  CircleGauge,
+  BadgeDollarSign,
+  Banknote,
+  BanknoteArrowUp,
+  CirclePoundSterling,
+  Settings,
+  ExternalLink,
+  Menu,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
 
+  useEffect(() => {
+    const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
+    setIsOpen(isLargeScreen);
+  }, []);
+
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: <FaTachometerAlt /> },
-    { name: "Members", path: "/admin/members", icon: <FaUsers /> },
-    { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
     {
-      name: "Transactions",
-      path: "/admin/transactions",
-      icon: <FaExchangeAlt />,
+      name: "Dashboard",
+      path: "/admin/dashboard",
+      icon: <CircleGauge size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      name: "Browse Recharge",
-      path: "/admin/browse-recharge",
-      icon: <FaMoneyCheckAlt />,
+      name: "Members",
+      path: "/admin/members",
+      icon: <Users size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
+    // { name: "Games", path: "/admin/games", icon: <FaGamepad /> },
+    {
+      name: "Deposit Requests",
+      path: "/admin/deposits",
+      icon: (
+        <CirclePoundSterling size={16} strokeWidth={2} absoluteStrokeWidth />
+      ),
     },
     {
-      name: "Withdrawal(Approved)",
+      name: "Withdrawal Requests",
       path: "/admin/withdrawals",
-      icon: <FaMoneyCheckAlt />,
+      icon: <BadgeDollarSign size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
     {
-      name: "Recharge (Approved)",
-      path: "/admin/recharge-approve",
-      icon: <FaMoneyCheckAlt />,
+      name: "Withdrawal (Approved)",
+      path: "/admin/withdrawal-approve",
+      icon: <BanknoteArrowUp size={16} strokeWidth={2} absoluteStrokeWidth />,
     },
-    { name: "Settings", path: "/admin/settings", icon: <FaCog /> },
+    {
+      name: "Deposits (Approved)",
+      path: "/admin/deposits-approve",
+      icon: <Banknote size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
+    {
+      name: "Settings",
+      path: "/admin/settings",
+      icon: <Settings size={16} strokeWidth={2} absoluteStrokeWidth />,
+    },
     // { name: 'Live Ongoing Game', path: '/admin/live-game', icon: <FaMoneyCheckAlt /> },
     {
       name: "Go to Website",
       path: "/",
-      icon: <FaExternalLinkAlt />,
-      external: true,
+      icon: <ExternalLink size={16} strokeWidth={2} absoluteStrokeWidth />,
+      // external: true,
     },
   ];
 
@@ -59,22 +80,22 @@ const Sidebar = () => {
       initial="open"
       animate={isOpen ? "open" : "closed"}
       variants={sidebarVariants}
-      className="bg-[#2C023B] backdrop-blur border-r border-slate-800 h-screen p-4 flex flex-col"
+      className="bg-deepPurple backdrop-blur border-r border-midnightPurple h-screen p-4 flex flex-col"
     >
       <div className="flex items-center justify-between mb-6">
         {isOpen && (
-          <span className="text-md font-semibold text-white">Admin Panel</span>
+          <span className="text-lg font-semibold text-white">Admin Panel</span>
         )}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-white hover:text-purple-300 cursor-pointer ml-3"
           aria-label="Toggle sidebar"
         >
-          <FaBars />
+          <Menu size={16} strokeWidth={2} absoluteStrokeWidth />
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1">
+      <nav className="flex-1 space-y-1 mt-5">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.name}

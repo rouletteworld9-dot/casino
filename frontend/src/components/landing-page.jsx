@@ -1,5 +1,7 @@
+import Footer from "./footer";
 import GameCards from "./gameCards";
 import CasinoGamesUI from "./games";
+import Header from "./header";
 import HeroSlider from "./ui/HeroSlider";
 import { motion } from "framer-motion";
 
@@ -48,6 +50,7 @@ export default function LandingPage({ isLoggedIn }) {
 
   return (
     <div className="min-h-screen">
+      <Header />
       {/* Hero Section */}
       <HeroSlider className="rounded-none h-[80vh]" />
 
@@ -90,7 +93,7 @@ export default function LandingPage({ isLoggedIn }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="mt-4 w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg font-semibold transition-all"
+                  className="mt-4 w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg font-semibold transition-all cursor-pointer"
                 >
                   Claim Now
                 </motion.button>
@@ -131,6 +134,7 @@ export default function LandingPage({ isLoggedIn }) {
           </div>
         </section>
       )}
+      <Footer />
     </div>
   );
 }

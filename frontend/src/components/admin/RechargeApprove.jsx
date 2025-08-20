@@ -1,89 +1,112 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { motion } from "framer-motion";
-
+import RejectPopup from "./RejectPopup";
+import { useTransactions } from "../../hooks/useTransactions";
+import TableSkeleton from "../ui/Skeletons/TableSkeleton";
+import ActionButton from "./ActionButton";
+import Pagination from "../ui/Pagination";
 const RechargeApprove = () => {
-  const [pendingDeposits, setPendingDeposits] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loadingAction, setLoadingAction] = useState(null);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  useEffect(() => {
-    const fetchPendingDeposits = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const { data } = await axios.get(
-          "/api/admin/transactions?type=deposit&status=pending",
-          {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          }
-        );
-        setPendingDeposits(Array.isArray(data?.data) ? data.data : []);
-      } catch (error) {
-        console.error("Error fetching pending deposits:", error);
-        setPendingDeposits([]); // fallback to empty
-      }
-    };
-    fetchPendingDeposits();
-  }, []);
+  const pageSize = 10;
 
-  const handleAction = async (id, action) => {
+  const {
+    allTransactions = [],
+    allTransactionsLoading,
+    approveTransactionFn,
+    rejectTransactionFn,
+    rejecttransactionLoading,
+    approvetransactionLoading,
+  } = useTransactions("approved" , "deposit");
+
+  const totalPages = Math.ceil(allTransactions.length / pageSize) || 1;
+  const start = (page - 1) * pageSize;
+  const paginated = allTransactions.slice(start, start + pageSize);
+
+  const handleAction = async (transactionId, action, reason) => {
+    setLoadingAction({ id: transactionId, action });
     try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `/api/admin/transactions/${id}/${action}`,
-        {},
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        }
-      );
-      setPendingDeposits(pendingDeposits.filter((d) => d._id !== id));
-    } catch (error) {
-      console.error(`Error ${action} deposit:`, error);
+      if (action === "approve") {
+        await approveTransactionFn(transactionId);
+      } else if (action === "reject") {
+        await rejectTransactionFn({ id: transactionId, adminNote: reason });
+      }
+    } finally {
+      setLoadingAction(null);
     }
   };
 
+  const openRejectModal = (transaction) => {
+    setSelectedTransaction(transaction);
+    setShowRejectModal(true);
+  };
+
+  if (allTransactionsLoading) return <TableSkeleton />;
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white text-gray-900 backdrop-blur p-6 rounded-lg shadow-lg border border-slate-800"
-    >
-      <h2 className="text-2xl font-bold text-neon-pink mb-4">
-        Recharge Approve
-      </h2>
-      <table className="w-full text-left text-sm md:text-base">
-        <thead>
-          <tr className="bg-slate-800/80 text-slate-200">
-            <th className="p-2">User</th>
-            <th className="p-2">Amount</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pendingDeposits.map((d) => (
-            <tr key={d._id} className="border-b border-slate-800/80 text-gray-900">
-              <td className="p-2">{d.userId?.name}</td>
-              <td className="p-2">{d.amount} INR</td>
-              <td className="p-2">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleAction(d._id, "approve")}
-                    className="bg-gray-600/90 text-white px-2 py-1 rounded hover:bg-gray-600"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleAction(d._id, "reject")}
-                    className="bg-red-600/90 text-white px-2 py-1 rounded hover:bg-red-600"
-                  >
-                    Reject
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </motion.div>
+    <>
+      <motion.div className="bg-midnightPurple text-white p-4 sm:p-6 rounded-lg shadow-lg border border-midnightPurple overflow-x-auto">
+        {/* Header & Filter */}
+        <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+          <h2 className="text-xl sm:text-2xl font-bold">Deposits (Approved)</h2>
+        </div>
+
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs sm:text-sm md:text-base">
+            <thead>
+              <tr className="bg-deepPurple text-white">
+                <th className="p-2">User</th>
+                <th className="p-2">Type</th>
+                <th className="p-2">Amount</th>
+                <th className="p-2">Date</th>
+                <th className="p-2">Status</th>
+                <th className="p-2">UTR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((t) => (
+                <tr key={t._id} className="border-b border-deepPurple">
+                  <td className="p-2">
+                    {t.user?.name || t.user?.phone || "N/A"}
+                  </td>
+                  <td className="p-2 capitalize">{t.transactionType}</td>
+                  <td className="p-2">{t.amount}</td>
+                  <td className="p-2">
+                    {new Date(t.createdAt).toLocaleString()}
+                  </td>
+                  <td className="p-2 capitalize">
+                    {t.transactionStatus || "N/A"}
+                  </td>
+                  <td className="p-2">{t.utr || "-"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPrev={() => setPage(page > 1 ? page - 1 : 1)}
+          onNext={() => setPage(page < totalPages ? page + 1 : totalPages)}
+        />
+      </motion.div>
+
+      {/* Reject Reason Modal */}
+      <RejectPopup
+        isOpen={showRejectModal}
+        onClose={() => setShowRejectModal(false)}
+        onConfirm={(reason) => {
+          handleAction(selectedTransaction._id, "reject", reason);
+          setShowRejectModal(false);
+        }}
+      />
+    </>
   );
 };
 
