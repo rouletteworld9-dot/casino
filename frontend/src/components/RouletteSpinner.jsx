@@ -1,14 +1,14 @@
 import { JSX } from "react";
 // import { rouletteData } from "../types";
 import { useContinuousRoulette } from "../hooks/useRouletteSpin";
-import "../components/RouletteSpiner.css";
+import "../components/RouletteSpinner.css";
 
 const RouletteSpinner = ({ rouletteData }) => {
   const { wheelRotation, ballRotation, ballTranslateY, result } =
     useContinuousRoulette(rouletteData);
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center" }}>w
       <div className="roulette-wheel">
         <div
           className="layer-2"
