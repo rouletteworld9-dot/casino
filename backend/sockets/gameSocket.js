@@ -5,18 +5,21 @@ const {
   gameState,
 } = require("../game/gameManager");
 
-let gameStarted = false;
+// ✅ Track if game has been initialized
+let gameInitialized = false;
 
 module.exports = function (io) {
   io.on("connection", (socket) => {
     console.log("User connected", socket.id);
 
-    // Send current state and last results right away
+    // ✅ Send comprehensive current state
     socket.emit("syncState", {
       roundId: gameState.roundId,
       phase: gameState.phase,
       winningNumber: gameState.winningNumber || null,
       lastResults: gameState.lastResults,
+      isGameRunning: gameState.isGameRunning,
+      timestamp: Date.now(), // ✅ Add timestamp for debugging
     });
 
     socket.emit("lastResults", gameState.lastResults);
@@ -29,14 +32,29 @@ module.exports = function (io) {
       forceResult(num);
     });
 
+    // ✅ Add ping/pong for connection health
+    socket.on("ping", () => {
+      socket.emit("pong", {
+        serverTime: Date.now(),
+        gameState: {
+          roundId: gameState.roundId,
+          phase: gameState.phase,
+          isRunning: gameState.isGameRunning,
+        },
+      });
+    });
+
     socket.on("disconnect", () => {
       console.log("User disconnected", socket.id);
     });
   });
 
-  // Start the first game only once
-  if (!gameStarted) {
-    gameStarted = true;
+  // ✅ Only start game once when server initializes
+  if (!gameInitialized) {
+    console.log("🚀 Initializing game for the first time");
+    gameInitialized = true;
     startGame(io);
+  } else {
+    console.log("⚠️ Game already initialized, skipping startup");
   }
 };

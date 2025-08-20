@@ -9,17 +9,51 @@ let gameState = {
   winningNumber: null,
   nextWinningNumber: null, // Admin override
   lastResults: [], // store last 5 numbers
+  isGameRunning: false, // ✅ Add flag to prevent multiple games
 };
 
+// ✅ Store timer references for cleanup
+let gameTimers = {
+  bettingTimer: null,
+  resultTimer: null,
+  nextRoundTimer: null,
+};
+
+function clearAllTimers() {
+  Object.values(gameTimers).forEach((timer) => {
+    if (timer) clearTimeout(timer);
+  });
+  gameTimers = {
+    bettingTimer: null,
+    resultTimer: null,
+    nextRoundTimer: null,
+  };
+}
+
 function startGame(io) {
+  // Add to gameManager.js
+  console.log(
+    `🎮 Phase: ${gameState.phase}, Round: ${gameState.roundId}, Time: ${new Date().toISOString()}`
+  );
+  // ✅ Prevent multiple games from running
+  if (gameState.isGameRunning) {
+    console.log("Game already running, skipping start");
+    return;
+  }
+
+  // ✅ Clear any existing timers first
+  clearAllTimers();
+
+  gameState.isGameRunning = true;
   gameState.roundId = Date.now().toString();
   gameState.bets = [];
   gameState.phase = "betting";
 
+  console.log(`🎮 Starting new game round: ${gameState.roundId}`);
   io.emit("gameStarted", { roundId: gameState.roundId, phase: "betting" });
 
   // BETTING PHASE (0–15s)
-  setTimeout(() => {
+  gameTimers.bettingTimer = setTimeout(() => {
     gameState.phase = "spinning";
     io.emit("bettingClosed");
 
@@ -54,7 +88,7 @@ function startGame(io) {
   }, 15000);
 
   // RESULT PHASE (25–30s)
-  setTimeout(async () => {
+  gameTimers.resultTimer = setTimeout(async () => {
     gameState.phase = "result";
     await settleBets(io);
 
@@ -69,8 +103,11 @@ function startGame(io) {
       lastResults: gameState.lastResults,
     });
 
+    // ✅ Reset flag before starting next round
+    gameState.isGameRunning = false;
+
     // Start next round
-    setTimeout(() => startGame(io), 5000);
+    gameTimers.nextRoundTimer = setTimeout(() => startGame(io), 5000);
   }, 25000);
 }
 
@@ -122,11 +159,10 @@ async function settleBets(io) {
       payout: payout,
     });
     await dbBet.save();
-
-    //clear the game for next round
-
-    gameState.bets = [];
   }
+
+  // ✅ Clear bets after settling
+  gameState.bets = [];
 }
 
 async function placeBet(socket, data) {
@@ -170,4 +206,11 @@ function forceResult(num) {
   gameState.nextWinningNumber = num;
 }
 
-module.exports = { startGame, placeBet, forceResult, gameState };
+// ✅ Add function to stop game (useful for graceful shutdown)
+function stopGame() {
+  clearAllTimers();
+  gameState.isGameRunning = false;
+  gameState.phase = "waiting";
+}
+
+module.exports = { startGame, placeBet, forceResult, gameState, stopGame };
