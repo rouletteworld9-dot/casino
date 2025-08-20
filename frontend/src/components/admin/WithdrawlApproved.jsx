@@ -71,7 +71,7 @@ const WithdrawlApproved = () => {
               {paginated.map((t) => (
                 <tr key={t._id} className="border-b border-deepPurple">
                   <td className="p-2">
-                    {t.user?.name || t.user?.phone || "N/A"}
+                    {t.user?.name || "Unknown"}
                   </td>
                   <td className="p-2 capitalize">{t.transactionType}</td>
                   <td className="p-2">{t.amount}</td>

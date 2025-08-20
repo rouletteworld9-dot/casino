@@ -2,10 +2,11 @@ import toast from "react-hot-toast";
 import transactionApi from "../api/admin/transactionApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useUserTransactions = (transactionStatus) => {
+export const useUserTransactions = (transactionStatus, transactionType) => {
   const fetchUserTransactions = useQuery({
-    queryKey: ["transactions", transactionStatus],
-    queryFn: () => transactionApi.getUserTransactions(transactionStatus),
+    queryKey: ["transactions", transactionStatus, transactionType],
+    queryFn: () =>
+      transactionApi.getUserTransactions(transactionStatus, transactionType),
   });
 
   const depositRequestMutation = useMutation({

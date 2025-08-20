@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import toast from "react-hot-toast";
+import { ArrowLeft } from "lucide-react";
 
 const fade = {
   initial: { opacity: 0, y: 12 },
@@ -18,7 +19,7 @@ export default function ForgetPassword() {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!phone) return toast.error("Enter phone number");
-    
+
     forgotPassword(
       { phone },
       {
@@ -81,12 +82,13 @@ export default function ForgetPassword() {
             </motion.button>
           </form>
 
-          <motion.div {...fade} className="mt-6 text-center">
+          <motion.div {...fade} className="mt-6 flex justify-center">
             <button
               onClick={() => navigate("/login")}
-              className="text-gray-400 hover:text-gray-200 cursor-pointer"
+              className="text-gray-400 flex items-center space-x-2 hover:text-gray-200 cursor-pointer"
             >
-              Back to Login
+              <ArrowLeft size={16} />
+              <span>Back to Login</span>
             </button>
           </motion.div>
         </div>

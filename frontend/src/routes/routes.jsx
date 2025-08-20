@@ -28,6 +28,8 @@ import VerifyResetOtp from "../components/VerifyResetOtp.jsx";
 import DepositInterface from "../components/user/UserBalance.jsx";
 import WithdrawlApproved from "../components/admin/WithdrawlApproved.jsx";
 import UserRequests from "../components/user/UserRequests.jsx";
+import NotFound from "../components/NotFound.jsx";
+import AutoRoulette from "../pages/AutoRoulette.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,9 @@ const router = createBrowserRouter([
     path: "/casino/game",
     element: <CasinoDashboard />,
   },
+  {path:"/casino/game/auto-roulette",
+    element:<AutoRoulette/>
+  },
   {
     path: "/forgot-password",
     element: <ForgetPassword />,
@@ -53,6 +58,9 @@ const router = createBrowserRouter([
   {
     path: "/verify-reset-otp",
     element: <VerifyResetOtp />,
+  },
+  { path:"*",
+    element:(<NotFound/>)
   },
   {
     path: "/admin",
