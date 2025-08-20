@@ -13,7 +13,7 @@ const GameCard = ({ game }) => {
     <motion.div
       onClick={() => {
         if (game.title === "AUTO-ROULETTE") {
-          navigate("/auto/roulette"); // Navigate to the casino game page
+          navigate("/casino/game/auto-roulette"); // Navigate to the casino game page
         }
       }}
       variants={itemVariants}
