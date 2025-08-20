@@ -62,7 +62,7 @@ const Transactions = () => {
               setType(e.target.value);
               setPage(1);
             }}
-            className="rounded border border-midnightPurple bg-deepPurple p-2 text-white text-sm sm:text-base"
+            className="rounded border border-midnightPurple bg-deepPurple p-2 text-white text-sm sm:text-base cursor-pointer"
           >
             <option value="all">All</option>
             <option value="pending">Pending</option>

@@ -30,6 +30,7 @@ import WithdrawlApproved from "../components/admin/WithdrawlApproved.jsx";
 import UserRequests from "../components/user/UserRequests.jsx";
 import NotFound from "../components/NotFound.jsx";
 import AutoRoulette from "../pages/AutoRoulette.jsx";
+import UserBetTransaction from '../components/user/UserBetTransaction.jsx'
 
 const router = createBrowserRouter([
   {
@@ -95,6 +96,7 @@ const router = createBrowserRouter([
       { path: "deposits-withdrawals", element: <DepositInterface /> },
       { path: "history", element: <UserHistory /> },
       { path: "requests", element: <UserRequests /> },
+      { path: "bet-history", element: <UserBetTransaction/>}
     ],
   },
 ]);
