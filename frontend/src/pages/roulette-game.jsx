@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import RouletteWheel from "../components/RouletteWheel";
+import RouletteWheel from "../components/rouletteWheel";
+
 
 const defaultData = {
   numbers: Array.from({ length: 37 }, (_, i) => i),

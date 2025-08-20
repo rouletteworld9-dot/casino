@@ -3,11 +3,7 @@ import { rouletteData } from "../types";
 import { useContinuousRoulette } from "../hooks/useRouletteSpin";
 import "../components/rouletteWheel.css";
 
-interface Props {
-  rouletteData: rouletteData;
-}
-
-const RouletteWheel = ({ rouletteData }: Props): JSX.Element => {
+const RouletteWheel = ({ rouletteData }) => {
   const { wheelRotation, ballRotation, ballTranslateY, result } =
     useContinuousRoulette(rouletteData);
 
