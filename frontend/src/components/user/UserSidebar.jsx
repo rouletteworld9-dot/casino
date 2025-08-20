@@ -13,7 +13,7 @@ const UserSidebar = ({ isOpen, setIsOpen }) => {
       {/* Toggle Button - works on all screen sizes */}
       <button
         onClick={toggleSidebar}
-        className="fixed left-4 top-14 z-50 p-2 bg-midnightPurple rounded-lg text-white hover:bg-[#3a2044] transition"
+        className="fixed left-4 top-14 z-50 p-2 bg-midnightPurple rounded-lg text-white hover:bg-[#3a2044] transition cursor-pointer"
       >
         {isOpen ? <X size={18} /> : <Menu size={18} />}
       </button>

@@ -23,13 +23,13 @@ const ConfirmDialog = ({ open, title, message, onConfirm, onCancel }) => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={onCancel}
-                className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 transition"
+                className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 transition cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={onConfirm}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 transition"
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 transition cursor-pointer"
               >
                 Confirm
               </button>

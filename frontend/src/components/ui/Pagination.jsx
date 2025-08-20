@@ -9,14 +9,14 @@ export default function Pagination({ page, totalPages, onPrev, onNext }) {
         <button
           onClick={onPrev}
           disabled={page === 1}
-          className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50"
+          className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50 cursor-pointer"
         >
           Prev
         </button>
         <button
           onClick={onNext}
           disabled={page === totalPages}
-          className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50"
+          className="rounded border border-deepPurple px-3 py-1 disabled:opacity-50 cursor-pointer"
         >
           Next
         </button>

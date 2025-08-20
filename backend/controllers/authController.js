@@ -76,16 +76,12 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired OTP." });
     }
 
-    console.log(user.otp !== otp || user.otpExpiresAt < new Date());
-
     user.isVerified = true;
     user.otp = null;
     user.otpExpiresAt = null;
     await user.save();
 
-    console.log("user verified");
-
-    return res.json({ message: "User verified successfully." });
+    return res.json({ message: "Verification Successful, Login Again" });
   } catch (err) {
     console.error("OTP verify error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -149,7 +145,7 @@ exports.forgotPassword = async (req, res) => {
     user.otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000);
     await user.save();
 
-    return res.json({ message: "OTP sent for password reset." });
+    return res.json({ message: "OTP sent to reset password." });
   } catch (err) {
     console.error("Forgot password error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -274,7 +270,12 @@ exports.login = async (req, res) => {
 
     return res.json({
       token: accessToken,
-      user: { name: user.name, phone: user.phone, role: user.role , _id:user._id },
+      user: {
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        _id: user._id,
+      },
       expiresIn: 30 * 60, // seconds, client can use to know expiry (30 minutes)
     });
   } catch (err) {
