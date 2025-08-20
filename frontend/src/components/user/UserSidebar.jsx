@@ -1,4 +1,4 @@
-import { User, CreditCard, BarChart3, Notebook, Menu, X } from "lucide-react";
+import { User, CreditCard, BarChart3, Notebook, Menu, X , DollarSign } from "lucide-react";
 import BalanceCards from "../ui/BalanceCards";
 import { useAuth } from "../../hooks/useAuth";
 import SidebarLink from "../ui/SideBarLink";
@@ -38,9 +38,14 @@ const UserSidebar = ({ isOpen, setIsOpen }) => {
                 label="Deposits and withdrawals"
               />
               <SidebarLink
+                to="/user/bet-history"
+                icon={DollarSign}
+                label="Bet Transaction history"
+              />
+              <SidebarLink
                 to="/user/history"
                 icon={BarChart3}
-                label="Bet and transaction history"
+                label="Transaction history"
               />
               <SidebarLink
                 to="/user/requests"
