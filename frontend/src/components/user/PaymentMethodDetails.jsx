@@ -218,8 +218,7 @@ const PaymentMethodDetails = () => {
           onClick={() => {
             if (amount >= 500) {
               setShowQR(true);
-            }
-            else{
+            } else {
               toast.error("Please Deposit Atleast ₹500");
             }
           }}
