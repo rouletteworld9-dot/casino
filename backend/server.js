@@ -5,6 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const gameSocket = require("./sockets/gameSocket");
 const { stopGame } = require("./game/gameManager");
+const KeepAliveService = require("./utils/keepAlive");
 
 const INSTANCE_ID = `server-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -14,6 +15,9 @@ const io = new Server(server, {
     origin: "*",
   },
 });
+
+const keepAlive = new KeepAliveService("https://casino-6w78.onrender.com");
+keepAlive.start();
 
 connectDB();
 // Attach socket game logic
