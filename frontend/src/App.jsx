@@ -26,10 +26,10 @@ import Games from "./components/admin/Games.jsx";
 import Transactions from "./components/admin/Transactions.jsx";
 // import { useAuthStore } from "./stores/useAuthStore.js";
 import { AuthProvider } from "./components/auth/AuthProvider.jsx";
+import RouletteGame from "./pages/roulette-game.js";
 
 export default function App() {
   const navigate = useNavigate();
-
 
   return (
     <AuthProvider>
@@ -49,6 +49,8 @@ export default function App() {
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/register" element={<RegisterScreen />} />
               <Route path="/casino/game" element={<CasinoDashboard />} />
+              <Route path="/auto/roulette" element={<RouletteGame />} />
+
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route path="dashboard" element={<Dashboard />} />
