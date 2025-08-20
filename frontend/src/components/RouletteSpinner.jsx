@@ -1,9 +1,9 @@
 import { JSX } from "react";
-import { rouletteData } from "../types";
+// import { rouletteData } from "../types";
 import { useContinuousRoulette } from "../hooks/useRouletteSpin";
-import "../components/RouletteWheel.css";
+import "../components/RouletteSpiner.css";
 
-const RouletteWheel = ({ rouletteData }) => {
+const RouletteSpinner = ({ rouletteData }) => {
   const { wheelRotation, ballRotation, ballTranslateY, result } =
     useContinuousRoulette(rouletteData);
 
@@ -48,4 +48,4 @@ const RouletteWheel = ({ rouletteData }) => {
   );
 };
 
-export default RouletteWheel;
+export default RouletteSpinner;

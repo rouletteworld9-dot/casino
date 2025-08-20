@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import RouletteWheel from "../components/rouletteWheel"
+import RouletteSpinner from "../components/RouletteSpinner";
 
 const defaultData = {
   numbers: Array.from({ length: 37 }, (_, i) => i),
@@ -36,7 +36,7 @@ const RouletteGame = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "20px" }}>
       <h1>Roulette Spin</h1>
-      <RouletteWheel
+      <RouletteSpinner
         rouletteData={defaultData}
         number={number}
         startAgain={() => {}}
