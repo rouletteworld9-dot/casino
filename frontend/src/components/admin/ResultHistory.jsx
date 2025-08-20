@@ -1,6 +1,14 @@
 import React, { useState } from "react";
+import { useGameSocket } from "../../hooks/useGameSocket";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const ResultHistory = () => {
+   const user = useAuthStore((s) => s.user);
+  // console.log(user._id , "id")
+  const { lastResults, round } = useGameSocket(user?._id);
+  console.log(lastResults, round, "lastresultt");
+
+  // console.log("cons")
   const [resultHistory, setResultHistory] = useState([
     {
       period: "20250808010401",
@@ -46,23 +54,36 @@ const ResultHistory = () => {
             <tr className="border-b border-midnightPurple ">
               <th className="text-left py-2">Periods</th>
               <th className="text-left py-2">Number</th>
-              <th className="text-left py-2">Big/Small</th>
-              <th className="text-left py-2">Colour</th>
+              {/* <th className="text-left py-2">Big/Small</th>
+              <th className="text-left py-2">Colour</th> */}
             </tr>
           </thead>
           <tbody>
-            {resultHistory.map((result, index) => (
+            {lastResults.map((result, index) => (
               <tr key={index} className="border-b border-midnightPurple">
-                <td className="py-2 ">{result.period}</td>
+                {/* <td className="py-2 ">{result.period}</td> */}
                 <td
                   className={`py-2 font-semibold ${getColorClass(result.color)}`}
                 >
-                  {result.number}
+                  {result}
                 </td>
-                <td className="py-2 ">{result.bigSmall}</td>
-                <td className="py-2">{getColorDot(result.color)}</td>
+                {/* <td className="py-2 ">{result.bigSmall}</td>
+                <td className="py-2">{getColorDot(result.color)}</td> */}
               </tr>
             ))}
+
+            {/* {round.map((result, index) => (
+              <tr key={index} className="border-b border-midnightPurple">
+                {/* <td className="py-2 ">{result.period}</td> */}
+                {/* <td
+                  className={`py-2 font-semibold`}
+                >
+                  {round}
+                </td> */}
+                {/* <td className="py-2 ">{result.bigSmall}</td>
+                <td className="py-2">{getColorDot(result.color)}</td> 
+              </tr>
+            ))} */}
           </tbody>
         </table>
       </div>

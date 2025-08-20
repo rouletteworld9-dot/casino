@@ -152,7 +152,7 @@ const RouletteBoard = () => {
           </div>
 
           {/* Bottom section with 1-18, EVEN, etc. */}
-          <div className="ml-4 grid grid-cols-6 ">
+          <div className="ml-20 grid grid-cols-7 ">
             <div className="bg-[#2939A5]  text-white text-lg font-bold h-10 flex items-center justify-center border border-white">
               1-18
             </div>

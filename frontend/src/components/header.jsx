@@ -28,11 +28,11 @@ const IconButton = ({ icon: Icon, ...props }) => (
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const user = useAuthStore((s) => s.user);
-  const { round, phase, result, bets, placeBet, messages, lastResults  } = useGameSocket(user?._id);
+  // const user = useAuthStore((s) => s.user);
+  // const { round, phase, result, bets, placeBet, messages, lastResults  } = useGameSocket(user?._id);
 
 
-  console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
+  // console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
   
 
   const navigate = useNavigate();

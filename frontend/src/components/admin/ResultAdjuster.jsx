@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useResultAdjuster } from "../../hooks/useResultAdjuster";
 const ResultAdjuster = () => {
+  console.log("console")
   const [number, setNumber] = useState("");
   const { resultAdjustFn } = useResultAdjuster(number);
 
