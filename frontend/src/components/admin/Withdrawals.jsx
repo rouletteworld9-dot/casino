@@ -335,7 +335,7 @@ const Withdrawals = () => {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm md:text-base">
+          <table className="w-full text-left text-xs sm:text-sm md:text-base custom-scroll">
             <thead>
               <tr className="bg-deepPurple text-white">
                 <th className="p-2">Serial</th>
@@ -351,11 +351,11 @@ const Withdrawals = () => {
               </tr>
             </thead>
             <tbody>
-              {paginated.map((t) => (
+              {paginated.map((t, index) => (
                 <tr key={t._id} className="border-b border-deepPurple">
-                  <td className="p-2">{"N/A"}</td>
+                  <td className="p-2">{(page - 1) * pageSize + index + 1}</td>
                   <td className="p-2">{t.user?.phone || "N/A"}</td>
-                  <td className="p-2 capitalize">{"N/A"}</td>
+                  <td className="p-2 capitalize">{t?.bankName || "N/A"}</td>
                   <td className="p-2">{t.recipientName}</td>
                   <td className="p-2">{t?.bankAccountNumber}</td>
                   <td className="p-2 capitalize">{t.ifscCode || "N/A"}</td>
@@ -368,7 +368,7 @@ const Withdrawals = () => {
                   <td>
                     {" "}
                     {t.transactionStatus === "pending" ? (
-                      <div className="flex gap-2 flex-wrap">
+                      <div className=" gap-1 flex">
                         <ActionButton
                           label="Approve"
                           color="green"

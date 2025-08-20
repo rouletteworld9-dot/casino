@@ -88,7 +88,7 @@ const UserProfilePage = () => {
               <h2 className="flex items-center gap-2 text-gray-200 font-semibold mb-3">
                 <Coins size={18} /> Balance
               </h2>
-              <InfoRow label="Bonus Tokens" value={singleUser?.playTokens} />
+              <InfoRow label="Play Tokens" value={singleUser?.playTokens} />
               <InfoRow label="Balance" value={`₹${singleUser?.realBalance}`} />
             </div>
           )}
