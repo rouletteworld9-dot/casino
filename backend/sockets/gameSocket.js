@@ -39,12 +39,10 @@ module.exports = function (io) {
     socket.emit("lastResults", gameState.lastResults);
 
     socket.on("placeBet", (data) => {
-      console.log(`🎰 Bet placed on instance ${socket.instanceId}:`, data);
       placeBet(socket, data);
     });
 
     socket.on("forceResult", (num) => {
-      console.log(`🎯 Force result on instance ${socket.instanceId}:`, num);
       forceResult(num);
     });
 

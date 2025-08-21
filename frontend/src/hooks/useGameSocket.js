@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
+import toast from "react-hot-toast";
 
 export function useGameSocket(userId) {
   const [round, setRound] = useState(null);
@@ -87,5 +88,11 @@ export function useGameSocket(userId) {
     setBets((prev) => [...prev, bet]);
   };
 
-  return { round, phase, result, bets, placeBet, messages, lastResults };
+  const forceResult = (num)=>{
+    if(!num) return
+    socket.emit("forceResult", num)
+    toast.success("Result Adjusted Success")
+  }
+
+  return { round, phase, result, bets, placeBet, messages, lastResults, forceResult };
 }
