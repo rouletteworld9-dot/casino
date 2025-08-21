@@ -82,23 +82,36 @@ async function startServer() {
   // Attach your existing game logic
   gameSocket(io);
 
-  // Health check endpoint
-  app.get("/health", (req, res) => {
+  // ✅ Health check endpoint with Redis game state
+  app.get("/health", async (req, res) => {
     const uptime = process.uptime();
-    const gameState = require("./game/gameManager").gameState;
 
-    res.json({
-      instanceId: INSTANCE_ID,
-      uptime: uptime,
-      uptimeFormatted: `${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s`,
-      timestamp: new Date().toISOString(),
-      gameState: gameState.roundId,
-      gamePhase: gameState.phase,
-      isGameRunning: gameState.isGameRunning,
-      connectedSockets: io.engine.clientsCount,
-      hasRedis: !!process.env.REDIS_URL,
-      redisStatus: process.env.REDIS_URL ? "Connected" : "Not configured",
-    });
+    try {
+      const { getCurrentGameState } = require("./game/gameManager");
+      const gameState = await getCurrentGameState();
+
+      res.json({
+        instanceId: INSTANCE_ID,
+        uptime: uptime,
+        uptimeFormatted: `${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s`,
+        timestamp: new Date().toISOString(),
+        gameState: gameState.roundId,
+        gamePhase: gameState.phase,
+        isGameRunning: gameState.isGameRunning,
+        connectedSockets: io.engine.clientsCount,
+        hasRedis: !!process.env.REDIS_URL,
+        redisStatus: process.env.REDIS_URL ? "Connected" : "Not configured",
+        betsCount: gameState.bets ? gameState.bets.length : 0,
+      });
+    } catch (error) {
+      res.json({
+        instanceId: INSTANCE_ID,
+        uptime: uptime,
+        error: error.message,
+        hasRedis: !!process.env.REDIS_URL,
+        redisStatus: "Error getting game state",
+      });
+    }
   });
 
   const PORT = process.env.PORT || 5000;

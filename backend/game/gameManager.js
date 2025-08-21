@@ -1,18 +1,99 @@
 const User = require("../models/User");
 const Bet = require("../models/Bet");
 const { validateBet, VALID_BET_TYPES } = require("./betValidator");
+const { createClient } = require("redis");
 
-let gameState = {
-  phase: "waiting", // betting, spinning, result
-  roundId: null,
-  bets: [],
-  winningNumber: null,
-  nextWinningNumber: null, // Admin override
-  lastResults: [], // store last 5 numbers
-  isGameRunning: false, // ✅ Add flag to prevent multiple games
-};
+// ✅ Redis client for game state (separate from Socket.IO)
+let redisClient = null;
+const GAME_STATE_KEY = "roulette:gameState";
 
-// ✅ Store timer references for cleanup
+// ✅ Initialize Redis client for game state
+async function initRedisGameState() {
+  if (!process.env.REDIS_URL) {
+    console.log(
+      "⚠️ No REDIS_URL - using local memory (will have scaling issues)"
+    );
+    return false;
+  }
+
+  try {
+    redisClient = createClient({ url: process.env.REDIS_URL });
+    await redisClient.connect();
+    console.log("✅ Redis game state client connected");
+
+    // Initialize game state in Redis if not exists
+    const exists = await redisClient.exists(GAME_STATE_KEY);
+    if (!exists) {
+      await setGameState({
+        phase: "waiting",
+        roundId: null,
+        bets: [],
+        winningNumber: null,
+        nextWinningNumber: null,
+        lastResults: [],
+        isGameRunning: false,
+      });
+      console.log("🎮 Initialized fresh game state in Redis");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("❌ Redis game state connection failed:", error);
+    return false;
+  }
+}
+
+// ✅ Get game state from Redis (or fallback to local)
+async function getGameState() {
+  if (redisClient) {
+    try {
+      const data = await redisClient.get(GAME_STATE_KEY);
+      return data ? JSON.parse(data) : getDefaultGameState();
+    } catch (error) {
+      console.error("❌ Error getting game state from Redis:", error);
+      return getDefaultGameState();
+    }
+  }
+
+  // Fallback to local memory if no Redis
+  return localGameState;
+}
+
+// ✅ Set game state in Redis (or fallback to local)
+async function setGameState(newState) {
+  if (redisClient) {
+    try {
+      await redisClient.set(GAME_STATE_KEY, JSON.stringify(newState));
+      return true;
+    } catch (error) {
+      console.error("❌ Error setting game state in Redis:", error);
+      localGameState = newState; // Fallback to local
+      return false;
+    }
+  }
+
+  // Fallback to local memory if no Redis
+  localGameState = newState;
+  return true;
+}
+
+// ✅ Default game state
+function getDefaultGameState() {
+  return {
+    phase: "waiting",
+    roundId: null,
+    bets: [],
+    winningNumber: null,
+    nextWinningNumber: null,
+    lastResults: [],
+    isGameRunning: false,
+  };
+}
+
+// ✅ Local fallback (for when Redis is not available)
+let localGameState = getDefaultGameState();
+
+// ✅ Timer management (still local per instance)
 let gameTimers = {
   bettingTimer: null,
   resultTimer: null,
@@ -30,41 +111,60 @@ function clearAllTimers() {
   };
 }
 
-function startGame(io) {
-  // Add to gameManager.js
-  console.log(
-    `🎮 Phase: ${gameState.phase}, Round: ${gameState.roundId}, Time: ${new Date().toISOString()}`
-  );
-  // ✅ Prevent multiple games from running
+// ✅ Modified startGame function
+async function startGame(io) {
+  const gameState = await getGameState();
+
+  // Prevent multiple games from different instances
   if (gameState.isGameRunning) {
-    console.log("Game already running, skipping start");
+    console.log(
+      `⚠️ Game already running (Round: ${gameState.roundId}), skipping start`
+    );
     return;
   }
 
-  // ✅ Clear any existing timers first
   clearAllTimers();
 
-  gameState.isGameRunning = true;
-  gameState.roundId = Date.now().toString();
-  gameState.bets = [];
-  gameState.phase = "betting";
+  // Update game state
+  const newGameState = {
+    ...gameState,
+    isGameRunning: true,
+    roundId: Date.now().toString(),
+    bets: [],
+    phase: "betting",
+  };
 
-  console.log(`🎮 Starting new game round: ${gameState.roundId}`);
-  io.emit("gameStarted", { roundId: gameState.roundId, phase: "betting" });
+  await setGameState(newGameState);
+
+  console.log(`🎮 Starting new game round: ${newGameState.roundId}`);
+  io.emit("gameStarted", { roundId: newGameState.roundId, phase: "betting" });
 
   // BETTING PHASE (0–15s)
-  gameTimers.bettingTimer = setTimeout(() => {
-    gameState.phase = "spinning";
+  gameTimers.bettingTimer = setTimeout(async () => {
+    const currentState = await getGameState();
+
+    // Double-check this instance is still managing the game
+    if (currentState.roundId !== newGameState.roundId) {
+      console.log("⚠️ Round ID changed, another instance took over");
+      return;
+    }
+
+    const updatedState = {
+      ...currentState,
+      phase: "spinning",
+    };
+    await setGameState(updatedState);
+
     io.emit("bettingClosed");
 
     // Choose winning number
-    if (gameState.nextWinningNumber !== null) {
-      gameState.winningNumber = gameState.nextWinningNumber;
-      gameState.nextWinningNumber = null;
-    } else if (gameState.bets.length > 0) {
+    if (currentState.nextWinningNumber !== null) {
+      updatedState.winningNumber = currentState.nextWinningNumber;
+      updatedState.nextWinningNumber = null;
+    } else if (currentState.bets.length > 0) {
       // Find number with least bets
       const betCounts = {};
-      gameState.bets.forEach((bet) => {
+      currentState.bets.forEach((bet) => {
         bet.numbers.forEach((num) => {
           betCounts[num] = (betCounts[num] || 0) + bet.amount;
         });
@@ -78,42 +178,55 @@ function startGame(io) {
           candidate = parseInt(num, 10);
         }
       }
-      gameState.winningNumber = candidate;
+      updatedState.winningNumber = candidate;
     } else {
-      // no bets → random
-      gameState.winningNumber = Math.floor(Math.random() * 37);
+      updatedState.winningNumber = Math.floor(Math.random() * 37);
     }
 
-    io.emit("spinning", { winningNumber: gameState.winningNumber });
+    await setGameState(updatedState);
+    io.emit("spinning", { winningNumber: updatedState.winningNumber });
   }, 15000);
 
   // RESULT PHASE (25–30s)
   gameTimers.resultTimer = setTimeout(async () => {
-    gameState.phase = "result";
-    await settleBets(io);
+    const currentState = await getGameState();
 
-    // Push to lastResults (max length = 5)
-    gameState.lastResults.unshift(gameState.winningNumber);
-    if (gameState.lastResults.length > 5) {
-      gameState.lastResults.pop();
+    // Double-check this instance is still managing the game
+    if (currentState.roundId !== newGameState.roundId) {
+      console.log("⚠️ Round ID changed during result phase");
+      return;
     }
 
-    io.emit("roundResult", {
-      winningNumber: gameState.winningNumber,
-      lastResults: gameState.lastResults,
-    });
+    const updatedState = {
+      ...currentState,
+      phase: "result",
+    };
+    await setGameState(updatedState);
 
-    // ✅ Reset flag before starting next round
-    gameState.isGameRunning = false;
+    await settleBets(io, currentState);
+
+    // Update last results
+    updatedState.lastResults = [
+      currentState.winningNumber,
+      ...currentState.lastResults.slice(0, 4),
+    ];
+    updatedState.isGameRunning = false;
+    await setGameState(updatedState);
+
+    io.emit("roundResult", {
+      winningNumber: currentState.winningNumber,
+      lastResults: updatedState.lastResults,
+    });
 
     // Start next round
     gameTimers.nextRoundTimer = setTimeout(() => startGame(io), 5000);
   }, 25000);
 }
 
-async function settleBets(io) {
+// ✅ Modified settleBets function
+async function settleBets(io, gameState) {
   for (const bet of gameState.bets) {
-    const user = await User.findById(bet.user);
+    const user = await User.findById(bet.userId);
     if (!user) continue;
 
     const isWin = validateBet(bet, gameState.winningNumber);
@@ -148,7 +261,7 @@ async function settleBets(io) {
       });
     }
 
-    // ✅ Save finalized bet in DB
+    // Save bet to database
     const dbBet = new Bet({
       user: bet.userId,
       type: bet.type,
@@ -160,12 +273,12 @@ async function settleBets(io) {
     });
     await dbBet.save();
   }
-
-  // ✅ Clear bets after settling
-  gameState.bets = [];
 }
 
+// ✅ Modified placeBet function
 async function placeBet(socket, data) {
+  const gameState = await getGameState();
+
   if (gameState.phase !== "betting") {
     return socket.emit("error", { message: "Betting closed" });
   }
@@ -191,7 +304,12 @@ async function placeBet(socket, data) {
     roundId: gameState.roundId,
   };
 
-  gameState.bets.push(bet);
+  // Add bet to Redis game state
+  const updatedState = {
+    ...gameState,
+    bets: [...gameState.bets, bet],
+  };
+  await setGameState(updatedState);
 
   socket.emit("betPlaced", {
     success: true,
@@ -202,15 +320,38 @@ async function placeBet(socket, data) {
   });
 }
 
-function forceResult(num) {
-  gameState.nextWinningNumber = num;
+// ✅ Modified forceResult function
+async function forceResult(num) {
+  const gameState = await getGameState();
+  const updatedState = {
+    ...gameState,
+    nextWinningNumber: num,
+  };
+  await setGameState(updatedState);
 }
 
-// ✅ Add function to stop game (useful for graceful shutdown)
-function stopGame() {
+// ✅ Modified stopGame function
+async function stopGame() {
   clearAllTimers();
-  gameState.isGameRunning = false;
-  gameState.phase = "waiting";
+  const gameState = await getGameState();
+  const updatedState = {
+    ...gameState,
+    isGameRunning: false,
+    phase: "waiting",
+  };
+  await setGameState(updatedState);
 }
 
-module.exports = { startGame, placeBet, forceResult, gameState, stopGame };
+// ✅ Export game state getter for health check
+async function getCurrentGameState() {
+  return await getGameState();
+}
+
+module.exports = {
+  startGame,
+  placeBet,
+  forceResult,
+  stopGame,
+  getCurrentGameState,
+  initRedisGameState,
+};
