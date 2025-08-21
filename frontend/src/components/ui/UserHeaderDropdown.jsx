@@ -3,17 +3,20 @@ import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const UserHeaderDropdown = ({ setIsDropdown, onNavigate }) => {
   const { logoutUser, logoutLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logoutUser(undefined, {
-      onSuccess: () => {
-        setIsDropdown(false);
-        navigate("/");
-      },
-    });
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setIsDropdown(false);
+      toast.success("Logout successful");
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    }
   };
 
   return (
