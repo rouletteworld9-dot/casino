@@ -9,6 +9,7 @@ const GAME_STATE_KEY = "roulette:gameState";
 
 // ✅ Initialize Redis client for game state
 async function initRedisGameState() {
+  
   if (!process.env.REDIS_URL) {
     console.log(
       "⚠️ No REDIS_URL - using local memory (will have scaling issues)"
@@ -207,7 +208,10 @@ async function startGame(io) {
 
     // Update last results
     updatedState.lastResults = [
-      currentState.winningNumber,
+      {
+        result: currentState.winningNumber,
+        roundId: currentState.roundId,
+      },
       ...currentState.lastResults.slice(0, 4),
     ];
     updatedState.isGameRunning = false;

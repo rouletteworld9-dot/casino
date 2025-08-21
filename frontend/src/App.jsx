@@ -11,9 +11,8 @@ export default function App() {
   const user = useAuthStore((s) => s.user);
 
   //  const { round, phase, result, bets, placeBet, messages, lastResults  } = useGameSocket(user?._id);
-    // console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
+  // console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
     
-
   
   return (
     <AuthProvider>

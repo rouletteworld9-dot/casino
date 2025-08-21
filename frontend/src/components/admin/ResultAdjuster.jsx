@@ -3,24 +3,12 @@ import { motion } from "framer-motion";
 import { useResultAdjuster } from "../../hooks/useResultAdjuster";
 import { useGameSocket } from "../../hooks/useGameSocket";
 const ResultAdjuster = () => {
-  console.log("console")
+ 
   const [number, setNumber] = useState("");
-  const { resultAdjustFn } = useResultAdjuster(number);
   const {forceResult}=useGameSocket()
 
   const handleSubmitResult = () => {
     forceResult(number)
-    
-    // if (number.trim()) {
-    //   resultAdjustFn(number, {
-    //     onSuccess: () => {
-    //       setNumber("");
-    //     },
-    //     onError: () => {
-    //       setNumber("");
-    //     },
-    //   });
-    // }
   };
 
   return (

@@ -43,7 +43,8 @@ module.exports = function (io) {
     });
 
     socket.on("forceResult", (num) => {
-      forceResult(num);
+      const changeToNumber = Number(num)
+      forceResult(changeToNumber);
     });
 
     // Enhanced ping/pong with current game state
