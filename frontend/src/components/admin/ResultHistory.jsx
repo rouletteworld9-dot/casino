@@ -1,13 +1,6 @@
 import React, { useState } from "react";
-import { useGameSocket } from "../../hooks/useGameSocket";
-import { useAuthStore } from "../../stores/useAuthStore";
 
-const ResultHistory = () => {
-   const user = useAuthStore((s) => s.user);
-  // console.log(user._id , "id")
-  const { lastResults, round } = useGameSocket(user?._id);
-  console.log(lastResults, round, "lastresultt");
-
+const ResultHistory = ({ lastResults }) => {
   // console.log("cons")
   const [resultHistory, setResultHistory] = useState([
     {
@@ -65,7 +58,12 @@ const ResultHistory = () => {
                 <td
                   className={`py-2 font-semibold ${getColorClass(result.color)}`}
                 >
-                  {result}
+                  {result.result}
+                </td>
+                <td
+                  className={`py-2 font-semibold ${getColorClass(result.color)}`}
+                >
+                  {result.roundId}
                 </td>
                 {/* <td className="py-2 ">{result.bigSmall}</td>
                 <td className="py-2">{getColorDot(result.color)}</td> */}
@@ -75,12 +73,12 @@ const ResultHistory = () => {
             {/* {round.map((result, index) => (
               <tr key={index} className="border-b border-midnightPurple">
                 {/* <td className="py-2 ">{result.period}</td> */}
-                {/* <td
+            {/* <td
                   className={`py-2 font-semibold`}
                 >
                   {round}
                 </td> */}
-                {/* <td className="py-2 ">{result.bigSmall}</td>
+            {/* <td className="py-2 ">{result.bigSmall}</td>
                 <td className="py-2">{getColorDot(result.color)}</td> 
               </tr>
             ))} */}

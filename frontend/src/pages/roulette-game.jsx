@@ -1,53 +1,31 @@
 import { useEffect, useState } from "react";
 import RouletteSpinner from "../components/RouletteSpinner";
-
-const defaultData = {
-  numbers: Array.from({ length: 37 }, (_, i) => i),
-};
-
-const SPIN_INTERVAL = 15000; // 15 seconds
+import { useGameSocket } from "../hooks/useGameSocket";
+import { useAuthStore } from "../stores/useAuthStore";
 
 const RouletteGame = () => {
-  const [number, setNumber] = useState({ next: "" });
+  const user = useAuthStore((state) => state.user);
+  const { lastResults, phase } = useGameSocket(user?._id);
   const [result, setResult] = useState(null);
 
-  // Trigger new spin every 15 seconds
   useEffect(() => {
-    const spinLoop = setInterval(() => {
-      const next = Math.floor(Math.random() * 37).toString();
-      setNumber({ next });
-      setResult(null); // Reset result while spinning
-    }, SPIN_INTERVAL);
-
-    return () => clearInterval(spinLoop);
-  }, []);
-
-  // Show result after spin (delay slightly after animation finishes)
-  useEffect(() => {
-    if (number.next !== "") {
-      const resultTimeout = setTimeout(() => {
-        setResult(number.next);
-      }, 5500); // Wait for animation to finish
-
-      return () => clearTimeout(resultTimeout);
+    if (phase === "result" && lastResults?.length > 0) {
+      setResult(lastResults[0]?.toString() || "");
+    } else {
+      setResult(null);
     }
-  }, [number]);
+  }, [phase, lastResults]);
 
   return (
     <div style={{ textAlign: "center", paddingTop: "20px" }}>
-      <h1>Roulette Spin</h1>
-      <RouletteSpinner
-        rouletteData={defaultData}
-        number={number}
-        startAgain={() => {}}
-      />
+      <RouletteSpinner phase={phase} lastResults={lastResults} />
       <h2>
-        {result !== null ? (
-          <span>
+        {phase === "result" && result !== null ? (
+          <span className="font-bold text-2xl">
             🎉 Result: <strong>{result}</strong>
           </span>
         ) : (
-          <span>Spinning...</span>
+          <span className="font-bold text-2xl">{phase}</span>
         )}
       </h2>
     </div>

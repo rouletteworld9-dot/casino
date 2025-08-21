@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ResultHistory from "./ResultHistory";
 import ResultAdjuster from "./ResultAdjuster";
+import { useGameSocket } from "../../hooks/useGameSocket";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const Dashboard = () => {
-  const [currentPeriod, setCurrentPeriod] = useState("20250808010402");
-  const [countdown, setCountdown] = useState(21); 
-
+  const user = useAuthStore((state) => state.user);
+  const { round, phase, lastResults } = useGameSocket(user?._id);
 
   // useEffect(() => {
   //   const timer = setInterval(() => {
@@ -35,9 +36,6 @@ const Dashboard = () => {
     return `${year}${month}${day}${hour}${minute}${second}`;
   };
 
-
-
-
   return (
     <div className="space-y-6 p-6 bg-midnightPurple min-h-screen rounded-lg">
       {/* Header */}
@@ -48,19 +46,15 @@ const Dashboard = () => {
       {/* Current Period and Countdown */}
       <div className="bg-blue-400 text-white p-4 rounded-lg">
         <div className="flex justify-between items-center">
-          <span className="font-semibold">Period: {currentPeriod}</span>
-          <span className="font-bold text-xl">
-            {String(Math.floor(countdown / 60)).padStart(2, "0")}:
-            {String(countdown % 60).padStart(2, "0")}
-          </span>
+          <span className="font-semibold">Period: {round}</span>
+          <span className="font-bold text-xl">{phase}</span>
         </div>
       </div>
 
       {/* Result History Table */}
-      <ResultHistory/>
+      <ResultHistory lastResults={lastResults} />
 
-      
-      <ResultAdjuster/>
+      <ResultAdjuster />
     </div>
   );
 };
