@@ -1,6 +1,6 @@
 import React from "react";
 
-const RouletteBoard = () => {
+const RouletteBoard = ({ onCellClick = () => {}, onCellDrop = () => {} }) => {
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -96,6 +96,15 @@ const RouletteBoard = () => {
         text-4xl font-bold 
         [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
       `}
+                  onClick={() => onCellClick("0")}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const value = Number(
+                      e.dataTransfer.getData("text/coinValue")
+                    );
+                    if (!Number.isNaN(value)) onCellDrop("0", value);
+                  }}
                 >
                   0
                 </div>
@@ -114,7 +123,20 @@ const RouletteBoard = () => {
                         key={`${row}-${col}`}
                         className={`${getNumberColor(
                           numberData?.color
-                        )} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white`}
+                        )} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer`}
+                        onClick={() =>
+                          numberData && onCellClick(String(numberData.num))
+                        }
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (!numberData) return;
+                          const value = Number(
+                            e.dataTransfer.getData("text/coinValue")
+                          );
+                          if (!Number.isNaN(value))
+                            onCellDrop(String(numberData.num), value);
+                        }}
                       >
                         {numberData?.num}
                       </div>
@@ -125,13 +147,46 @@ const RouletteBoard = () => {
 
               {/* Bottom betting sections */}
               <div className="grid grid-cols-12  bg-[#2939A5]">
-                <div className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white">
+                <div
+                  className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer"
+                  onClick={() => onCellClick("1st12")}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const value = Number(
+                      e.dataTransfer.getData("text/coinValue")
+                    );
+                    if (!Number.isNaN(value)) onCellDrop("1st12", value);
+                  }}
+                >
                   1ST 12
                 </div>
-                <div className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white">
+                <div
+                  className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer"
+                  onClick={() => onCellClick("2nd12")}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const value = Number(
+                      e.dataTransfer.getData("text/coinValue")
+                    );
+                    if (!Number.isNaN(value)) onCellDrop("2nd12", value);
+                  }}
+                >
                   2ND 12
                 </div>
-                <div className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white">
+                <div
+                  className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer"
+                  onClick={() => onCellClick("3rd12")}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const value = Number(
+                      e.dataTransfer.getData("text/coinValue")
+                    );
+                    if (!Number.isNaN(value)) onCellDrop("3rd12", value);
+                  }}
+                >
                   3RD 12
                 </div>
               </div>
@@ -139,31 +194,91 @@ const RouletteBoard = () => {
 
             {/* Right side betting areas */}
             <div className="flex flex-col bg-[#2939A5]  w-16 ">
-              <div className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white ">
+              <div
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                onClick={() => onCellClick("2to1_top")}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const value = Number(
+                    e.dataTransfer.getData("text/coinValue")
+                  );
+                  if (!Number.isNaN(value)) onCellDrop("2to1_top", value);
+                }}
+              >
                 2 TO 1
               </div>
-              <div className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white ">
+              <div
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                onClick={() => onCellClick("2to1_middle")}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const value = Number(
+                    e.dataTransfer.getData("text/coinValue")
+                  );
+                  if (!Number.isNaN(value)) onCellDrop("2to1_middle", value);
+                }}
+              >
                 2 TO 1
               </div>
-              <div className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white ">
+              <div
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                onClick={() => onCellClick("2to1_bottom")}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const value = Number(
+                    e.dataTransfer.getData("text/coinValue")
+                  );
+                  if (!Number.isNaN(value)) onCellDrop("2to1_bottom", value);
+                }}
+              >
                 2 TO 1
               </div>
             </div>
           </div>
 
           {/* Bottom section with 1-18, EVEN, etc. */}
-          <div className="ml-20 grid grid-cols-7 ">
-            <div className="bg-[#2939A5]  text-white text-lg font-bold h-10 flex items-center justify-center border border-white">
+          <div className="ml-4 grid grid-cols-6 ">
+            <div
+              className="bg-[#2939A5]  text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              onClick={() => onCellClick("1-18")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(e.dataTransfer.getData("text/coinValue"));
+                if (!Number.isNaN(value)) onCellDrop("1-18", value);
+              }}
+            >
               1-18
             </div>
-            <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white">
+            <div
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              onClick={() => onCellClick("even")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(e.dataTransfer.getData("text/coinValue"));
+                if (!Number.isNaN(value)) onCellDrop("even", value);
+              }}
+            >
               EVEN
             </div>
             <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white">
               <div
-                className="w-10 h-10 bg-white flex items-center justify-center"
+                className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
                 style={{
                   clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
+                }}
+                onClick={() => onCellClick("red")}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const value = Number(
+                    e.dataTransfer.getData("text/coinValue")
+                  );
+                  if (!Number.isNaN(value)) onCellDrop("red", value);
                 }}
               >
                 <div
@@ -176,9 +291,18 @@ const RouletteBoard = () => {
             </div>
             <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white">
               <div
-                className="w-10 h-10 bg-white flex items-center justify-center"
+                className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
                 style={{
                   clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
+                }}
+                onClick={() => onCellClick("black")}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const value = Number(
+                    e.dataTransfer.getData("text/coinValue")
+                  );
+                  if (!Number.isNaN(value)) onCellDrop("black", value);
                 }}
               >
                 <div
@@ -189,10 +313,28 @@ const RouletteBoard = () => {
                 ></div>
               </div>
             </div>
-            <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white">
+            <div
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              onClick={() => onCellClick("odd")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(e.dataTransfer.getData("text/coinValue"));
+                if (!Number.isNaN(value)) onCellDrop("odd", value);
+              }}
+            >
               ODD
             </div>
-            <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white">
+            <div
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              onClick={() => onCellClick("19-36")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(e.dataTransfer.getData("text/coinValue"));
+                if (!Number.isNaN(value)) onCellDrop("19-36", value);
+              }}
+            >
               19-36
             </div>
           </div>
