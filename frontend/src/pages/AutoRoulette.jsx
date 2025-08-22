@@ -71,7 +71,11 @@ const AutoRoulette = () => {
 
       {/* Board below */}
       <div className="w-full z-10">
-        <RouletteBoard onCellClick={handleCellClick} onCellDrop={handleCellDrop} />
+        <RouletteBoard
+          bets={Object.fromEntries(bets.map(b => [b.position, b.amount]))}
+          onCellClick={handleCellClick}
+          onCellDrop={handleCellDrop}
+        />
       </div>
 
       {/* Optional: show current total in the corner */}
