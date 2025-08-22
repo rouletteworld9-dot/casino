@@ -3,9 +3,22 @@ import BalanceCards from "../ui/BalanceCards";
 import { useAuth } from "../../hooks/useAuth";
 import SidebarLink from "../ui/SideBarLink";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const UserSidebar = ({ isOpen, setIsOpen }) => {
   const { logoutUser } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      toast.success("Logout successful");
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    }
+  };
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
   return (
@@ -54,7 +67,7 @@ const UserSidebar = ({ isOpen, setIsOpen }) => {
               />
               <div className="w-full flex items-center mt-4">
                 <button
-                  onClick={logoutUser}
+                  onClick={handleLogout}
                   className="border border-yellow-600 rounded px-4 py-1 flex items-center space-x-3 transition-colors cursor-pointer"
                 >
                   <span className="text-yellow-600 text-sm">Logout</span>
