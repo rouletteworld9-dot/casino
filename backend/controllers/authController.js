@@ -88,43 +88,6 @@ exports.verifyOTP = async (req, res) => {
   }
 };
 
-// exports.login = async (req, res) => {
-//   const { phone, password } = req.body;
-
-//   if (!phone || !password) {
-//     return res.status(400).json({ message: "Phone and password are required." });
-//   }
-
-//   try {
-//     const user = await User.findOne({ phone });
-
-//     if (!user || user.status !== "active") {
-//       return res.status(401).json({ message: "Invalid credentials or account disabled." });
-//     }
-
-//     if (!user.isVerified) {
-//       return res.status(403).json({ message: "Account not verified." });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.status(401).json({ message: "Invalid phone or password." });
-//     }
-
-//     // Enforce single-device login
-//     const newSessionToken = require("crypto").randomBytes(32).toString("hex");
-//     user.sessionToken = newSessionToken;
-//     user.lastLogin = new Date();
-//     await user.save();
-
-//     const token = generateToken(user._id, newSessionToken, user.tokenVersion);
-
-//     return res.json({ token, user: { name: user.name, phone: user.phone, role: user.role } });
-//   } catch (err) {
-//     console.error("Login error:", err);
-//     return res.status(500).json({ message: "Server error." });
-//   }
-// };
 
 exports.forgotPassword = async (req, res) => {
   const { phone } = req.body;

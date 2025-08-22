@@ -57,7 +57,7 @@ const AutoRoulette = () => {
 
       {/* Wheel on top */}
       <div className="relative w-full flex justify-center">
-        <div className="absolute top-[-30px] left-10 z-20">
+        <div className="absolute left-0 z-20">
           <RouletteGame />
         </div>
       </div>
