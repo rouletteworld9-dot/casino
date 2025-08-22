@@ -2,24 +2,22 @@ import anime from "animejs";
 import { useCallback } from "react";
 import { useEffect } from "react";
 
-const roulette1 = '/assets/roulette_1.jpg';
-const roulette2 = '/assets/roulette_2.png';
-const roulette3 = '/assets/roulette_3.png';
-const roulette4 = '/assets/roulette_4.png';
-const roulette5 = '/assets/roulette_5.png';
+const roulette1 = "/assets/roulette_1.jpg";
+const roulette2 = "/assets/roulette_2.png";
+const roulette3 = "/assets/roulette_3.png";
+const roulette4 = "/assets/roulette_4.png";
+const roulette5 = "/assets/roulette_5.png";
 
 const Wheel = (props) => {
-
+  // console.log(props , "props")
   var totalNumbers = 37;
   var singleSpinDuration = 5000;
   var singleRotationDegree = 360 / totalNumbers;
   var lastNumber = 0;
 
   var rouletteWheelNumbers = props.rouletteData.numbers;
-  console.log("roulette Data",props.rouletteData);
-  console.log("number", props.number);
   const getRouletteIndexFromNumber = (number) => {
-    return rouletteWheelNumbers.indexOf(parseInt(number));
+    return rouletteWheelNumbers.indexOf(parseInt(number)); 
   };
   const nextNumber = (number) => {
     var value = number;
@@ -32,10 +30,7 @@ const Wheel = (props) => {
 
   // rotateTo randomizes the end outcome of the wheel
   // so it doesn't only end at 0 at the top
-  const getRandomEndRotation = (
-    minNumberOfSpins,
-    maxNumberOfSpins
-  ) => {
+  const getRandomEndRotation = (minNumberOfSpins, maxNumberOfSpins) => {
     var rotateTo = anime.random(
       minNumberOfSpins * totalNumbers,
       maxNumberOfSpins * totalNumbers
@@ -58,10 +53,7 @@ const Wheel = (props) => {
   };
   // randomizing the number of spins that the ball should make
   // so every spin is different
-  const getBallNumberOfRotations = (
-    minNumberOfSpins,
-    maxNumberOfSpins
-  ) => {
+  const getBallNumberOfRotations = (minNumberOfSpins, maxNumberOfSpins) => {
     var numberOfSpins = anime.random(minNumberOfSpins, maxNumberOfSpins);
     return 360 * numberOfSpins;
   };
@@ -115,19 +107,21 @@ const Wheel = (props) => {
     anime({
       targets: ".ball-container",
       translateY: [
-        { value: 0, duration: 2000 },
-        { value: 20, duration: 1000 },
-        { value: 25, duration: 900 },
+        { value: 40, duration: 2000 },
         { value: 50, duration: 1000 },
+        { value: 60, duration: 900 },
+        { value: 80, duration: 1000 },
       ],
       rotate: [{ value: ballEndRotation, duration: singleSpinDuration }],
-      loop: 1,
+      loop: 0,
       easing: `cubicBezier(${bezier.join(",")})`,
     });
   }, []);
 
+  
   useEffect(() => {
     var nextNubmer = props.number.next;
+
     if (nextNubmer != null && nextNubmer !== "") {
       var nextNumberInt = parseInt(nextNubmer);
       spinWheel(nextNumberInt);
@@ -137,28 +131,39 @@ const Wheel = (props) => {
 
   const style = {
     backgroundImage: `url(${roulette1})`,
-    width : "300px",
-    height : "300px",
-    position : "relative",
-    left : 65,
-    top : 20,
+    width: "280px",
+    height: "280px",
+    position: "relative",
+    left: 65,
+    top: -120,
     backgroundSize: "cover",
     backgroundPosition: "center",
-  }
+  };
 
   return (
-    <div style={style} className={"roulette-wheel w-[300px] h-[300px]"}>
+    <div style={style} className={"roulette-wheel "}>
       <div
-      style={{backgroundImage: `url(${roulette2})`,transform: "rotate(0deg)" }}
+        style={{
+          backgroundImage: `url(${roulette2})`,
+          transform: "rotate(0deg)",
+        }}
         className={"layer-2 wheel"}
-        
       ></div>
-      <div style={{backgroundImage: `url(${roulette3})`}} className={"layer-3"}></div>
+      <div
+        style={{ backgroundImage: `url(${roulette3})` }}
+        className={"layer-3"}
+      ></div>
       <div
         className={"layer-4 wheel"}
-        style={{ transform: "rotate(0deg)",backgroundImage: `url(${roulette4})` }}
+        style={{
+          transform: "rotate(0deg)",
+          backgroundImage: `url(${roulette4})`,
+        }}
       ></div>
-      <div style={{backgroundImage: `url(${roulette5})`}} className={"layer-5"}></div>
+      <div
+        style={{ backgroundImage: `url(${roulette5})` }}
+        className={"layer-5"}
+      ></div>
       <div className={"ball-container"} style={{ transform: "rotate(0deg)" }}>
         <div
           className={"ball"}
