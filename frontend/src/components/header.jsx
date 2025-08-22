@@ -17,6 +17,7 @@ import UserHeaderDropdown from "./ui/UserHeaderDropdown";
 import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
+import { useGameSocket } from "../hooks/useGameSocket";
 
 const IconButton = ({ icon: Icon, ...props }) => (
   <NavButton {...props} className="p-2">
@@ -28,6 +29,12 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
+  // const { round, phase, result, bets, placeBet, messages, lastResults  } = useGameSocket(user?._id);
+
+
+  // console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
+  
+
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     // Make sure we have a leading slash

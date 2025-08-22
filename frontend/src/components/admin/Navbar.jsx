@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, CircleUser, LogOut, Search } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -11,13 +11,15 @@ const Navbar = () => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleLogout = () => {
-    logoutUser(undefined, {
-      onSuccess: () => {
-        setIsProfileOpen(false);
-        navigate("/");
-      },
-    });
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setIsProfileOpen(false);
+      toast.success("Logout successful");
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    }
   };
 
   return (
