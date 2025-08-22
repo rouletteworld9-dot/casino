@@ -1,7 +1,7 @@
 import React from "react";
 
 // bets: { [cellId: string]: denomination }
-const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {} }) => {
+const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => { } }) => {
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -123,6 +123,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
     if (color === "black") return "bg-[#0E0E0E] text-white";
     return "bg-[#229264] text-white";
   };
+
   return (
     <div
       className="items-center justify-center flex flex-col min-h-screen w-full"
@@ -146,17 +147,15 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
           <div className="flex ">
             {/* Zero section */}
             <div className="flex flex-col">
-              {/* Outer div as border */}
               <div
                 className="
       w-20 h-50 
       flex items-center justify-center 
       [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
       bg-white 
-      p-[2px]   border thickness 
+      p-[2px]
     "
               >
-                {/* Inner div as actual green background */}
                 <div
                   className={`
         ${getNumberColor("green")} 
@@ -183,17 +182,16 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
 
             {/* Main number grid */}
             <div className="flex-1 ">
-              {/* Numbers grid */}
-              <div className="grid grid-cols-12  ">
+              <div className="grid grid-cols-12">
                 {Array.from({ length: 3 }, (_, row) =>
                   Array.from({ length: 12 }, (_, col) => {
                     const numberData = getNumberAtPosition(row, col);
                     return (
                       <div
                         key={`${row}-${col}`}
-                        className={
-                          `${getNumberColor(numberData?.color)} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer relative`
-                        }
+                        className={`${getNumberColor(
+                          numberData?.color
+                        )} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer relative`}
                         onClick={() =>
                           numberData && onCellClick(String(numberData.num))
                         }
@@ -217,7 +215,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
               </div>
 
               {/* Bottom betting sections */}
-              <div className="grid grid-cols-12  bg-[#2939A5]">
+              <div className="grid grid-cols-12 bg-[#2939A5]">
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("1st12")}
@@ -267,9 +265,9 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
             </div>
 
             {/* Right side betting areas */}
-            <div className="flex flex-col bg-[#2939A5]  w-16 ">
+            <div className="flex flex-col bg-[#2939A5] w-16">
               <div
-                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_top")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -281,10 +279,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
                 }}
               >
                 2 TO 1
-               
+                {renderChip("2to1_top")}
               </div>
               <div
-                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_middle")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -296,10 +294,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
                 }}
               >
                 2 TO 1
-                
+                {renderChip("2to1_middle")}
               </div>
               <div
-                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer"
+                className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_bottom")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -311,14 +309,15 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
                 }}
               >
                 2 TO 1
+                {renderChip("2to1_bottom")}
               </div>
             </div>
           </div>
 
           {/* Bottom section with 1-18, EVEN, etc. */}
-          <div className="ml-4 grid grid-cols-6 ">
+          <div className="ml-4 grid grid-cols-6">
             <div
-              className="bg-[#2939A5]  text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("1-18")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -328,9 +327,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
               }}
             >
               1-18
+              {renderChip("1-18")}
             </div>
             <div
-              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("even")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -340,8 +340,9 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
               }}
             >
               EVEN
+              {renderChip("even")}
             </div>
-            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white">
+            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
               <div
                 className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
                 style={{
@@ -363,9 +364,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
+                {renderChip("red")}
               </div>
             </div>
-            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white">
+            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
               <div
                 className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
                 style={{
@@ -387,10 +389,11 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
+                {renderChip("black")}
               </div>
             </div>
             <div
-              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("odd")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -400,9 +403,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
               }}
             >
               ODD
+              {renderChip("odd")}
             </div>
             <div
-              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer"
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("19-36")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -412,6 +416,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => {}, onCellDrop = () => {
               }}
             >
               19-36
+              {renderChip("19-36")}
             </div>
           </div>
         </div>

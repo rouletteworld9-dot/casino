@@ -9,23 +9,22 @@ const AutoRoulette = () => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
 
+  // On cell click: if bet exists, remove it; if not, do nothing
   const handleCellClick = useCallback(
     (position) => {
-      if (!selectedCoin) return;
       setBets((prev) => {
         const index = prev.findIndex((b) => b.position === position);
         if (index === -1) {
-          return [...prev, { position, amount: selectedCoin }];
+          // No bet to remove
+          return prev;
         }
+        // Remove the bet
         const updated = [...prev];
-        updated[index] = {
-          ...updated[index],
-          amount: updated[index].amount + selectedCoin,
-        };
+        updated.splice(index, 1);
         return updated;
       });
     },
-    [selectedCoin]
+    []
   );
 
   const handleCellDrop = useCallback((position, coinValue) => {
