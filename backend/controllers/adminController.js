@@ -7,6 +7,6 @@ exports.forceResult = (req, res) => {
     return res.status(400).json({ message: "Invalid number" });
   }
 
-  gameState.nextWinningNumber = number;
+  gameState.nextWinningNumber = Number(number);
   res.json({ message: `Next round will result in ${number}` });
 };

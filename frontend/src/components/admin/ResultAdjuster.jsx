@@ -1,41 +1,34 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useResultAdjuster } from "../../hooks/useResultAdjuster";
+import { useGameSocket } from "../../hooks/useGameSocket";
 const ResultAdjuster = () => {
-  const [nextResult, setNextResult] = useState("");
+ 
+  const [number, setNumber] = useState("");
+  const {forceResult}=useGameSocket()
 
-    const handleSubmitResult = () => {
-      if (nextResult.trim()) {
-        // Add logic to submit the result
-        console.log("Submitting result:", nextResult);
-        setNextResult("");
-      }
-    };
+  const handleSubmitResult = () => {
+    forceResult(number)
+  };
 
   return (
-    <div className="bg-purple-100 text-gray-900 rounded-lg p-4 border border-gray-700">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        Adjusting the result
-      </h3>
-      <div className="text-gray-900 text-sm mb-4">
-        <p>
-          0 (Red and Purple) | 5 (Blue and Purple) | 1, 3, 7, 9 (Blue) | 2, 4,
-          6, 8 (Red)
-        </p>
-      </div>
+    <div className="bg-deepPurple text-white rounded-lg p-4 border border-midnightPurple">
+      <h3 className="text-lg font-semibold  mb-4">Adjusting the result</h3>
+      <div className=" text-sm mb-4"></div>
       <div className="mb-4">
-        <span className="text-gray-900">Next Result: </span>
+        <span className="">Next Result: </span>
         <span className="text-blue-400 font-semibold">Random</span>
       </div>
       <div className="flex gap-4 items-end">
         <div className="flex-1">
-          <label className="block text-gray-900 text-sm mb-2">
-            Enter the result (e.g., 1)
+          <label className="block text-sm mb-2">
+            Enter the result (e.g., 1 , 2 , ... 36)
           </label>
           <input
-            type="text"
-            value={nextResult}
-            onChange={(e) => setNextResult(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+            type="number"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            className="w-full px-3 py-2 bg-midnightPurple border rounded-xs border-deepPurple text-white "
             placeholder="Enter result..."
           />
         </div>
@@ -43,7 +36,7 @@ const ResultAdjuster = () => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmitResult}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-xs transition-colors cursor-pointer"
         >
           Submit
         </motion.button>
