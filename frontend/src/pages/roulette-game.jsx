@@ -10,22 +10,22 @@ const RouletteGame = () => {
 
   useEffect(() => {
     if (phase === "result" && lastResults?.length > 0) {
-      setResult(lastResults[0]?.toString() || "");
+      setResult(lastResults[0]?.result?.toString() || "");
     } else {
       setResult(null);
     }
-  }, [phase, lastResults]);
+  }, [phase, lastResults.result]);
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "20px" }}>
+    <div style={{ textAlign: "center" }}>
       <RouletteSpinner phase={phase} lastResults={lastResults} />
       <h2>
         {phase === "result" && result !== null ? (
-          <span className="font-bold text-2xl">
+          <span className="font-bold text-white text-2xl">
             🎉 Result: <strong>{result}</strong>
           </span>
         ) : (
-          <span className="font-bold text-2xl">{phase}</span>
+          <span className="font-bold text-white text-2xl">{phase}</span>
         )}
       </h2>
     </div>
