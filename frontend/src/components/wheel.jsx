@@ -59,7 +59,7 @@ const Wheel = (props) => {
   };
 
   const spinWheel = useCallback((number) => {
-    const bezier = [0.205, 0.184, 0.244, 1.005];
+    const bezier = [0.205, 0.284, 0.394, 1.005];
     var ballMinNumberOfSpins = 1;
     var ballMaxNumberOfSpins = 2;
     var wheelMinNumberOfSpins = 1;
@@ -200,7 +200,7 @@ const Wheel = (props) => {
       <div className={"ball-container"} style={{ transform: "rotate(0deg)" }}>
         <div
           className={"ball"}
-          style={{ transform: "translate(0, -143.221px)" }}
+          style={{ transform: "translate(0, -146.221px)" }}
         ></div>
       </div>
     </div>
