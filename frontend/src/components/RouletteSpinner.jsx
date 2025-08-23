@@ -1,4 +1,6 @@
-import { useContinousSpinner } from "../hooks/useContinousSpinner";
+// import { rouletteData } from "../types";
+// import { useContinuousRoulette } from "../hooks/useRouletteSpin";
+import "../components/RouletteSpinner.css";
 
 const RouletteSpinner = ({ phase, lastResults }) => {
   const { wheelRotation, ballRotation } = useContinousSpinner(
@@ -10,7 +12,7 @@ const RouletteSpinner = ({ phase, lastResults }) => {
     width: 280,
     height: 280,
     borderRadius: "50%",
-    backgroundImage: `url(/Assets/roulette_1.jpg)`,
+    backgroundImage: `url(/assets/roulette_1.jpg)`,
     backgroundSize: "280px 280px",
     boxShadow: "2px 10px 30px rgba(0,0,0,0.4)",
     position: "relative",
@@ -40,10 +42,10 @@ const RouletteSpinner = ({ phase, lastResults }) => {
   };
 
   const layers = [
-    { img: "/Assets/roulette_2.png", rotatable: true },
-    { img: "/Assets/roulette_3.png", rotatable: false },
-    { img: "/Assets/roulette_4.png", rotatable: true },
-    { img: "/Assets/roulette_5.png", rotatable: false },
+    { img: "/assets/roulette_2.png", rotatable: true },
+    { img: "/assets/roulette_3.png", rotatable: false },
+    { img: "/assets/roulette_4.png", rotatable: true },
+    { img: "/assets/roulette_5.png", rotatable: false },
   ];
 
   return (

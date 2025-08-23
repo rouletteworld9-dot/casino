@@ -1,7 +1,21 @@
 import React from "react";
-
+import { useGameSocket } from "../hooks/useGameSocket";
+import { useAuthStore } from "../stores/useAuthStore";
+import { AnimatePresence } from "framer-motion";
+import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
+import RenderChip from "../components/ui/RenderChip";
 // bets: { [cellId: string]: denomination }
-const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => { } }) => {
+const RouletteBoard = ({
+  bets = {},
+  onCellClick = () => {},
+  onCellDrop = () => {},
+}) => {
+  const user = useAuthStore((state) => state.user);
+  const { lastResults, phase, placeBet, updateBetData } = useGameSocket(
+    user?._id
+  );
+
+  const winningNumber = phase === "result" && lastResults[0]?.result;
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -42,6 +56,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
     { num: 26, color: "black" },
   ];
 
+  const chipFor = (cellId) => <RenderChip denomination={bets[cellId]} />;
   // Create the main grid (excluding 0)
   const mainNumbers = numbers.slice(1); // Remove 0 from main grid
 
@@ -71,53 +86,6 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
     }
   };
 
-  const renderChip = (cellId) => {
-    const denomination = bets[cellId];
-    if (!denomination) return null;
-    return (
-      <div
-        className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-8.5 h-8.5 rounded-full grid place-items-center justify-items-center text-[7px] font-bold cursor-pointer select-none shadow"
-        style={{
-          background: colorByDenom(denomination),
-          color: "#111827",
-          boxShadow:
-            "inset 0 2px 6px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3)",
-          zIndex: 2,
-        }}
-      >
-        {/* stripes ring */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full"
-          style={{
-            background:
-              "repeating-conic-gradient(#ffffff 0 8deg, transparent 8deg 28deg)",
-            WebkitMask:
-              "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
-            mask:
-              "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
-            opacity: 0.9,
-          }}
-        />
-        {/* center */}
-        <span
-          className="pointer-events-none rounded-full grid place-items-center"
-          style={{
-            width: 32,
-            height: 32,
-            background:
-              "radial-gradient(circle at 30% 30%, #f8fafc 0%, #e5e7eb 65%, #d1d5db 100%)",
-            border: "1px solid rgba(0,0,0,0.08)",
-          }}
-        >
-          ₹{denomination}
-        </span>
-        {/* outer rim */}
-        <span className="pointer-events-none absolute inset-0 rounded-full border border-white/30" />
-      </div>
-    );
-  };
-
   const getNumberColor = (color) => {
     if (color === "red") return "bg-[#EC4326] text-white";
     if (color === "black") return "bg-[#0E0E0E] text-white";
@@ -127,15 +95,15 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
   return (
     <div
       className="items-center justify-center flex flex-col min-h-screen w-full"
-      style={{
-        backgroundImage: "url('/game/roulettetable.webp')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      // style={{
+      //   backgroundImage: "url('/game/roulettetable.webp')",
+      //   backgroundSize: "cover",
+      //   backgroundPosition: "center",
+      //   backgroundRepeat: "no-repeat",
+      // }}
     >
       <div
-        className="max-w-3xl ml-30 mt-10 shadow-2xl transform"
+        className="max-w-3xl ml-25 -mt-35 shadow-2xl transform"
         style={{
           background: "linear-gradient(125deg, #1e40af 0%, #3730a3 100%)",
           transform:
@@ -174,14 +142,18 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                     if (!Number.isNaN(value)) onCellDrop("0", value);
                   }}
                 >
-                  0
-                  {renderChip("0")}
+                  <span style={{ transform: "rotate(270deg)" }}>0</span>
+                  {chipFor("0")}
+                  <AnimatePresence>
+                    {winningNumber === 0 && <BetPlacedAnimation />}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
 
             {/* Main number grid */}
             <div className="flex-1 ">
+              {/* Numbers grid */}
               <div className="grid grid-cols-12">
                 {Array.from({ length: 3 }, (_, row) =>
                   Array.from({ length: 12 }, (_, col) => {
@@ -191,7 +163,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                         key={`${row}-${col}`}
                         className={`${getNumberColor(
                           numberData?.color
-                        )} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer relative`}
+                        )} relative w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer`}
                         onClick={() =>
                           numberData && onCellClick(String(numberData.num))
                         }
@@ -206,8 +178,25 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                             onCellDrop(String(numberData.num), value);
                         }}
                       >
-                        {numberData?.num}
-                        {numberData && renderChip(String(numberData.num))}
+                        {/* Rotated number only */}
+                        <span
+                          style={{
+                            transform: "rotate(270deg)",
+                            display: "block", // so it doesn't stretch
+                          }}
+                        >
+                          {numberData?.num}
+                        </span>
+
+                        {/* Chip absolutely positioned against parent cell (relative) */}
+                        {numberData && chipFor(String(numberData.num))}
+
+                        {/* Animation if win */}
+                        <AnimatePresence>
+                          {winningNumber === numberData?.num && (
+                            <BetPlacedAnimation />
+                          )}
+                        </AnimatePresence>
                       </div>
                     );
                   })
@@ -229,7 +218,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   }}
                 >
                   1ST 12
-                  {renderChip("1st12")}
+                  {chipFor("1st12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
@@ -244,7 +233,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   }}
                 >
                   2ND 12
-                  {renderChip("2nd12")}
+                  {chipFor("2nd12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
@@ -259,7 +248,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   }}
                 >
                   3RD 12
-                  {renderChip("3rd12")}
+                  {chipFor("3rd12")}
                 </div>
               </div>
             </div>
@@ -278,8 +267,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_top", value);
                 }}
               >
-                2 TO 1
-                {renderChip("2to1_top")}
+                2 TO 1{chipFor("2to1_top")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -293,8 +281,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_middle", value);
                 }}
               >
-                2 TO 1
-                {renderChip("2to1_middle")}
+                2 TO 1{chipFor("2to1_top")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -308,8 +295,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_bottom", value);
                 }}
               >
-                2 TO 1
-                {renderChip("2to1_bottom")}
+                2 TO 1{chipFor("2to1_bottom")}
               </div>
             </div>
           </div>
@@ -327,7 +313,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               }}
             >
               1-18
-              {renderChip("1-18")}
+              {chipFor("1-18")}
             </div>
             <div
               className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
@@ -340,7 +326,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               }}
             >
               EVEN
-              {renderChip("even")}
+              {chipFor("even")}
             </div>
             <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
               <div
@@ -364,7 +350,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
-                {renderChip("red")}
+                {chipFor("red")}
               </div>
             </div>
             <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
@@ -389,7 +375,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
-                {renderChip("black")}
+                {chipFor("black")}
               </div>
             </div>
             <div
@@ -403,7 +389,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               }}
             >
               ODD
-              {renderChip("odd")}
+              {chipFor("odd")}
             </div>
             <div
               className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
@@ -416,7 +402,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               }}
             >
               19-36
-              {renderChip("19-36")}
+              {chipFor("19-36")}
             </div>
           </div>
         </div>

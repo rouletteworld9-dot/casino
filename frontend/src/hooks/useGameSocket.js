@@ -10,8 +10,14 @@ export function useGameSocket(userId) {
   const [lastResults, setLastResults] = useState([]);
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
+  const [betData, setBetData] = useState({
+    userId,
+    amount: 0,
+    betType: "",
+    number: null,
+  });
 
+  useEffect(() => {
     if (!userId) return;
 
     socket.connect();
@@ -24,7 +30,7 @@ export function useGameSocket(userId) {
       setRound(data.roundId);
       setPhase(data.phase);
       setResult(data.winningNumber);
-      setLastResults(data.lastResults)
+      setLastResults(data.lastResults);
     });
 
     socket.on("lastResults", (data) => {
@@ -50,7 +56,7 @@ export function useGameSocket(userId) {
     socket.on("roundResult", (data) => {
       setPhase("result");
       setResult(data.winningNumber);
-      setLastResults(data.lastResults)
+      setLastResults(data.lastResults);
       setMessages((m) => [...m, `Result = ${data.winningNumber}`]);
     });
 
@@ -73,26 +79,51 @@ export function useGameSocket(userId) {
     };
   }, [userId]);
 
+  const updateBetData = (field, value) => {
+    setBetData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
   // Place a bet
-  const placeBet = (bet) => {
+  const placeBet = () => {
     if (!round) {
-      alert("No round active");
+      toast.error("No round active");
       return;
     }
+
+    if (!betData.amount || betData.amount <= 0) {
+      toast.error("Enter a valid bet amount");
+      return;
+    }
+
     socket.emit("placeBet", {
       roundId: round,
       userId,
       socketId: socket.id,
-      ...bet,
+      ...betData,
     });
-    setBets((prev) => [...prev, bet]);
+
+    setBets((prev) => [...prev, betData]);
+    toast.success("Bet placed!");
   };
 
-  const forceResult = (num)=>{
-    if(!num) return
-    socket.emit("forceResult", num)
-    toast.success("Result Adjusted Success")
-  }
+  const forceResult = (num) => {
+    if (!num) return;
+    socket.emit("forceResult", num);
+    toast.success("Result Adjusted Success");
+  };
 
-  return { round, phase, result, bets, placeBet, messages, lastResults, forceResult };
+  return {
+    round,
+    phase,
+    result,
+    bets,
+    betData,
+    placeBet,
+    updateBetData,
+    messages,
+    lastResults,
+    forceResult,
+  };
 }

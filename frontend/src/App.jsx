@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useGameSocket } from "./hooks/useGameSocket.js";
 import { useAuthStore } from "./stores/useAuthStore.js";
 
+
 export default function App() {
 
   // socket.emit("getLastResults");
