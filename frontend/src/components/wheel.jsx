@@ -9,7 +9,7 @@ const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
 
 const Wheel = (props) => {
-  // console.log(props , "props")
+  console.log(props, "props");
   var totalNumbers = 37;
   var singleSpinDuration = 5000;
   var singleRotationDegree = 360 / totalNumbers;
@@ -17,7 +17,7 @@ const Wheel = (props) => {
 
   var rouletteWheelNumbers = props.rouletteData.numbers;
   const getRouletteIndexFromNumber = (number) => {
-    return rouletteWheelNumbers.indexOf(parseInt(number)); 
+    return rouletteWheelNumbers.indexOf(parseInt(number));
   };
   const nextNumber = (number) => {
     var value = number;
@@ -59,11 +59,11 @@ const Wheel = (props) => {
   };
 
   const spinWheel = useCallback((number) => {
-    const bezier = [0.165, 0.84, 0.44, 1.005];
-    var ballMinNumberOfSpins = 2;
-    var ballMaxNumberOfSpins = 4;
-    var wheelMinNumberOfSpins = 2;
-    var wheelMaxNumberOfSpins = 4;
+    const bezier = [0.205, 0.184, 0.244, 1.005];
+    var ballMinNumberOfSpins = 1;
+    var ballMaxNumberOfSpins = 2;
+    var wheelMinNumberOfSpins = 1;
+    var wheelMaxNumberOfSpins = 2;
 
     var currentNumber = nextNumber(number);
 
@@ -118,16 +118,49 @@ const Wheel = (props) => {
     });
   }, []);
 
-  
   useEffect(() => {
-    var nextNubmer = props.number.next;
+    const nextNumber = props.number.next;
 
-    if (nextNubmer != null && nextNubmer !== "") {
-      var nextNumberInt = parseInt(nextNubmer);
-      spinWheel(nextNumberInt);
-      // setTimeout(() => props.startAgain(), 5000); // Automatically start playing again after 5 seconds
+    if (props.phase === "betting") {
+      // Stop all animations & reset position
+      // anime.remove([".layer-2", ".layer-4", ".ball-container"]);
+      //  anime.set([".layer-2", ".layer-4"], {
+      //    rotate: 0,
+      //  });
     }
-  }, [props.number]);
+
+    if (props.phase === "spinning") {
+      // Wheel spin (anticlockwise)
+      anime.set(".ball-container", {
+        rotate: 0,
+        translateY: 40, // reset to initial orbit radius
+      });
+      anime({
+        targets: [".layer-2", ".layer-4"],
+        rotate: "-=360deg",
+        duration: 1000,
+        easing: "linear",
+        loop: true,
+      });
+
+      // Ball spin (clockwise)
+      anime({
+        targets: ".ball-container",
+        rotate: "+=360deg",
+        translateY: [{ value: 30 }],
+        duration: 1000,
+        easing: "linear",
+        loop: Infinity,
+      });
+    }
+
+    if (nextNumber != null && nextNumber !== "" && props.phase === "result") {
+      const nextNumberInt = parseInt(nextNumber);
+      // Stop continuous spinning before result spin
+      anime.remove([".layer-2", ".layer-4", ".ball-container"]);
+      spinWheel(nextNumberInt);
+    }
+  }, [props.number, props.phase]);
 
   const style = {
     backgroundImage: `url(${roulette1})`,
