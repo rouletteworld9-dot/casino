@@ -56,7 +56,14 @@ const RouletteBoard = ({
     { num: 26, color: "black" },
   ];
 
-  const chipFor = (cellId) => <RenderChip denomination={bets[cellId]} />;
+  // Show the total chip for a cell (sum all denominations)
+  const chipFor = (cellId) => {
+    const denoms = bets[cellId];
+    if (!denoms || !denoms.length) return null;
+    const total = Array.isArray(denoms) ? denoms.reduce((a, b) => a + b, 0) : denoms;
+    return <RenderChip denomination={total} />;
+  };
+
   // Create the main grid (excluding 0)
   const mainNumbers = numbers.slice(1); // Remove 0 from main grid
 
@@ -86,6 +93,57 @@ const RouletteBoard = ({
     }
   };
 
+  // Show only the total amount for a cell (if any)
+  const renderTotalChip = (cellId) => {
+    const total = cellTotals[cellId];
+    if (!total) return null;
+    // Use the color of the last denomination for style, or default
+    const denoms = bets[cellId];
+    const lastDenom = Array.isArray(denoms) && denoms.length > 0 ? denoms[denoms.length - 1] : 10;
+    return (
+      <div
+        className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-8.5 h-8.5 rounded-full grid place-items-center justify-items-center text-[10px] font-bold cursor-pointer select-none shadow"
+        style={{
+          background: colorByDenom(lastDenom),
+          color: "#111827",
+          boxShadow:
+            "inset 0 2px 6px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3)",
+          zIndex: 2,
+        }}
+      >
+        {/* stripes ring */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{
+            background:
+              "repeating-conic-gradient(#ffffff 0 8deg, transparent 8deg 28deg)",
+            WebkitMask:
+              "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
+            mask:
+              "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
+            opacity: 0.9,
+          }}
+        />
+        {/* center */}
+        <span
+          className="pointer-events-none rounded-full grid place-items-center"
+          style={{
+            width: 32,
+            height: 32,
+            background:
+              "radial-gradient(circle at 30% 30%, #f8fafc 0%, #e5e7eb 65%, #d1d5db 100%)",
+            border: "1px solid rgba(0,0,0,0.08)",
+          }}
+        >
+          ₹{total}
+        </span>
+        {/* outer rim */}
+        <span className="pointer-events-none absolute inset-0 rounded-full border border-white/30" />
+      </div>
+    );
+  };
+
   const getNumberColor = (color) => {
     if (color === "red") return "bg-[#EC4326] text-white";
     if (color === "black") return "bg-[#0E0E0E] text-white";
@@ -103,7 +161,7 @@ const RouletteBoard = ({
       // }}
     >
       <div
-        className="max-w-3xl ml-25 -mt-35 shadow-2xl transform"
+        className="max-w-3xl ml-30 mt-10 shadow-2xl transform"
         style={{
           background: "linear-gradient(125deg, #1e40af 0%, #3730a3 100%)",
           transform:
@@ -153,7 +211,6 @@ const RouletteBoard = ({
 
             {/* Main number grid */}
             <div className="flex-1 ">
-              {/* Numbers grid */}
               <div className="grid grid-cols-12">
                 {Array.from({ length: 3 }, (_, row) =>
                   Array.from({ length: 12 }, (_, col) => {
@@ -163,7 +220,7 @@ const RouletteBoard = ({
                         key={`${row}-${col}`}
                         className={`${getNumberColor(
                           numberData?.color
-                        )} relative w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer`}
+                        )} w-9 h-12 flex items-center justify-center text-lg font-bold border border-white cursor-pointer relative`}
                         onClick={() =>
                           numberData && onCellClick(String(numberData.num))
                         }
@@ -281,7 +338,7 @@ const RouletteBoard = ({
                   if (!Number.isNaN(value)) onCellDrop("2to1_middle", value);
                 }}
               >
-                2 TO 1{chipFor("2to1_top")}
+                2 TO 1{chipFor("2to1_middle")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -328,7 +385,7 @@ const RouletteBoard = ({
               EVEN
               {chipFor("even")}
             </div>
-            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
+            <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white relative">
               <div
                 className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
                 style={{
@@ -404,6 +461,7 @@ const RouletteBoard = ({
               19-36
               {chipFor("19-36")}
             </div>
+
           </div>
         </div>
       </div>
