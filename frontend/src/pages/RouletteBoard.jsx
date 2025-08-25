@@ -1,7 +1,12 @@
 import React from "react";
 
 // bets: { [cellId: string]: denomination[] }, cellTotals: { [cellId: string]: number }
-const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => { }, cellTotals = {} }) => {
+const RouletteBoard = ({
+  bets = {},
+  onCellClick = () => {},
+  onCellDrop = () => {},
+  cellTotals = {},
+}) => {
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -77,7 +82,10 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
     if (!total) return null;
     // Use the color of the last denomination for style, or default
     const denoms = bets[cellId];
-    const lastDenom = Array.isArray(denoms) && denoms.length > 0 ? denoms[denoms.length - 1] : 10;
+    const lastDenom =
+      Array.isArray(denoms) && denoms.length > 0
+        ? denoms[denoms.length - 1]
+        : 10;
     return (
       <div
         className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-8.5 h-8.5 rounded-full grid place-items-center justify-items-center text-[10px] font-bold cursor-pointer select-none shadow"
@@ -98,8 +106,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               "repeating-conic-gradient(#ffffff 0 8deg, transparent 8deg 28deg)",
             WebkitMask:
               "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
-            mask:
-              "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
+            mask: "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
             opacity: 0.9,
           }}
         />
@@ -130,7 +137,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
 
   return (
     <div
-      className="items-center justify-center flex flex-col min-h-screen w-full"
+      className="items-center -mt-25 justify-center flex flex-col min-h-screen w-full"
       // style={{
       //   backgroundImage: "url('/game/roulettetable.webp')",
       //   backgroundSize: "cover",
@@ -178,8 +185,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                     if (!Number.isNaN(value)) onCellDrop("0", value);
                   }}
                 >
-                  0
-                  {renderTotalChip("0")}
+                  0{renderTotalChip("0")}
                 </div>
               </div>
             </div>
@@ -282,8 +288,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_top", value);
                 }}
               >
-                2 TO 1
-                {renderTotalChip("2to1_top")}
+                2 TO 1{renderTotalChip("2to1_top")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -297,8 +302,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_middle", value);
                 }}
               >
-                2 TO 1
-                {renderTotalChip("2to1_middle")}
+                2 TO 1{renderTotalChip("2to1_middle")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -312,8 +316,7 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
                   if (!Number.isNaN(value)) onCellDrop("2to1_bottom", value);
                 }}
               >
-                2 TO 1
-                {renderTotalChip("2to1_bottom")}
+                2 TO 1{renderTotalChip("2to1_bottom")}
               </div>
             </div>
           </div>
@@ -422,7 +425,6 @@ const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => 
               19-36
               {renderTotalChip("19-36")}
             </div>
-
           </div>
         </div>
       </div>

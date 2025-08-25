@@ -25,3 +25,12 @@
 .custom-scroll::-webkit-scrollbar-track {
   background: #17071d;
 }
+
+.scroll-hidden {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}

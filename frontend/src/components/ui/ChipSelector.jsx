@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 const DEFAULT_DENOMINATIONS = [10, 20, 50, 100, 500, 2500];
 
 const ChipSelector = ({
   denominations = DEFAULT_DENOMINATIONS,
   selectedCoin,
+  betLocked,
   onSelect,
+  handlePlaceBet,
+  hasBets,
 }) => {
   const colorByDenom = (value) => {
     switch (value) {
@@ -81,10 +84,19 @@ const ChipSelector = ({
               ₹{value}
             </span>
             {/* outer rim */}
-            <span className="pointer-events-none absolute inset-0 rounded-full border border-white/30" />
+            <span className="pointer-events-none absolute inset-0 rounded-full border borde r-white/30" />
           </div>
         );
       })}
+      <div className="">
+        <button
+          className={`px-8 py-1 rounded-full font-bold text-lg shadow-lg transition bg-gradient-to-r from-yellow-400 to-yellow-600 text-black border-2 border-yellow-700 ${!hasBets || betLocked ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}`}
+          onClick={handlePlaceBet}
+          disabled={betLocked || !hasBets}
+        >
+          Place Bet
+        </button>
+      </div>
     </div>
   );
 };

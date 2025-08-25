@@ -30,7 +30,8 @@ import WithdrawlApproved from "../components/admin/WithdrawlApproved.jsx";
 import UserRequests from "../components/user/UserRequests.jsx";
 import NotFound from "../components/NotFound.jsx";
 import AutoRoulette from "../pages/AutoRoulette.jsx";
-import UserBetTransaction from '../components/user/UserBetTransaction.jsx'
+import UserBetTransaction from "../components/user/UserBetTransaction.jsx";
+import ConditionalCasinoRoute from "./ConditionalCasinoRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -49,9 +50,7 @@ const router = createBrowserRouter([
     path: "/casino/game",
     element: <CasinoDashboard />,
   },
-  {path:"/casino/game/auto-roulette",
-    element:<AutoRoulette/>
-  },
+  { path: "/casino/game/auto-roulette", element: <ConditionalCasinoRoute /> },
   {
     path: "/forgot-password",
     element: <ForgetPassword />,
@@ -60,9 +59,7 @@ const router = createBrowserRouter([
     path: "/verify-reset-otp",
     element: <VerifyResetOtp />,
   },
-  { path:"*",
-    element:(<NotFound/>)
-  },
+  { path: "*", element: <NotFound /> },
   {
     path: "/admin",
     element: (
@@ -96,7 +93,7 @@ const router = createBrowserRouter([
       { path: "deposits-withdrawals", element: <DepositInterface /> },
       { path: "history", element: <UserHistory /> },
       { path: "requests", element: <UserRequests /> },
-      { path: "bet-history", element: <UserBetTransaction/>}
+      { path: "bet-history", element: <UserBetTransaction /> },
     ],
   },
 ]);

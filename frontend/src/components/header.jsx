@@ -9,6 +9,8 @@ import {
   X,
   CircleUser,
   CirclePlus,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -18,6 +20,7 @@ import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
 import { useGameSocket } from "../hooks/useGameSocket";
+import { useSingleUser } from "../hooks/useAdminUsers";
 
 const IconButton = ({ icon: Icon, ...props }) => (
   <NavButton {...props} className="p-2">
@@ -28,13 +31,9 @@ const IconButton = ({ icon: Icon, ...props }) => (
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
   const user = useAuthStore((s) => s.user);
-  // const { round, phase, result, bets, placeBet, messages, lastResults  } = useGameSocket(user?._id);
-
-
-  // console.log({ round, phase, result, bets, placeBet, messages, lastResults  })
-  
-
+  const { singleUser } = useSingleUser(user?._id);
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     // Make sure we have a leading slash
@@ -79,9 +78,37 @@ export default function Header() {
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />{" "}
-                  <span className="font-semibold text-purple-300">
-                    {user?.name || "Player"}
+                  <span className="font-semibold text-white">
+                    {showBalance
+                      ? `₹${singleUser?.realBalance || "0000"}`
+                      : "••••"}{" "}
                   </span>
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowBalance((prev) => !prev);
+                    }}
+                    className="focus:outline-none"
+                  >
+                    <motion.span
+                      key={showBalance ? "eyeoff" : "eye"}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {showBalance ? (
+                        <EyeOff
+                          size={16}
+                          className="text-gray-400 hover:text-white"
+                        />
+                      ) : (
+                        <Eye
+                          size={16}
+                          className="text-gray-400 hover:text-white"
+                        />
+                      )}
+                    </motion.span>
+                  </motion.button>
                 </span>
 
                 {dropdownOpen && (

@@ -9,7 +9,6 @@ const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
 
 const Wheel = (props) => {
-  console.log(props, "props");
   var totalNumbers = 37;
   var singleSpinDuration = 5000;
   var singleRotationDegree = 360 / totalNumbers;
