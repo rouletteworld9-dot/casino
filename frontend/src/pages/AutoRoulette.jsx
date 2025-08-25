@@ -12,6 +12,7 @@ import ChipManager from "../components/ChipManager";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
+
   const { phase, round } = useGameSocket(user?._id);
   console.log(round, "round");
 
