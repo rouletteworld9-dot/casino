@@ -1,24 +1,7 @@
 import React from "react";
-import { useGameSocket } from "../hooks/useGameSocket";
-import { useAuthStore } from "../stores/useAuthStore";
-import { AnimatePresence } from "framer-motion";
-import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
-import RenderChip from "../components/ui/RenderChip";
-import { useDelay } from "../hooks/useDelay";
-// bets: { [cellId: string]: denomination }
-const RouletteBoard = ({
-  bets = {},
-  onCellClick = () => {},
-  onCellDrop = () => {},
-}) => {
-  const user = useAuthStore((state) => state.user);
-  const { lastResults, phase, placeBet, updateBetData } = useGameSocket(
-    user?._id
-  );
 
-  const winningNumber = phase === "result" && lastResults[0]?.result;
-
-  const winningNumbers = useDelay(winningNumber, 5000);
+// bets: { [cellId: string]: denomination[] }, cellTotals: { [cellId: string]: number }
+const RouletteBoard = ({ bets = {}, onCellClick = () => { }, onCellDrop = () => { }, cellTotals = {} }) => {
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -58,14 +41,6 @@ const RouletteBoard = ({
     { num: 3, color: "red" },
     { num: 26, color: "black" },
   ];
-
-  // Show the total chip for a cell (sum all denominations)
-  const chipFor = (cellId) => {
-    const denoms = bets[cellId];
-    if (!denoms || !denoms.length) return null;
-    const total = Array.isArray(denoms) ? denoms.reduce((a, b) => a + b, 0) : denoms;
-    return <RenderChip denomination={total} />;
-  };
 
   // Create the main grid (excluding 0)
   const mainNumbers = numbers.slice(1); // Remove 0 from main grid
@@ -203,11 +178,8 @@ const RouletteBoard = ({
                     if (!Number.isNaN(value)) onCellDrop("0", value);
                   }}
                 >
-                  <span style={{ transform: "rotate(270deg)" }}>0</span>
-                  {chipFor("0")}
-                  <AnimatePresence>
-                    {winningNumbers === 0 && <BetPlacedAnimation />}
-                  </AnimatePresence>
+                  0
+                  {renderTotalChip("0")}
                 </div>
               </div>
             </div>
@@ -238,25 +210,8 @@ const RouletteBoard = ({
                             onCellDrop(String(numberData.num), value);
                         }}
                       >
-                        {/* Rotated number only */}
-                        <span
-                          style={{
-                            transform: "rotate(270deg)",
-                            display: "block", // so it doesn't stretch
-                          }}
-                        >
-                          {numberData?.num}
-                        </span>
-
-                        {/* Chip absolutely positioned against parent cell (relative) */}
-                        {numberData && chipFor(String(numberData.num))}
-
-                        {/* Animation if win */}
-                        <AnimatePresence>
-                          {winningNumbers === numberData?.num && (
-                            <BetPlacedAnimation />
-                          )}
-                        </AnimatePresence>
+                        {numberData?.num}
+                        {numberData && renderTotalChip(String(numberData.num))}
                       </div>
                     );
                   })
@@ -278,7 +233,7 @@ const RouletteBoard = ({
                   }}
                 >
                   1ST 12
-                  {chipFor("1st12")}
+                  {renderTotalChip("1st12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
@@ -293,7 +248,7 @@ const RouletteBoard = ({
                   }}
                 >
                   2ND 12
-                  {chipFor("2nd12")}
+                  {renderTotalChip("2nd12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
@@ -308,7 +263,7 @@ const RouletteBoard = ({
                   }}
                 >
                   3RD 12
-                  {chipFor("3rd12")}
+                  {renderTotalChip("3rd12")}
                 </div>
               </div>
             </div>
@@ -327,7 +282,8 @@ const RouletteBoard = ({
                   if (!Number.isNaN(value)) onCellDrop("2to1_top", value);
                 }}
               >
-                2 TO 1{chipFor("2to1_top")}
+                2 TO 1
+                {renderTotalChip("2to1_top")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -341,7 +297,8 @@ const RouletteBoard = ({
                   if (!Number.isNaN(value)) onCellDrop("2to1_middle", value);
                 }}
               >
-                2 TO 1{chipFor("2to1_middle")}
+                2 TO 1
+                {renderTotalChip("2to1_middle")}
               </div>
               <div
                 className="bg-[#2939A5] text-white text-lg font-bold h-12 flex items-center justify-center border border-white cursor-pointer relative"
@@ -355,7 +312,8 @@ const RouletteBoard = ({
                   if (!Number.isNaN(value)) onCellDrop("2to1_bottom", value);
                 }}
               >
-                2 TO 1{chipFor("2to1_bottom")}
+                2 TO 1
+                {renderTotalChip("2to1_bottom")}
               </div>
             </div>
           </div>
@@ -373,7 +331,7 @@ const RouletteBoard = ({
               }}
             >
               1-18
-              {chipFor("1-18")}
+              {renderTotalChip("1-18")}
             </div>
             <div
               className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
@@ -386,7 +344,7 @@ const RouletteBoard = ({
               }}
             >
               EVEN
-              {chipFor("even")}
+              {renderTotalChip("even")}
             </div>
             <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white relative">
               <div
@@ -410,7 +368,7 @@ const RouletteBoard = ({
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
-                {chipFor("red")}
+                {renderTotalChip("red")}
               </div>
             </div>
             <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
@@ -435,7 +393,7 @@ const RouletteBoard = ({
                     clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
                   }}
                 ></div>
-                {chipFor("black")}
+                {renderTotalChip("black")}
               </div>
             </div>
             <div
@@ -449,7 +407,7 @@ const RouletteBoard = ({
               }}
             >
               ODD
-              {chipFor("odd")}
+              {renderTotalChip("odd")}
             </div>
             <div
               className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white cursor-pointer relative"
@@ -462,7 +420,7 @@ const RouletteBoard = ({
               }}
             >
               19-36
-              {chipFor("19-36")}
+              {renderTotalChip("19-36")}
             </div>
 
           </div>
