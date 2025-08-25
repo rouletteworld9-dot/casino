@@ -1,13 +1,21 @@
+import { AnimatePresence } from "framer-motion";
 import React from "react";
-
+import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
+import { useAuthStore } from "../stores/useAuthStore";
+import { useGameSocket } from "../hooks/useGameSocket";
+import { useDelay } from "../hooks/useDelay";
 
 // bets: { [cellId: string]: denomination[] }, cellTotals: { [cellId: string]: number }
 const RouletteBoard = ({
+  // lastResults,
   bets = {},
   onCellClick = () => {},
   onCellDrop = () => {},
   cellTotals = {},
 }) => {
+  const user = useAuthStore((state) => state.user);
+
+  const { phase, lastResults } = useGameSocket(user?._id);
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -77,6 +85,8 @@ const RouletteBoard = ({
     }
   };
 
+  const winningNumber = phase === "result" && lastResults[0]?.result;
+  const delayWinningNumber = useDelay(winningNumber, 5000);
   // Show only the total amount for a cell (if any)
   const renderTotalChip = (cellId) => {
     const total = cellTotals[cellId];
@@ -186,7 +196,18 @@ const RouletteBoard = ({
                     if (!Number.isNaN(value)) onCellDrop("0", value);
                   }}
                 >
-                  0{renderTotalChip("0")}
+                  {" "}
+                  <span className="block transform rotate-[270deg]">
+                    0{renderTotalChip("0")}
+                  </span>
+                  <AnimatePresence>
+                    {delayWinningNumber === 0 && (
+                      <BetPlacedAnimation
+                        phase={phase}
+                        trigger={delayWinningNumber}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
@@ -217,8 +238,19 @@ const RouletteBoard = ({
                             onCellDrop(String(numberData.num), value);
                         }}
                       >
-                        {numberData?.num}
+                        <span className="block transform rotate-[270deg]">
+                          {numberData?.num}
+                        </span>
                         {numberData && renderTotalChip(String(numberData.num))}
+
+                        <AnimatePresence>
+                          {delayWinningNumber === numberData?.num && (
+                            <BetPlacedAnimation
+                              phase={phase}
+                              trigger={bets[numberData?.num]?.length}
+                            />
+                          )}
+                        </AnimatePresence>
                       </div>
                     );
                   })
