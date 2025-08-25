@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BetPlacedAnimation = () => {
+const BetPlacedAnimation = ({ trigger, phase }) => {
+  console.log(phase , "phase")
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(false), 3000); // auto-hide after 2s
-    return () => clearTimeout(t);
-  }, []);
+    if (!trigger) return;
+    if (phase === "result") {
+      setVisible(true);
+    }else{
+      setVisible(false)
+    }
+  }, [trigger, phase]);
 
   return (
     <AnimatePresence>

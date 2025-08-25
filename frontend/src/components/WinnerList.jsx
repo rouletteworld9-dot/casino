@@ -1,34 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { User } from "lucide-react";
 
-const winner = [
-  { rupees: 154135, player: "PHAO PHAO PHAO" },
-  { rupees: 123983, player: "Davidkong" },
-  { rupees: 42985, player: "dararil" },
-  { rupees: 38379, player: "ernbl6" },
-  { rupees: 36000, player: "Anand" },
-  { rupees: 29755, player: "mj" },
-  { rupees: 29168, player: "Güzel" },
-  { rupees: 28800, player: "Ufhj" },
-  { rupees: 27447, player: "Mrnjbr" },
-  { rupees: 21185, player: "Sabriabi" },
-  { rupees: 20294, player: "nael" },
-  { rupees: 20216, player: "BK8019366289" },
-  { rupees: 19118, player: "Shariar" },
-  { rupees: 17280, player: "Keysar" },
-  { rupees: 16887, player: "Emirars1" },
-];
-
 export default function WinnerList() {
   const { recentWinners: newWinners } = useGameSocket();
-  console.log(newWinners, "winners");
   const delayedWinners = useDelay(newWinners, 4000);
 
-  const [winners, setWinners] = useState(() => winner.slice(-12));
+  const [winners, setWinners] = useState([]);
   const [newWinner, setNewWinner] = useState(null);
 
   const listRef = useRef(null);
@@ -45,8 +26,9 @@ export default function WinnerList() {
     const incoming = Array.isArray(delayedWinners)
       ? delayedWinners
       : [delayedWinners];
+
     setWinners((prev) => {
-      const merged = [...prev, ...incoming].slice(-12);
+      const merged = [...prev, ...incoming].slice(-12); // keep last 12
       return merged;
     });
 
@@ -97,9 +79,7 @@ export default function WinnerList() {
       rafIdRef.current = requestAnimationFrame(step);
     };
 
-    // ✅ Start loop
     rafIdRef.current = requestAnimationFrame(step);
-
     return () => cancelAnimationFrame(rafIdRef.current);
   }, [winners.length]);
 
@@ -136,7 +116,7 @@ export default function WinnerList() {
 
   const renderItem = (item, index, { showEffects, isClone }) => (
     <div
-      key={`${item.player}-${item.rupees}-${index}${isClone ? "-clone" : ""}`}
+      key={`${item.username}-${item.amount}-${index}${isClone ? "-clone" : ""}`}
       ref={showEffects && item === newWinner ? newWinnerRef : null}
       className="relative transition-all scroll-hidden duration-300"
     >
@@ -151,7 +131,7 @@ export default function WinnerList() {
           <div className="text-xs font-semibold text-casinoGold truncate max-w-20">
             ₹{item.amount || "000"}
           </div>
-          <div className="text-xs  font-semibold text-casinoGold truncate max-w-20">
+          <div className="text-xs font-semibold text-casinoGold truncate max-w-20">
             {item.username || "Anonymous"}
           </div>
         </div>
@@ -175,30 +155,61 @@ export default function WinnerList() {
         </div>
       )}
 
-      {showEffects && isJackpot(item.rupees) && (
+      {showEffects && isJackpot(item.amount) && (
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 left-40 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
             style={{ animationDelay: "0.3s" }}
           ></div>
-          {/* <div
-            className="absolute bottom-0 left-1/2 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
-            style={{ animationDelay: "0.7s" }}
-          ></div> */}
         </div>
       )}
     </div>
   );
 
+  console.log(newWinner, "winner");
+  // Reverse so latest shows first
   const data = winners.slice().reverse();
 
   return (
     <motion.div
       className="fixed z-999 left-4 w-60 h-40"
       initial={{ bottom: 0, opacity: 0 }}
-      animate={{ bottom: 16, opacity: 1 }} // bottom-4 = 16px
+      animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
+      <h1 className="flex items-center space-x-1 text-white font-bold">
+        <span>🏆 Winners</span>
+      </h1>
+
+      <AnimatePresence mode="wait">
+        {newWinner && (
+          <div className="flex space-x-2">
+            <motion.p
+              key={newWinner.username} // re-trigger animation on change
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-lg text-yellow-400 font-semibold"
+            >
+              🎉 {newWinner.username}
+            </motion.p>
+            <motion.p
+              key={newWinner.amount} // re-trigger animation on change
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-lg text-yellow-400 font-semibold"
+            >
+              ₹{newWinner.amount}
+            </motion.p>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <hr className="h-1 border-gray-600 mt-2" />
+
       <div
         className="px-3 py-2 h-full overflow-y-auto scroll-hidden"
         ref={listRef}
@@ -215,12 +226,8 @@ export default function WinnerList() {
                 renderItem(w, i, { showEffects: true, isClone: false })
               )}
             </div>
+            {/* clone for smooth infinite scroll */}
             <div className="space-y-1" aria-hidden="true">
-              <h1 className="flex items-center space-x-1 text-white font-bold ">
-                <span>500</span> <User size={16} />{" "}
-                <span className="text-casinoGold"> won 12039INR</span>
-              </h1>
-              <hr className=" h-1" />
               {data.map((w, i) =>
                 renderItem(w, i, { showEffects: false, isClone: true })
               )}

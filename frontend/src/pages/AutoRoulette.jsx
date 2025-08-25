@@ -13,8 +13,7 @@ import ChipManager from "../components/ChipManager";
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
 
-  const { phase, round } = useGameSocket(user?._id);
-  console.log(round, "round");
+  const { phase, round , lastResults} = useGameSocket(user?._id);
 
   // const [showSpinningWinners, setShowSpinningWinners] = useState(false);
 
@@ -50,7 +49,7 @@ const AutoRoulette = () => {
           </div>
         </div>
 
-         <WinnerList />
+        <WinnerList />
         {/* chips + board together */}
         <ChipManager userId={user?._id} round={round}>
           {({
@@ -92,6 +91,7 @@ const AutoRoulette = () => {
                 onCellClick={onCellClick}
                 onCellDrop={onCellDrop}
                 cellTotals={cellTotals}
+                lastResults={lastResults}
               />
             </>
           )}
