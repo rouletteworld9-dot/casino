@@ -4,6 +4,7 @@ import { useAuthStore } from "../stores/useAuthStore";
 import { AnimatePresence } from "framer-motion";
 import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
 import RenderChip from "../components/ui/RenderChip";
+import { useDelay } from "../hooks/useDelay";
 // bets: { [cellId: string]: denomination }
 const RouletteBoard = ({
   bets = {},
@@ -16,6 +17,8 @@ const RouletteBoard = ({
   );
 
   const winningNumber = phase === "result" && lastResults[0]?.result;
+
+  const winningNumbers = useDelay(winningNumber, 5000);
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -203,7 +206,7 @@ const RouletteBoard = ({
                   <span style={{ transform: "rotate(270deg)" }}>0</span>
                   {chipFor("0")}
                   <AnimatePresence>
-                    {winningNumber === 0 && <BetPlacedAnimation />}
+                    {winningNumbers === 0 && <BetPlacedAnimation />}
                   </AnimatePresence>
                 </div>
               </div>
@@ -250,7 +253,7 @@ const RouletteBoard = ({
 
                         {/* Animation if win */}
                         <AnimatePresence>
-                          {winningNumber === numberData?.num && (
+                          {winningNumbers === numberData?.num && (
                             <BetPlacedAnimation />
                           )}
                         </AnimatePresence>

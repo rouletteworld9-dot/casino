@@ -42,7 +42,7 @@ const ChipSelector = ({
               // visual drag image can be improved; default is okay
             }}
             className={
-              "w-12 h-12 rounded-full relative grid place-items-center text-[11px] font-bold cursor-pointer transition select-none " +
+              "w-10 h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " +
               (isActive
                 ? "scale-125 shadow-[0_0_0_3px_rgba(255,255,211,0.7),0_0_18px_rgba(234,179,128,0.65)]"
                 : "shadow-md hover:scale-115")
@@ -63,8 +63,7 @@ const ChipSelector = ({
                   "repeating-conic-gradient(#ffffff 0 8deg, transparent 8deg 28deg)",
                 WebkitMask:
                   "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
-                mask:
-                  "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
+                mask: "radial-gradient(circle at center, transparent 0 60%, black 61% 100%)",
                 opacity: 0.9,
               }}
             />
@@ -72,8 +71,8 @@ const ChipSelector = ({
             <span
               className="pointer-events-none rounded-full grid place-items-center"
               style={{
-                width: 40,
-                height: 40,
+                width: 30,
+                height: 30,
                 background:
                   "radial-gradient(circle at 30% 30%, #f8fafc 0%, #e5e7eb 65%, #d1d5db 100%)",
                 border: "1px solid rgba(0,0,0,0.08)",
@@ -91,6 +90,3 @@ const ChipSelector = ({
 };
 
 export default ChipSelector;
-
-
-

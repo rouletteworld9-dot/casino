@@ -4,123 +4,51 @@ import RouletteBoard from "./RouletteBoard";
 import RouletteGame from "./roulette-game";
 import ChipSelector from "../components/ui/ChipSelector";
 import LastResults from "../components/ui/LastResults";
+import { useAuthStore } from "../stores/useAuthStore";
+import { useGameSocket } from "../hooks/useGameSocket";
+import PhaseTimer from "../components/ui/PhaseTimer";
 
 const AutoRoulette = () => {
+  const user = useAuthStore((state) => state.user);
+  const { phase } = useGameSocket(user?._id);
   const [selectedCoin, setSelectedCoin] = useState(10);
-  // Store bets as: [{ position: string, amounts: number[] }]
   const [bets, setBets] = useState([]);
-  const [betLocked, setBetLocked] = useState(false);
 
-  // On cell click: if a bet exists, remove it; else, place a bet with selectedCoin
-const handleCellClick = useCallback(
-  (position) => {
-    if (betLocked) return;
+  // On cell click: if bet exists, remove it; if not, do nothing
+  const handleCellClick = useCallback((position) => {
     setBets((prev) => {
       const index = prev.findIndex((b) => b.position === position);
       if (index === -1) {
-        // No bet, place a new one if a coin is selected
-        if (!selectedCoin) return prev;
-        return [...prev, { position, amounts: [selectedCoin] }];
+        // No bet to remove
+        return prev;
       }
-      // Bet exists, append selectedCoin to amounts
+      // Remove the bet
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+  }, []);
+
+  const handleCellDrop = useCallback((position, coinValue) => {
+    if (!coinValue) return;
+    setBets((prev) => {
+      const index = prev.findIndex((b) => b.position === position);
+      if (index === -1) {
+        return [...prev, { position, amount: coinValue }];
+      }
       const updated = [...prev];
       updated[index] = {
         ...updated[index],
-        amounts: [...updated[index].amounts, selectedCoin],
+        amount: updated[index].amount + coinValue,
       };
       return updated;
-      // Commenting out remove coin on click functionality
-      // const updated = [...prev];
-      // updated.splice(index, 1);
-      // return updated;
     });
-  },
-  [betLocked, selectedCoin]
-);
-  // On cell drop: if bet exists, add coinValue as a new entry; else add new
-  const handleCellDrop = useCallback(
-    (position, coinValue) => {
-      if (betLocked || !coinValue) return;
-      setBets((prev) => {
-        const index = prev.findIndex((b) => b.position === position);
-        if (index === -1) {
-          return [...prev, { position, amounts: [coinValue] }];
-        }
-        const updated = [...prev];
-        updated[index] = {
-          ...updated[index],
-          amounts: [...updated[index].amounts, coinValue],
-        };
-        return updated;
-      });
-    },
-    [betLocked]
-  );
+  }, []);
 
-  // Total bet for all cells
   const totalBet = useMemo(
-    () =>
-      bets.reduce((sum, b) => sum + b.amounts.reduce((s, a) => s + a, 0), 0),
+    () => bets.reduce((sum, b) => sum + (b?.amount || 0), 0),
     [bets]
   );
-
-  // Transform bets to required structure for Place Bet
-  // Helper to determine type and number for each cell
-  function getCellTypeAndNumber(position) {
-    // Straight numbers (0-36)
-    if (
-      /^\d+$/.test(position) &&
-      Number(position) >= 0 &&
-      Number(position) <= 36
-    ) {
-      return { type: "straight", number: Number(position) };
-    }
-    // Dozens
-    if (position === "1st12") return { type: "dozen", number: 1 };
-    if (position === "2nd12") return { type: "dozen", number: 2 };
-    if (position === "3rd12") return { type: "dozen", number: 3 };
-    // Columns (right side)
-    if (position === "2to1_bottom") return { type: "column", number: 1 };
-    if (position === "2to1_middle") return { type: "column", number: 2 };
-    if (position === "2to1_top") return { type: "column", number: 3 };
-    if (position === "1-18") return { type: "low", number: null };
-    if (position === "19-36") return { type: "high", number: null };
-    // Red/Black/Even/Odd
-    if (["red", "black", "even", "odd"].includes(position)) {
-      return { type: position, number: null };
-    }
-    // Fallback
-    return { type: position, number: null };
-  }
-
-  const betsPayload = useMemo(() => {
-    // Example userId/gameId, replace with real values as needed
-    const userId = "123";
-    // const gameId = "currentGame001";
-    return {
-      userId,
-      // gameId,
-      bets: bets.map((b) => {
-        const { type, number } = getCellTypeAndNumber(b.position);
-        return {
-          type,
-          number: [number],
-          bets: b.amounts.map((amount) => ({ amount })),
-        };
-      }),
-    };
-  }, [bets]);
-
-  // Place Bet button handler
-  const handlePlaceBet = () => {
-    if (betLocked || bets.length === 0) return;
-    setBetLocked(true);
-    console.log("Bet Payload to backend:", betsPayload);
-    // TODO: Call mutation to place bet with TanStack Query
-    // Example: placeBetMutation.mutate(betsPayload)
-    // Optionally show toast/notification
-    setBets([]); // Clear bets after placing
-  };
 
   return (
     <div
@@ -153,28 +81,34 @@ const handleCellClick = useCallback(
             <RouletteGame />
           </div>
         </div>
-        {/* Place Bet button and Chip selector docked at bottom */}
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center space-y-2">
-          <button
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-8 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mb-2"
-            onClick={handlePlaceBet}
-            disabled={betLocked || bets.length === 0}
-          >
-            Place Bet
-          </button>
-        </div>
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30">
-          <div className="bg-black/50 backdrop-blur-md px-3 py-2 rounded-full shadow-lg">
+        {/* Chip selector docked at bottom */}
+        <div
+          className={`
+    fixed left-1/2 -translate-x-1/2 z-30
+    transition-all duration-700 ease-in-out
+    ${
+      phase === "betting"
+        ? "opacity-100 bottom-4 pointer-events-auto"
+        : "opacity-0 bottom-0 pointer-events-none"
+    }
+  `}
+        >
+          <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded-full shadow-lg">
             <ChipSelector
               selectedCoin={selectedCoin}
               onSelect={setSelectedCoin}
             />
           </div>
         </div>
+        <div
+          className={`fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100`}
+        >
+          <PhaseTimer phase={phase}/>
+        </div>
         {/* Board below */}
         <div className="w-full z-10">
           <RouletteBoard
-            bets={Object.fromEntries(bets.map((b) => [b.position, b.amounts]))}
+            bets={Object.fromEntries(bets.map((b) => [b.position, b.amount]))}
             onCellClick={handleCellClick}
             onCellDrop={handleCellDrop}
           />
