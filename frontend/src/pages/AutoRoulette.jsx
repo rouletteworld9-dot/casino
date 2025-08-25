@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import Header from "../components/header";
 import RouletteBoard from "./RouletteBoard";
 import RouletteGame from "./roulette-game";
@@ -42,6 +42,13 @@ const AutoRoulette = () => {
   // bets: { type, number, bets: [{amount}] }
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
+
+  // Unlock betting when a new game starts (phase returns to 'betting')
+  useEffect(() => {
+    if (phase === "betting") {
+      setBetLocked(false);
+    }
+  }, [phase]);
 
   // Add or update bet on cell click
   const handleCellClick = useCallback((cellId) => {
