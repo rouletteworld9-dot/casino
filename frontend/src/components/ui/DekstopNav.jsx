@@ -1,18 +1,41 @@
+import { useNavigate } from "react-router-dom";
 import NavButton from "./NavButton";
 
 export default function DesktopNav({ onNavigate, specials }) {
-  const navItems = ["CASINO", "SPORT", "STATISTICS", "RESULTS", "APPS"];
+  const navItems = [
+    {
+      name: "CASINO",
+      link: "/casino/game",
+    },
+    {
+      name: "SPORT",
+      link: "/casino/game",
+    },
+    {
+      name: "STATISTICS",
+      link: "/casino/game",
+    },
+    {
+      name: "RESULTS",
+      link: "/casino/game",
+    },
+    {
+      name: "APPS",
+      link: "/casino/game",
+    },
+  ];
 
+  const navigate = useNavigate();
   return (
     <nav className="hidden lg:flex items-center justify-between w-[60%] space-x-8">
       <div className="flex items-center space-x-4">
         {navItems.map((name) => (
           <NavButton
             key={name}
-            onClick={() => onNavigate(name.toLowerCase())}
+            onClick={() => navigate(name.link)}
             className="font-semibold text-xs uppercase tracking-wide"
           >
-            {name}
+            {name.name}
           </NavButton>
         ))}
       </div>
