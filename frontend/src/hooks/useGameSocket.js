@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import toast from "react-hot-toast";
+import { useAuthStore } from "../stores/useAuthStore";
 
-export function useGameSocket(userId) {
+export function useGameSocket() {
+  const user = useAuthStore((state) => state.user);
+  let userId = user?._id;
+
   const [round, setRound] = useState(null);
   const [phase, setPhase] = useState(null);
   const [result, setResult] = useState(null);
   const [bets, setBets] = useState([]);
+  const [recentWinners, setRecentWinners] = useState([]);
   const [lastResults, setLastResults] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [preResult, setPreResult] =useState(null)
 
   const [betData, setBetData] = useState({
     userId,
@@ -33,9 +39,9 @@ export function useGameSocket(userId) {
       setLastResults(data.lastResults);
     });
 
-    socket.on("lastResults", (data) => {
-      setLastResults(data);
-    });
+    // socket.on("lastResults", (data) => {
+    //   setLastResults(data);
+    // });
 
     // Game lifecycle
     socket.on("gameStarted", (data) => {
@@ -50,6 +56,7 @@ export function useGameSocket(userId) {
     });
 
     socket.on("spinning", (data) => {
+      setPreResult(data.winningNumber)
       setMessages((m) => [...m, `Spinning... number = ${data.winningNumber}`]);
     });
 
@@ -57,6 +64,7 @@ export function useGameSocket(userId) {
       setPhase("result");
       setResult(data.winningNumber);
       setLastResults(data.lastResults);
+      setRecentWinners(data.recentWinners);
       setMessages((m) => [...m, `Result = ${data.winningNumber}`]);
     });
 
@@ -121,6 +129,8 @@ export function useGameSocket(userId) {
     bets,
     betData,
     placeBet,
+    preResult,
+    recentWinners,
     updateBetData,
     messages,
     lastResults,

@@ -1,86 +1,66 @@
-const {
-  startGame,
-  placeBet,
-  forceResult,
-  getCurrentGameState,
-  initRedisGameState,
-} = require("../game/gameManager");
-
-// ✅ Track if game has been initialized globally (across all instances)
-// let gameInitialized = false;
+const gameManager = require("../game/gameManager");
+const socketHandlers = require("./socketHandlers");
 
 module.exports = function (io) {
-  // ✅ Initialize Redis for game state when Socket.IO starts
-  initRedisGameState().then((redisReady) => {
-    console.log(
-      `🔴 Redis game state: ${redisReady ? "Ready" : "Fallback to local"}`
-    );
+  // Initialize game state on startup
+  gameManager.initGameState().then((redisReady) => {
+    console.log(`Game state: ${redisReady ? "Redis Ready" : "Local Fallback"}`);
   });
 
   io.on("connection", async (socket) => {
-    console.log(
-      `👤 User connected: ${socket.id} to instance: ${socket.instanceId}`
+    await socketHandlers.handleConnection(socket, io);
+    // Socket event handlers
+    socket.on("placeBets", (data) =>
+      socketHandlers.handlePlaceBets(socket, data)
     );
-
-    // ✅ Get current game state from Redis
-    const gameState = await getCurrentGameState();
-
-    // Send comprehensive current state
-    socket.emit("syncState", {
-      roundId: gameState.roundId,
-      phase: gameState.phase,
-      winningNumber: gameState.winningNumber || null,
-      lastResults: gameState.lastResults,
-      isGameRunning: gameState.isGameRunning,
-      instanceId: socket.instanceId,
-      timestamp: Date.now(),
-    });
-
-    socket.emit("lastResults", gameState.lastResults);
-
-    socket.on("placeBet", (data) => {
-      placeBet(socket, data);
-    });
-
-    socket.on("forceResult", (num) => {
-      const changeToNumber = Number(num)
-      forceResult(changeToNumber);
-    });
-
-    // Enhanced ping/pong with current game state
-    socket.on("ping", async () => {
-      const currentGameState = await getCurrentGameState();
-      socket.emit("pong", {
-        serverTime: Date.now(),
-        instanceId: socket.instanceId,
-        gameState: {
-          roundId: currentGameState.roundId,
-          phase: currentGameState.phase,
-          isRunning: currentGameState.isGameRunning,
-        },
-      });
-    });
-
-    socket.on("disconnect", () => {
-      console.log(
-        `👋 User disconnected: ${socket.id} from instance: ${socket.instanceId}`
-      );
-    });
+    socket.on("placeBet", (data) =>
+      socketHandlers.handlePlaceBet(socket, data)
+    );
+    socket.on("forceResult", (data) =>
+      socketHandlers.handleForceResult(socket, data)
+    );
+    socket.on("ping", () => socketHandlers.handlePing(socket));
+    socket.on("requestGameState", () =>
+      socketHandlers.handleRequestGameState(socket)
+    );
+    socket.on("requestRecentWinners", () =>
+      socketHandlers.handleRequestRecentWinners(socket)
+    );
+    socket.on("requestLastResults", () =>
+      socketHandlers.handleRequestLastResults(socket)
+    );
+    socket.on("disconnect", (reason) =>
+      socketHandlers.handleDisconnect(socket, reason)
+    );
   });
 
-  // ✅ Only start game once across ALL instances using Redis lock
+  // Start game after initialization delay
   setTimeout(async () => {
-    const gameState = await getCurrentGameState();
+    try {
+      const gameState = await gameManager.getCurrentGameState();
 
-    if (!gameState.isGameRunning) {
-      console.log(
-        `🚀 No active game found, starting new game on instance: ${process.env.INSTANCE_ID || "unknown"}`
-      );
-      startGame(io);
-    } else {
-      console.log(
-        `⚠️ Game already running on another instance (Round: ${gameState.roundId})`
-      );
+      if (!gameState.isGameRunning) {
+        const started = await gameManager.startGame(io);
+        if (started) {
+          console.log("Game started successfully");
+        }
+      }
+    } catch (error) {
+      console.error("Game initialization error:", error.message);
     }
-  }, 2000); // Small delay to ensure Redis is ready
+  }, 2000);
+
+  // Graceful shutdown
+  const shutdown = async () => {
+    try {
+      await gameManager.stopGame();
+      process.exit(0);
+      // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      process.exit(1);
+    }
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 };
