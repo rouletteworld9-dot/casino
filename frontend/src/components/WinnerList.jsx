@@ -1,35 +1,65 @@
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
+import { motion } from "framer-motion";
 import { useGameSocket } from "../hooks/useGameSocket";
+import { useDelay } from "../hooks/useDelay";
+import { User } from "lucide-react";
+
+const winner = [
+  { rupees: 154135, player: "PHAO PHAO PHAO" },
+  { rupees: 123983, player: "Davidkong" },
+  { rupees: 42985, player: "dararil" },
+  { rupees: 38379, player: "ernbl6" },
+  { rupees: 36000, player: "Anand" },
+  { rupees: 29755, player: "mj" },
+  { rupees: 29168, player: "Güzel" },
+  { rupees: 28800, player: "Ufhj" },
+  { rupees: 27447, player: "Mrnjbr" },
+  { rupees: 21185, player: "Sabriabi" },
+  { rupees: 20294, player: "nael" },
+  { rupees: 20216, player: "BK8019366289" },
+  { rupees: 19118, player: "Shariar" },
+  { rupees: 17280, player: "Keysar" },
+  { rupees: 16887, player: "Emirars1" },
+];
 
 export default function WinnerList() {
   const { recentWinners: newWinners } = useGameSocket();
-  const [winners, setWinners] = useState([]);
+  console.log(newWinners, "winners");
+  const delayedWinners = useDelay(newWinners, 4000);
+
+  const [winners, setWinners] = useState(() => winner.slice(-12));
   const [newWinner, setNewWinner] = useState(null);
+
   const listRef = useRef(null);
+  const contentRef = useRef(null);
   const newWinnerRef = useRef(null);
 
-  useEffect(() => {
-    if (!newWinners?.length > 0) return;
+  const isPaused = useRef(false);
+  const rafIdRef = useRef(null);
 
-    const updated = newWinners.slice(-12); // Show last 12 winners for vertical layout
-    
-    // Check if there's a new winner
-    if (winners.length > 0 && updated.length > winners.length) {
-      const latestWinner = updated[updated.length - 1];
-      setNewWinner(latestWinner);
-      
-      // Clear the new winner highlight after 3 seconds
-      setTimeout(() => setNewWinner(null), 3000);
+  // Handle incoming winners
+  useEffect(() => {
+    if (!delayedWinners) return;
+
+    const incoming = Array.isArray(delayedWinners)
+      ? delayedWinners
+      : [delayedWinners];
+    setWinners((prev) => {
+      const merged = [...prev, ...incoming].slice(-12);
+      return merged;
+    });
+
+    const latest = incoming[incoming.length - 1];
+    if (latest) {
+      setNewWinner(latest);
+      setTimeout(() => setNewWinner(null), 4000);
     }
-    
-    setWinners(updated);
-  }, [newWinners, winners.length]);
+  }, [delayedWinners]);
 
-  // Animation for new winner entry
+  // Animate new winner
   useEffect(() => {
-    if (newWinner && newWinnerRef.current) {
-      // Compact entrance animation for new winner
+    if (delayedWinners && newWinnerRef.current) {
       anime({
         targets: newWinnerRef.current,
         scale: [0.8, 1.1, 1],
@@ -37,175 +67,167 @@ export default function WinnerList() {
         duration: 800,
         easing: "easeOutElastic(1, 0.5)",
       });
-      
-      // Play notification sound for new winners
       playNotificationSound();
     }
-  }, [newWinner]);
+  }, [delayedWinners]);
 
-  // Auto-scroll to top when new winners are added
+  // Auto-scroll loop
   useEffect(() => {
-    if (listRef.current && winners.length > 0) {
-      // Scroll to top to show the newest winner
-      anime({
-        targets: listRef.current,
-        scrollTop: 0,
-        duration: 600,
-        easing: "easeOutQuad",
-      });
-    }
-  }, [winners]);
+    const container = listRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
 
-  // Function to play notification sound
+    if (content.offsetHeight <= container.clientHeight) return;
+
+    let last = performance.now();
+    const SPEED_PX_PER_SEC = 20;
+
+    const step = (now) => {
+      const dt = Math.min(now - last, 50);
+      last = now;
+
+      if (!isPaused.current) {
+        container.scrollTop += (SPEED_PX_PER_SEC * dt) / 500;
+
+        if (container.scrollTop >= content.offsetHeight) {
+          container.scrollTop = 0; // reset to top for looping
+        }
+      }
+
+      rafIdRef.current = requestAnimationFrame(step);
+    };
+
+    // ✅ Start loop
+    rafIdRef.current = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(rafIdRef.current);
+  }, [winners.length]);
+
   const playNotificationSound = () => {
     try {
-      // Create a simple notification sound using Web Audio API
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-      
+      oscillator.frequency.exponentialRampToValueAtTime(
+        1200,
+        audioContext.currentTime + 0.1
+      );
+
       gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1
+      );
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
-      // Silently fail if audio is not supported
-      console.log('Audio notification not supported');
+      console.log("Audio notification not supported");
     }
   };
 
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { 
-      hour12: false, 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
+  const isJackpot = (amount) => amount > 10000;
 
-  const getBetTypeColor = (betType) => {
-    const colors = {
-      straight: 'text-blue-400',
-      split: 'text-purple-400',
-      street: 'text-green-400',
-      corner: 'text-yellow-400',
-      line: 'text-pink-400',
-      column: 'text-indigo-400',
-      dozen: 'text-orange-400',
-      red: 'text-red-400',
-      black: 'text-gray-400',
-      odd: 'text-cyan-400',
-      even: 'text-teal-400',
-      low: 'text-lime-400',
-      high: 'text-amber-400'
-    };
-    return colors[betType] || 'text-white';
-  };
+  const renderItem = (item, index, { showEffects, isClone }) => (
+    <div
+      key={`${item.player}-${item.rupees}-${index}${isClone ? "-clone" : ""}`}
+      ref={showEffects && item === newWinner ? newWinnerRef : null}
+      className="relative transition-all scroll-hidden duration-300"
+    >
+      {showEffects && item === newWinner && (
+        <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1 py-0.5 rounded-full casino-bounce casino-glow text-[10px]">
+          NEW!
+        </div>
+      )}
 
-  const isJackpot = (amount) => amount > 10000; // Consider wins over 10k as jackpot
-
-  return (
-    <div className="fixed left-4 bottom-4 w-64 h-80 bg-gradient-to-b from-purple-900/95 to-black/95 backdrop-blur-sm shadow-xl rounded-2xl border border-purple-500/30 overflow-hidden casino-glow">
-      {/* Compact Casino-style header */}
-      <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 px-3 py-1 text-center relative overflow-hidden casino-shine">
-        <h3 className="text-sm font-bold text-black relative z-10 flex items-center justify-center gap-1">
-          <span className="text-lg animate-bounce">🎰</span>
-          WINNERS
-          <span className="text-lg animate-bounce" style={{animationDelay: '0.5s'}}>🎰</span>
-        </h3>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="text-xs font-semibold text-casinoGold truncate max-w-20">
+            ₹{item.amount || "000"}
+          </div>
+          <div className="text-xs  font-semibold text-casinoGold truncate max-w-20">
+            {item.username || "Anonymous"}
+          </div>
+        </div>
       </div>
 
-      {/* Vertical Winners list */}
-      <div className="px-3 py-2 h-full overflow-y-auto custom-scroll" ref={listRef}>
-        {winners.length === 0 ? (
+      {showEffects && item === newWinner && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"></div>
+          <div
+            className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.8s" }}
+          ></div>
+        </div>
+      )}
+
+      {showEffects && isJackpot(item.rupees) && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute top-0 left-40 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.3s" }}
+          ></div>
+          {/* <div
+            className="absolute bottom-0 left-1/2 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.7s" }}
+          ></div> */}
+        </div>
+      )}
+    </div>
+  );
+
+  const data = winners.slice().reverse();
+
+  return (
+    <motion.div
+      className="fixed z-999 left-4 w-60 h-40"
+      initial={{ bottom: 0, opacity: 0 }}
+      animate={{ bottom: 16, opacity: 1 }} // bottom-4 = 16px
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      <div
+        className="px-3 py-2 h-full overflow-y-auto scroll-hidden"
+        ref={listRef}
+      >
+        {data.length === 0 ? (
           <div className="text-center text-gray-400 py-8">
             <div className="text-2xl mb-2">🎲</div>
             <p className="text-xs">Waiting for winners...</p>
           </div>
         ) : (
           <div className="space-y-2">
-            {winners.slice().reverse().map((winner, index) => (
-              <div
-                key={`${winner.username}-${winner.timestamp}-${index}`}
-                ref={winner === newWinner ? newWinnerRef : null}
-                className={`winner-item relative bg-gradient-to-r from-gray-800/80 to-gray-700/80 backdrop-blur-sm 
-                  rounded-lg p-2 border transition-all duration-300 hover:scale-105 hover:shadow-lg
-                  ${winner === newWinner 
-                    ? 'border-yellow-400 shadow-lg shadow-yellow-400/50 bg-gradient-to-r from-yellow-900/30 to-orange-900/30' 
-                    : 'border-gray-600/50 hover:border-purple-500/50'
-                  }`}
-              >
-                {/* Winner badge for new winners */}
-                {winner === newWinner && (
-                  <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1 py-0.5 rounded-full casino-bounce casino-glow text-[10px]">
-                    NEW!
-                  </div>
-                )}
-
-                {/* Compact Winner info in horizontal layout */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-black font-bold text-xs">
-                      {winner.username?.charAt(0)?.toUpperCase() || '?'}
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-white truncate max-w-20">
-                        {winner.username || 'Anonymous'}
-                      </div>
-                      <div className={`text-[10px] ${getBetTypeColor(winner.betType)}`}>
-                        {winner.betType || 'unknown'}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="text-right">
-                    <div className={`text-sm font-bold ${isJackpot(winner.amount) ? 'text-yellow-400 casino-glow' : 'text-green-400'}`}>
-                      {isJackpot(winner.amount) && <span className="text-xs mr-1">🎉</span>}
-                      ₹{winner.amount?.toLocaleString() || '0'}
-                    </div>
-                    <div className="text-[10px] text-gray-400">
-                      {formatTime(winner.timestamp)}
-                    </div>
-                    {isJackpot(winner.amount) && (
-                      <div className="text-[10px] text-yellow-400 font-bold mt-1 casino-shine">
-                        JACKPOT!
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Animated sparkles for new winners */}
-                {winner === newWinner && (
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"></div>
-                    <div className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle" style={{animationDelay: '0.5s'}}></div>
-                    <div className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle" style={{animationDelay: '1s'}}></div>
-                    <div className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle" style={{animationDelay: '0.8s'}}></div>
-                  </div>
-                )}
-
-                {/* Extra sparkles for jackpot wins */}
-                {isJackpot(winner.amount) && (
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-1/2 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle" style={{animationDelay: '0.3s'}}></div>
-                    <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle" style={{animationDelay: '0.7s'}}></div>
-                  </div>
-                )}
-              </div>
-            ))}
+            <div ref={contentRef} className="space-y-2">
+              {data.map((w, i) =>
+                renderItem(w, i, { showEffects: true, isClone: false })
+              )}
+            </div>
+            <div className="space-y-1" aria-hidden="true">
+              <h1 className="flex items-center space-x-1 text-white font-bold ">
+                <span>500</span> <User size={16} />{" "}
+                <span className="text-casinoGold"> won 12039INR</span>
+              </h1>
+              <hr className=" h-1" />
+              {data.map((w, i) =>
+                renderItem(w, i, { showEffects: false, isClone: true })
+              )}
+            </div>
           </div>
         )}
       </div>
-
-      {/* Casino-style footer */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
-    </div>
+    </motion.div>
   );
 }
