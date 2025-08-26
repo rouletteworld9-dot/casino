@@ -1,11 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useGameSocket } from "../../hooks/useGameSocket";
 
 const PhaseTimer = ({ phase }) => {
+  const { lastResults, round } = useGameSocket();
+  // the lastresult is = lastResults[0].result
+  
   const [progress, setProgress] = useState(0); // goes 0 → 2 (place=0-1, closing=1-2)
   const [showNextGame, setShowNextGame] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isScaling, setIsScaling] = useState(false);
+  const [showLastResult, setShowLastResult] = useState(false);
+  const [pulseEffect, setPulseEffect] = useState(false);
 
   const rafRef = useRef(null);
   const startRef = useRef(0);
+  const previousTimeRef = useRef(0);
 
   const DURATION = 7000; // 7s per step
   const TOTAL = DURATION * 2; // 14s total
@@ -16,18 +25,50 @@ const PhaseTimer = ({ phase }) => {
   const GAP = 0.08,
     visibleLen = C * (1 - GAP);
 
+  // Show last result when phase changes to result
+  useEffect(() => {
+    if (phase === "result" && lastResults && lastResults.length > 0) {
+      setShowLastResult(true);
+      setPulseEffect(true);
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        setShowLastResult(false);
+        setPulseEffect(false);
+      }, 3000);
+    }
+  }, [phase, lastResults]);
+
   // Betting phase timer
   useEffect(() => {
     if (phase !== "betting") return;
 
     setProgress(0);
+    setTimeLeft(14);
+    setIsScaling(false);
+    setShowLastResult(false);
     startRef.current = 0;
+    previousTimeRef.current = 14;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
     const tick = (now) => {
       if (!startRef.current) startRef.current = now;
       const p = Math.min(2, ((now - startRef.current) / TOTAL) * 2); // 0 → 2 over 14s
       setProgress(p);
+
+      // Calculate time left
+      const elapsed = now - startRef.current;
+      const remaining = Math.max(0, TOTAL - elapsed);
+      const newTimeLeft = Math.ceil(remaining / 1000);
+      
+      // Trigger scale effect when time changes during closing phase
+      if (newTimeLeft !== previousTimeRef.current && p >= 1 && newTimeLeft < previousTimeRef.current) {
+        setIsScaling(true);
+        setTimeout(() => setIsScaling(false), 300); // Reset after animation
+      }
+      
+      setTimeLeft(newTimeLeft);
+      previousTimeRef.current = newTimeLeft;
 
       if (p < 2) {
         rafRef.current = requestAnimationFrame(tick);
@@ -64,15 +105,18 @@ const PhaseTimer = ({ phase }) => {
   const overallProgress = progress / 2; // normalized 0 → 1 across 14s
 
   const offset = visibleLen * (1 - overallProgress); // smooth continuous shrink
-  const handAngle = overallProgress * 360 - 90; // continuous rotation
 
   // ✅ Dynamic colors based on step
   const strokeColor = step === "place" ? "#22c55e" : "#facc15"; // green → yellow
-  const handColor = step === "place" ? "#16a34a" : "#facc15";
   const textColor = step === "place" ? "text-white" : "text-yellow-400";
 
+  // Get last result for display
+  const lastResult = lastResults && lastResults.length > 0 ? lastResults[0].result : null;
+
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-3">
+    
+      {/* Main Timer */}
       <div className="relative" style={{ width: size, height: size }}>
         <svg
           width={size}
@@ -103,44 +147,64 @@ const PhaseTimer = ({ phase }) => {
           />
         </svg>
 
-        <svg
-          width={size}
-          height={size}
-          viewBox={`0 0 ${size} ${size}`}
-          className="absolute inset-0"
-        >
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r - 6}
-            fill="rgba(0,0,0,0.7)"
-          />
-          <g
-            style={{
-              transform: `rotate(${handAngle}deg)`,
-              transformOrigin: "50% 50%",
-              transition: "transform 100ms linear",
-            }}
+        {/* Countdown Timer Display with Scale Effect */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div 
+            className={`text-center ${textColor} transition-all duration-300 ${
+              isScaling && step === "closing" 
+                ? "scale-125 transform-gpu" 
+                : "scale-100"
+            }`}
           >
-            <line
-              x1={size / 2}
-              y1={size / 2}
-              x2={size / 2}
-              y2={size / 2 - (r - 10)}
-              stroke={handColor}
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </g>
-          <circle cx={size / 2} cy={size / 2} r="3" fill="#e5ffe9" />
-        </svg>
+            <div className="text-lg font-bold leading-none">
+              {timeLeft}
+            </div>
+            <div className="text-[8px] leading-none opacity-80">
+              SEC
+            </div>
+          </div>
+        </div>
+
+        {/* Pulse effect for engagement */}
+        {pulseEffect && (
+          <div className="absolute inset-0 animate-ping">
+            <div className="w-full h-full rounded-full bg-yellow-400 opacity-20"></div>
+          </div>
+        )}
       </div>
 
-      <div
-        className={`${textColor} text-xs font-semibold tracking-wide uppercase opacity-90`}
-      >
-        {step === "place" ? "Place Your Bets" : "Bet Closing"}
+      {/* Phase Text with Enhanced Styling */}
+      <div className="text-center">
+        <div
+          className={`${textColor} text-xs font-bold tracking-wider uppercase ${
+            step === "closing" ? "animate-pulse" : ""
+          }`}
+        >
+          {step === "place" ? "🎯 Place Your Bets" : "⚠️ Bet Closing"}
+        </div>
+        
+        {/* Progress indicator */}
+        <div className="mt-2 flex justify-center">
+          <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-green-500 to-yellow-500 transition-all duration-1000"
+              style={{ width: `${(progress / 2) * 100}%` }}
+            ></div>
+          </div>
+        </div>
       </div>
+
+      {/* Last Result Display */}
+      {showLastResult && lastResult !== null && (
+        <div className="text-center animate-bounce">
+          <div className="text-sm text-yellow-400 font-bold mb-1">
+            🎉 Last Result: {lastResult} 🎉
+          </div>
+          <div className="text-xs text-gray-400">
+            Get ready for next round!
+          </div>
+        </div>
+      )}
     </div>
   );
 };

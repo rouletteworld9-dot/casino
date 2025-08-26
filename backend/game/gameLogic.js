@@ -5,7 +5,7 @@ function generateWinningNumber(gameState) {
     return gameState.nextWinningNumber;
   }
 
-  if (gameState.bets.length === 0) {
+  if (gameState.bets.length === 0 || gameState.bets.length === 1) {
     return Math.floor(Math.random() * 37);
   }
 

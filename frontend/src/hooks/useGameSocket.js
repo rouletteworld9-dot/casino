@@ -13,15 +13,9 @@ export function useGameSocket() {
   const [bets, setBets] = useState([]);
   const [recentWinners, setRecentWinners] = useState([]);
   const [lastResults, setLastResults] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [preResult, setPreResult] =useState(null)
+  const [messages, setMessages] = useState("");
+  const [preResult, setPreResult] = useState(null);
 
-  const [betData, setBetData] = useState({
-    userId,
-    amount: 0,
-    betType: "",
-    number: null,
-  });
 
   useEffect(() => {
     if (!userId) return;
@@ -32,6 +26,11 @@ export function useGameSocket() {
       console.log("✅ Connected to server with id:", socket.id);
     });
 
+    socket.on("error", (err) => {
+      if (err?.message) toast.error(err.message);
+      console.error("Socket error:", err);
+    });
+
     socket.on("syncState", (data) => {
       setRound(data.roundId);
       setPhase(data.phase);
@@ -39,25 +38,21 @@ export function useGameSocket() {
       setLastResults(data.lastResults);
     });
 
-    // socket.on("lastResults", (data) => {
-    //   setLastResults(data);
-    // });
-
     // Game lifecycle
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
-      setMessages((m) => [...m, "Game started"]);
+      setMessages("Game started");
     });
 
     socket.on("bettingClosed", () => {
       setPhase("spinning");
-      setMessages((m) => [...m, "Betting closed"]);
+      setMessages("Betting closed");
     });
 
     socket.on("spinning", (data) => {
-      setPreResult(data.winningNumber)
-      setMessages((m) => [...m, `Spinning... number = ${data.winningNumber}`]);
+      setPreResult(data.winningNumber);
+      setMessages(`Waiting for result`);
     });
 
     socket.on("roundResult", (data) => {
@@ -65,24 +60,39 @@ export function useGameSocket() {
       setResult(data.winningNumber);
       setLastResults(data.lastResults);
       setRecentWinners(data.recentWinners);
-      setMessages((m) => [...m, `Result = ${data.winningNumber}`]);
+      setMessages(`Result = ${data.winningNumber}`);
+    });
+
+    // Update balances immediately after server deducts on bet placement
+    socket.on("betsPlaced", (data) => {
+      try {
+        const current = useAuthStore.getState().user;
+        if (current && data?.balances) {
+          useAuthStore.setState({
+            user: {
+              ...current,
+              realBalance: data.balances.realBalance,
+              playTokens: data.balances.playTokens,
+            },
+          });
+        }
+      } catch (_) {}
     });
 
     socket.on("betResult", (data) => {
-      setMessages((m) => [
-        ...m,
-        data.win ? `You won ${data.payout}` : "You lost",
-      ]);
+      setMessages(data.win ? `You won ${data.payout}` : "You lost");
     });
 
     return () => {
-      socket.off("syncState");
+      socket.off(" ");
       socket.off("lastResults");
       socket.off("gameStarted");
       socket.off("bettingClosed");
       socket.off("spinning");
       socket.off("result");
       socket.off("betResult");
+      socket.off("error");
+      socket.off("betsPlaced");
       socket.disconnect();
     };
   }, [userId]);
@@ -93,24 +103,18 @@ export function useGameSocket() {
       [field]: value,
     }));
   };
+  
   // Place a bet
-  const placeBet = () => {
+  const emitPlaceBet = (data) => {
+    console.log(data);
     if (!round) {
       toast.error("No round active");
       return;
     }
 
-    if (!betData.amount || betData.amount <= 0) {
-      toast.error("Enter a valid bet amount");
-      return;
-    }
+    console.log(data, "at socket");
 
-    socket.emit("placeBet", {
-      roundId: round,
-      userId,
-      socketId: socket.id,
-      ...betData,
-    });
+    socket.emit("placeBets", data);
 
     setBets((prev) => [...prev, betData]);
     toast.success("Bet placed!");
@@ -127,8 +131,7 @@ export function useGameSocket() {
     phase,
     result,
     bets,
-    betData,
-    placeBet,
+    emitPlaceBet,
     preResult,
     recentWinners,
     updateBetData,

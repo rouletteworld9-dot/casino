@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useGameSocket } from "../hooks/useGameSocket";
 
 const getBetTypeAndNumber = (cellId) => {
   if (/^\d+$/.test(cellId) && Number(cellId) >= 0 && Number(cellId) <= 36) {
@@ -24,6 +25,7 @@ const ChipManager = ({ children, userId, round }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
+  const {emitPlaceBet} = useGameSocket()
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
@@ -117,10 +119,18 @@ const ChipManager = ({ children, userId, round }) => {
 
   const placeBet = useCallback(() => {
     // if (bets.length === 0 || betLocked) return;
-    const payload = { userId, bets };
+    const mappedBets = bets.map((b) => {
+      const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
+      if (b.type === "color") {
+        // Flatten color to its explicit type (red/black) with no number
+        return { type: b.color, amount };
+      }
+      return { type: b.type, numbers: [b.number], amount };
+    });
+    const payload = { userId, bets: mappedBets };
     console.log("✅ Sending to backend:", payload);
     toast.success("Bet placed Successfully!")
-    // socket.emit("placeBet", payload)
+    emitPlaceBet(payload)
     setBetLocked(true); // lock after placing bet
   }, [bets, userId, betLocked]);
 

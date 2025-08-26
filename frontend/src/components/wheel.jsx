@@ -1,6 +1,7 @@
 import anime from "animejs";
 import { useCallback } from "react";
 import { useEffect } from "react";
+import { useGameSocket } from "../hooks/useGameSocket";
 
 const roulette1 = "/assets/roulette_1.jpg";
 const roulette2 = "/assets/roulette_2.png";
@@ -9,8 +10,9 @@ const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
 
 const Wheel = (props) => {
+
   var totalNumbers = 37;
-  var singleSpinDuration = 5000;
+  var singleSpinDuration = 4000;
   var singleRotationDegree = 360 / totalNumbers;
   var lastNumber = 0;
 
@@ -58,7 +60,8 @@ const Wheel = (props) => {
   };
 
   const spinWheel = useCallback((number) => {
-    const bezier = [0.205, 0.284, 0.394, 1.005];
+
+    const bezier = [0.205, 0.184, 0.244, 1.005];
     var ballMinNumberOfSpins = 1;
     var ballMaxNumberOfSpins = 2;
     var wheelMinNumberOfSpins = 1;
@@ -67,7 +70,6 @@ const Wheel = (props) => {
     var currentNumber = nextNumber(number);
 
     var lastNumberRotation = getRotationFromNumber(lastNumber.toString()); //anime.get(wheel, "rotate", "deg");
-
     // minus in front to reverse it so it spins counterclockwise
     var endRotation = -getRandomEndRotation(
       ballMinNumberOfSpins,
@@ -155,6 +157,7 @@ const Wheel = (props) => {
 
     if (nextNumber != null && nextNumber !== "" && props.phase === "result") {
       const nextNumberInt = parseInt(nextNumber);
+ 
       // Stop continuous spinning before result spin
       anime.remove([".layer-2", ".layer-4", ".ball-container"]);
       spinWheel(nextNumberInt);

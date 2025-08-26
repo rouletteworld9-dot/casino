@@ -31,14 +31,14 @@ async function setGameState(newState) {
 
 async function initGameState() {
   const connected = await redisManager.connect();
-  
+
   if (connected) {
     const exists = await redisManager.exists(REDIS_KEYS.GAME_STATE);
     if (!exists) {
       await setGameState(getDefaultGameState());
     }
   }
-  
+
   return connected;
 }
 
@@ -47,4 +47,4 @@ module.exports = {
   setGameState,
   initGameState,
   getDefaultGameState,
-};
+}
