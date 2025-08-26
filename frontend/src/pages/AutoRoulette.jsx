@@ -51,7 +51,7 @@ const AutoRoulette = () => {
 
         <WinnerList />
         {/* chips + board together */}
-        <ChipManager userId={user?._id} round={round}>
+        <ChipManager userId={user?._id} round={round} phase={phase}>
           {({
             selectedCoin,
             setSelectedCoin,
