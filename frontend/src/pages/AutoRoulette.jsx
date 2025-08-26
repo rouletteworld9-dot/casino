@@ -38,7 +38,7 @@ const AutoRoulette = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-      {/* <ResultOverlay/> */}
+      <ResultOverlay/>
         {/* last results */}
         <div className="bg-black/10 absolute top-11 left-140 flex justify-center items-center">
           <LastResults />

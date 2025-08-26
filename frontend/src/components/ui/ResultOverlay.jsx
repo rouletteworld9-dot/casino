@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
+const ResultOverlay = ({ isWin = true, amount = 10, onClose }) => {
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -184,7 +184,7 @@ const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
               {/* Win Icon */}
               <div className="relative mb-5 flex items-center justify-center ">
                 <motion.div
-                  className="w-16 h-16 bg-gradient-to-br from-emerald-200 to-white rounded-full flex items-center justify-center"
+                  className="w-16 h-16 bg-gradient-to-br from-yellow-200 to-white rounded-full flex items-center justify-center"
                   animate={{
                     scale: [1, 1.1, 1],
                     rotate: [0, 5, -5, 0],
@@ -196,7 +196,7 @@ const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
                   }}
                 >
                   <svg
-                    className="w-10 h-10 text-emerald-700"
+                    className="w-10 h-10 text-yellow-700"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -221,7 +221,7 @@ const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
                   className="text-6xl font-black mb-4 relative"
                   style={{
                     background:
-                      "linear-gradient(45deg, #10b981, #34d399, #6ee7b7, #34d399, #10b981)",
+                      "linear-gradient(  45deg,  #10b981,  #34d399,  #6ee7b7,  #fde047,   /* brighter yellow */  #34d399,  #10b981);",
                     backgroundSize: "300% 300%",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -316,7 +316,6 @@ const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
                     backgroundClip: "text",
                     textShadow: "0 0 30px rgba(239, 68, 68, 0.5)",
                   }}
-                  
                   transition={{
                     duration: 4,
                     repeat: Infinity,
@@ -334,7 +333,6 @@ const ResultOverlay = ({ isWin = false, amount = 10, onClose }) => {
                   <p className="text-2xl font-semibold text-gray-200 mb-2">
                     Better Luck Next time...
                   </p>
-                  
                 </motion.div>
               </motion.div>
             </>
