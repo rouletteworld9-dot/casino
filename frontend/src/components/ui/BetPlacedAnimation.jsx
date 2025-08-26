@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BetPlacedAnimation = ({ trigger, phase }) => {
-  console.log(phase , "phase")
+  // console.log(phase , "phase")
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {

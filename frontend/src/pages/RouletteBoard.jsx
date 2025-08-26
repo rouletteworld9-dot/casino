@@ -86,7 +86,7 @@ const RouletteBoard = ({
   };
 
   const winningNumber = phase === "result" && lastResults[0]?.result;
-  const delayWinningNumber = useDelay(winningNumber, 5000);
+  const delayWinningNumber = useDelay(winningNumber, 4000);
   // Show only the total amount for a cell (if any)
   const renderTotalChip = (cellId) => {
     const total = cellTotals[cellId];
@@ -96,7 +96,7 @@ const RouletteBoard = ({
     const lastDenom =
       Array.isArray(denoms) && denoms.length > 0
         ? denoms[denoms.length - 1]
-        : 10;
+        : 10;  
     return (
       <div
         className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-8.5 h-8.5 rounded-full grid place-items-center justify-items-center text-[10px] font-bold cursor-pointer select-none shadow"

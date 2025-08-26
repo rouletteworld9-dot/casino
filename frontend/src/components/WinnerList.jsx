@@ -3,7 +3,7 @@ import anime from "animejs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
-import { User } from "lucide-react";
+// import { User } from "lucide-react";
 
 export default function WinnerList() {
   const { recentWinners: newWinners } = useGameSocket();

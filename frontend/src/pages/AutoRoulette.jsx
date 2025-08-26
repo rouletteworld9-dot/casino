@@ -9,6 +9,7 @@ import { useGameSocket } from "../hooks/useGameSocket";
 import PhaseTimer from "../components/ui/PhaseTimer";
 import WinnerList from "../components/WinnerList";
 import ChipManager from "../components/ChipManager";
+import ResultOverlay from "../components/ui/ResultOverlay";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
@@ -37,6 +38,7 @@ const AutoRoulette = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
+      {/* <ResultOverlay/> */}
         {/* last results */}
         <div className="bg-black/10 absolute top-11 left-140 flex justify-center items-center">
           <LastResults />
