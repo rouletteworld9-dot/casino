@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { useGameStore } from "../../stores/useGameStore";
-
+import { motion, AnimatePresence } from "framer-motion";
 const PhaseTimer = () => {
   // Only subscribe to the specific values we need from the store
-  const phase = useGameStore(state => state.phase);
-  const lastResults = useGameStore(state => state.lastResults);
- 
-  
+  const phase = useGameStore((state) => state.phase);
+  const lastResults = useGameStore((state) => state.lastResults);
+
   const [progress, setProgress] = useState(0);
   const [showNextGame, setShowNextGame] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -20,16 +25,19 @@ const PhaseTimer = () => {
   const phaseRef = useRef(phase);
 
   // Constants - moved outside component or memoized to prevent recreation
-  const CONSTANTS = useMemo(() => ({
-    DURATION: 7000,
-    TOTAL: 14000,
-    SIZE: 56,
-    STROKE: 6,
-    GAP: 0.08
-  }), []);
+  const CONSTANTS = useMemo(
+    () => ({
+      DURATION: 7000,
+      TOTAL: 14000,
+      SIZE: 56,
+      STROKE: 6,
+      GAP: 0.08,
+    }),
+    []
+  );
 
   const { DURATION, TOTAL, SIZE, STROKE, GAP } = CONSTANTS;
-  
+
   // Memoized calculations
   const circleProps = useMemo(() => {
     const r = (SIZE - STROKE) / 2;
@@ -49,10 +57,14 @@ const PhaseTimer = () => {
   // Optimized result display effect
   useEffect(() => {
     // Only run if phase actually changed to result
-    if (phase === "result" && phaseRef.current !== "result" && lastResults?.length > 0) {
+    if (
+      phase === "result" &&
+      phaseRef.current !== "result" &&
+      lastResults?.length > 0
+    ) {
       setShowLastResult(false);
       setPulseEffect(false);
-      
+
       const timer = setTimeout(() => {
         setShowLastResult(true);
         setPulseEffect(true);
@@ -80,20 +92,24 @@ const PhaseTimer = () => {
 
     const tick = (now) => {
       if (!startRef.current) startRef.current = now;
-      
+
       const elapsed = now - startRef.current;
       const p = Math.min(2, (elapsed / TOTAL) * 2);
       setProgress(p);
 
       const remaining = Math.max(0, TOTAL - elapsed);
       const newTimeLeft = Math.ceil(remaining / 1000);
-      
+
       // Trigger scale effect during closing phase
-      if (newTimeLeft !== previousTimeRef.current && p >= 1 && newTimeLeft < previousTimeRef.current) {
+      if (
+        newTimeLeft !== previousTimeRef.current &&
+        p >= 1 &&
+        newTimeLeft < previousTimeRef.current
+      ) {
         setIsScaling(true);
         setTimeout(() => setIsScaling(false), 300);
       }
-      
+
       setTimeLeft(newTimeLeft);
       previousTimeRef.current = newTimeLeft;
 
@@ -125,7 +141,7 @@ const PhaseTimer = () => {
     const offset = circleProps.visibleLen * (1 - overallProgress);
     const strokeColor = step === "place" ? "#22c55e" : "#facc15";
     const textColor = step === "place" ? "text-white" : "text-yellow-400";
-    
+
     return { step, overallProgress, offset, strokeColor, textColor };
   }, [progress, circleProps.visibleLen]);
 
@@ -137,15 +153,30 @@ const PhaseTimer = () => {
   // Early returns for different states
   if (showNextGame) {
     return (
-      <div className="fixed inset-0 w-screen h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn transition-opacity duration-500 ease-out">
-        <div className="text-casinoGold animate-pulse text-lg font-semibold uppercase opacity-90 animate-slideUp">
-          Waiting For the Result...
-        </div>
-      </div>
+      <AnimatePresence>
+        {showNextGame && (
+          <motion.div
+            key="waiting"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 w-screen h-screen bg-black/30 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -40, opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="text-casinoGold text-lg font-semibold uppercase opacity-90"
+            >
+              Waiting For the Result...
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
-
-  
 
   if (phase !== "betting") return null;
 
@@ -186,20 +217,15 @@ const PhaseTimer = () => {
 
         {/* Countdown Timer Display */}
         <div className="absolute inset-0 flex items-center justify-center">
-        
-          <div 
+          <div
             className={`text-center ${textColor} transition-all duration-300 ${
-              isScaling && step === "closing" 
-                ? "scale-125 transform-gpu" 
+              isScaling && step === "closing"
+                ? "scale-125 transform-gpu"
                 : "scale-100"
             }`}
           >
-            <div className="text-lg font-bold leading-none">
-              {timeLeft}
-            </div>
-            <div className="text-[8px] leading-none opacity-80">
-              SEC
-            </div>
+            <div className="text-lg font-bold leading-none">{timeLeft}</div>
+            <div className="text-[8px] leading-none opacity-80">SEC</div>
           </div>
         </div>
 
@@ -220,7 +246,7 @@ const PhaseTimer = () => {
         >
           {step === "place" ? "🎯 Place Your Bets" : "⚠️ Bet Closing"}
         </div>
-        
+
         {/* Progress indicator */}
         {/* <div className="mt-2 flex justify-center">
           <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
@@ -238,9 +264,7 @@ const PhaseTimer = () => {
           <div className="text-sm text-yellow-400 font-bold mb-1">
             🎉 Last Result: {lastResult} 🎉
           </div>
-          <div className="text-xs text-gray-400">
-            Get ready for next round!
-          </div>
+          <div className="text-xs text-gray-400">Get ready for next round!</div>
         </div>
       )}
     </div>

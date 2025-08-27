@@ -20,12 +20,11 @@ const getBetTypeAndNumber = (cellId) => {
   return null;
 };
 
-const ChipManager = ({ children,userId, round }) => {
-
+const ChipManager = ({ children, userId, round }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
-  const {emitPlaceBet} = useGameSocket()
+  const { emitPlaceBet } = useGameSocket();
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
@@ -41,6 +40,19 @@ const ChipManager = ({ children,userId, round }) => {
       if (!betType) return;
 
       setBets((prev) => {
+        if (
+          cellId === "red" &&
+          prev.find((b) => b.type === "color" && b.color === "black")
+        ) {
+          return prev;
+        }
+        if (
+          cellId === "black" &&
+          prev.find((b) => b.type === "color" && b.color === "red")
+        ) {
+          return prev;
+        }
+
         let matchFn =
           betType.type === "color"
             ? (b) => b.type === "color" && b.color === betType.color
@@ -119,6 +131,7 @@ const ChipManager = ({ children,userId, round }) => {
 
   const placeBet = useCallback(() => {
     // if (bets.length === 0 || betLocked) return;
+
     const mappedBets = bets.map((b) => {
       const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
       if (b.type === "color") {
@@ -129,7 +142,9 @@ const ChipManager = ({ children,userId, round }) => {
     });
     const payload = { userId, bets: mappedBets };
 
-    emitPlaceBet(payload)
+    emitPlaceBet(payload);
+
+    emitPlaceBet(payload);
     setBetLocked(true); // lock after placing bet
   }, [bets, userId, betLocked]);
 

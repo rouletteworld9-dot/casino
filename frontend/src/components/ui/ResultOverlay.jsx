@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 import { useGameStore } from "../../stores/useGameStore";
 
 const ResultOverlay = ({ onClose }) => {
-
-  const { winStatus : { isWin, amount } } = useGameStore()
-  if(isWin===null) return;
+  const {
+    winStatus: { isWin = true, amount },
+  } = useGameStore();
+  if (isWin === null) return;
 
   const overlayVariants = {
     hidden: { opacity: 0 },
@@ -112,6 +113,23 @@ const ResultOverlay = ({ onClose }) => {
     },
   };
 
+  // Confetti variants
+  const confettiVariants = {
+    animate: (i) => ({
+      y: [0, window.innerHeight + 100],
+      x: [0, (Math.random() - 0.5) * 400],
+      rotate: [0, 360 * (Math.random() > 0.5 ? 1 : -1)],
+      opacity: [1, 0.8, 0],
+      transition: {
+        duration: 3 + Math.random() * 2,
+        delay: i * 0.1,
+        ease: "easeOut",
+        repeat: Infinity,
+        repeatDelay: 2,
+      },
+    }),
+  };
+
   // Generate random positions for sparkles
   const sparkles = Array.from({ length: 12 }, (_, i) => ({
     id: i,
@@ -119,6 +137,26 @@ const ResultOverlay = ({ onClose }) => {
     y: Math.random() * 400 - 200,
     delay: Math.random() * 2,
     duration: 2 + Math.random() * 2,
+  }));
+
+  // Generate confetti pieces
+  const confettiPieces = Array.from({ length: 50 }, (_, i) => ({
+    id: i,
+    color: [
+      "#ff6b6b",
+      "#4ecdc4",
+      "#45b7d1",
+      "#ffa726",
+      "#ab47bc",
+      "#26c6da",
+      "#ff7043",
+      "#66bb6a",
+      "#fdd835",
+      "#ef5350",
+    ][Math.floor(Math.random() * 10)],
+    shape: Math.random() > 0.5 ? "rect" : "circle",
+    size: 4 + Math.random() * 8,
+    startX: Math.random() * window.innerWidth,
   }));
 
   return (
@@ -129,6 +167,28 @@ const ResultOverlay = ({ onClose }) => {
       animate="visible"
       exit="hidden"
     >
+      {/* Confetti for win */}
+      {isWin && (
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          {confettiPieces.map((piece) => (
+            <motion.div
+              key={piece.id}
+              className={`absolute ${piece.shape === "rect" ? "rounded-sm" : "rounded-full"}`}
+              style={{
+                backgroundColor: piece.color,
+                width: piece.size,
+                height: piece.size,
+                left: piece.startX,
+                top: -piece.size,
+              }}
+              custom={piece.id}
+              variants={confettiVariants}
+              animate="animate"
+            />
+          ))}
+        </div>
+      )}
+
       {/* Background sparkles for win */}
       {isWin && (
         <div className="absolute inset-0 overflow-hidden">
@@ -226,15 +286,15 @@ const ResultOverlay = ({ onClose }) => {
                   className="text-6xl font-black mb-4 relative"
                   style={{
                     background:
-                      "linear-gradient(  45deg,  #10b981,  #34d399,  #6ee7b7,  #fde047,   /* brighter yellow */  #34d399,  #10b981);",
+                      "linear-gradient(45deg, #facc15, #fde047, #fbbf24)",
                     backgroundSize: "300% 300%",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    textShadow: "0 0 30px rgba(16, 185, 129, 0.5)",
+                    // textShadow: "0 0 30px rgba(16, 185, 129, 0.5)",
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 6,
                     repeat: Infinity,
                     ease: "linear",
                   }}
@@ -251,22 +311,6 @@ const ResultOverlay = ({ onClose }) => {
                   <p className="text-2xl font-semibold text-gray-100 mb-2">
                     Congratulations! You won ${amount}
                   </p>
-                  {/* <motion.div
-                    className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-2xl px-6 py-3 shadow-[0_0_25px_rgba(251,191,36,0.4)]"
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{
-                      delay: 0.9,
-                      type: "spring",
-                      damping: 8,
-                      stiffness: 200,
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="text-4xl font-black text-yellow-900">
-                      ${amount}
-                    </span>
-                  </motion.div> */}
                 </motion.div>
               </motion.div>
             </>
@@ -341,29 +385,6 @@ const ResultOverlay = ({ onClose }) => {
                 </motion.div>
               </motion.div>
             </>
-          )}
-
-          {onClose && (
-            <motion.button
-              onClick={onClose}
-              className={`mt-10 bg-gradient-to-r ${
-                isWin
-                  ? "from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                  : "from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-[0_0_20px_rgba(239,68,68,0.3)]"
-              } text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform border border-white/20`}
-              initial={{ opacity: 0, y: 30, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.2, duration: 0.5, type: "spring" }}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: isWin
-                  ? "0 0 30px rgba(16, 185, 129, 0.5)"
-                  : "0 0 30px rgba(239, 68, 68, 0.5)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Continue
-            </motion.button>
           )}
         </div>
       </motion.div>

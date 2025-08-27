@@ -11,6 +11,7 @@ import {
   CirclePlus,
   EyeOff,
   Eye,
+  Coins,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -47,7 +48,7 @@ export default function Header() {
     { name: "TOURNAMENTS", key: "tournaments", icon: Trophy },
   ];
 
-  console.log("user realbalance", user?.realBalance)
+  console.log("user realbalance", user?.realBalance);
 
   return (
     <motion.header
@@ -79,10 +80,20 @@ export default function Header() {
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />{" "}
-                  <span className="font-semibold text-white">
-                    {showBalance
-                      ? `₹${user?.realBalance || singleUser?.realBalance}`
-                      : "••••"}{" "}
+                  <span className="font-semibold text-white flex items-center gap-2">
+                    {showBalance ? (
+                      <>
+                        <span>
+                          {`₹${user?.realBalance || singleUser?.realBalance}`} |
+                        </span>
+                        <span className="flex text-yellow-400 items-center gap-1">
+                          <Coins className="w-4 h-4 text-yellow-400" />
+                          {`${user?.playTokns || singleUser?.playTokens}`}
+                        </span>
+                      </>
+                    ) : (
+                      "****  ****"
+                    )}
                   </span>
                   <motion.button
                     onClick={(e) => {

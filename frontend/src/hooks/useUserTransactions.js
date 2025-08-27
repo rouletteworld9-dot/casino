@@ -21,7 +21,7 @@ export const useUserTransactions = (transactionStatus, transactionType) => {
 
   const withdrawlRequestMutation = useMutation({
     mutationFn: transactionApi.withdrawlRequest,
-    onSuccess: () => {
+    onSuccess: () => { 
       toast.success("Withdrawl Request Sent!");
     },
     onError: (error) => {

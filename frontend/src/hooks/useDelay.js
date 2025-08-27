@@ -1,7 +1,7 @@
 // useDelay.js
 import { useEffect, useState } from "react";
 
-export const useDelay = (value, delay = 2000) => {
+export const useDelay = (value, delay) => {
   const [delayedValue, setDelayedValue] = useState(null);
 
   useEffect(() => {

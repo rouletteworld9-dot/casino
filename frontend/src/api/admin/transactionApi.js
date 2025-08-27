@@ -47,6 +47,16 @@ const withdrawlRequest = async (formData) => {
     throw error;
   }
 };
+
+const betHistory = async () => {
+  try {
+    const response = await api.get("/user/bets");
+    return response.data;
+  } catch (error) {
+    throw new error();
+  }
+};
+
 const transactionApi = {
   getAllTransactions,
   approveTransaction,
@@ -54,6 +64,7 @@ const transactionApi = {
   withdrawlRequest,
   depositRequest,
   getUserTransactions,
+  betHistory,
 };
 
 export default transactionApi;
