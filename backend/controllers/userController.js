@@ -16,9 +16,9 @@ exports.getSingleUser = async (req, res) => {
   }
 };
 
-exports.getUserBetsHistory = async (req, res) => {
-  try {
-    const {id} = req.params;
+exports.getUserBetsHistory = async(req , res)=>{
+    const {id} = req.user
+   try {
 
     const Bets = await Bet.find({user : id})
 

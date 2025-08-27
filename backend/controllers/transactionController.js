@@ -115,12 +115,15 @@ exports.getAllTransactions = async (req, res) => {
 
 // ✅ 4. Get My Transactions (User)
 exports.getMyTransactions = async (req, res) => {
-  const { transactionStatus } = req.query;
+  const { transactionStatus , transactionType} = req.query;
   let filter = {
     user: req.user._id,
   };
   if (transactionStatus) {
     filter.transactionStatus = transactionStatus;
+  }
+  if(transactionType){
+    filter.transactionType = transactionType
   }
   try {
     const transactions = await Transaction.find(filter).sort({
