@@ -4,6 +4,7 @@ import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
+import { useGameStore } from "../stores/useGameStore";
 
 // bets: { [cellId: string]: denomination[] }, cellTotals: { [cellId: string]: number }
 const RouletteBoard = ({
@@ -13,9 +14,7 @@ const RouletteBoard = ({
   onCellDrop = () => {},
   cellTotals = {},
 }) => {
-  const user = useAuthStore((state) => state.user);
-
-  const { phase, lastResults } = useGameSocket(user?._id);
+  const { phase, lastResults } = useGameStore();
   const numbers = [
     { num: 0, color: "green" },
     { num: 32, color: "red" },
@@ -86,17 +85,17 @@ const RouletteBoard = ({
   };
 
   const winningNumber = phase === "result" && lastResults[0]?.result;
-  const delayWinningNumber = useDelay(winningNumber, 4000);
+  const delayWinningNumber = useDelay(winningNumber, 5000);
   // Show only the total amount for a cell (if any)
   const renderTotalChip = (cellId) => {
     const total = cellTotals[cellId];
     if (!total) return null;
     // Use the color of the last denomination for style, or default
     const denoms = bets[cellId];
-    const lastDenom =
+    const lastDenom =  
       Array.isArray(denoms) && denoms.length > 0
         ? denoms[denoms.length - 1]
-        : 10;  
+        : 10;
     return (
       <div
         className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-8.5 h-8.5 rounded-full grid place-items-center justify-items-center text-[10px] font-bold cursor-pointer select-none shadow"
@@ -147,15 +146,7 @@ const RouletteBoard = ({
   };
 
   return (
-    <div
-      className="items-center -mt-25 justify-center flex flex-col min-h-screen w-full"
-      // style={{
-      //   backgroundImage: "url('/game/roulettetable.webp')",
-      //   backgroundSize: "cover",
-      //   backgroundPosition: "center",
-      //   backgroundRepeat: "no-repeat",
-      // }}
-    >
+    <div className="items-center -mt-25 justify-center flex flex-col min-h-screen w-full">
       <div
         className="max-w-3xl ml-30 mt-10 shadow-2xl transform"
         style={{
@@ -202,10 +193,12 @@ const RouletteBoard = ({
                   </span>
                   <AnimatePresence>
                     {delayWinningNumber === 0 && (
-                      <BetPlacedAnimation
-                        phase={phase}
-                        trigger={delayWinningNumber}
-                      />
+                      <>
+                        <BetPlacedAnimation
+                          phase={phase}
+                          trigger={delayWinningNumber}
+                        />
+                      </>
                     )}
                   </AnimatePresence>
                 </div>
@@ -245,10 +238,12 @@ const RouletteBoard = ({
 
                         <AnimatePresence>
                           {delayWinningNumber === numberData?.num && (
-                            <BetPlacedAnimation
-                              phase={phase}
-                              trigger={bets[numberData?.num]?.length}
-                            />
+                            <>
+                              <BetPlacedAnimation
+                                phase={phase}
+                                trigger={bets[numberData?.num]?.length}
+                              />
+                            </>
                           )}
                         </AnimatePresence>
                       </div>

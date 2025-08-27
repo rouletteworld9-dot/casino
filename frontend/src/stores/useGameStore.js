@@ -9,9 +9,9 @@ export const useGameStore = create((set, get) => ({
   round: null,
   phase: null,
   result: null,
-  winStatus : {
-    isWin : null,
-    amount : null,
+  winStatus: {
+    isWin: null,
+    amount: null,
   },
   isGameRunning: false,
 
@@ -19,6 +19,7 @@ export const useGameStore = create((set, get) => ({
   lastResults: [],
   recentWinners: [],
   messages: "",
+  loading: false,
 
   // Actions to update state (called from useGameSocket)
   setConnection: (connected, socketId = null) =>
@@ -38,8 +39,8 @@ export const useGameStore = create((set, get) => ({
 
   setGameRunning: (isGameRunning) => set({ isGameRunning }),
 
-  setWinStatus : (isWin,amount)=> set({winStatus:{isWin,amount}}),
-
+  setWinStatus: (isWin, amount) => set({ winStatus: { isWin, amount } }),
+  setLoading: (loading) => set({ loading }),
   // Bulk updates for efficiency
   updateGameState: (updates) => set((state) => ({ ...state, ...updates })),
 
@@ -55,5 +56,7 @@ export const useGameStore = create((set, get) => ({
       lastResults: [],
       recentWinners: [],
       messages: "",
+      loading , 
+      setLoading
     }),
 }));
