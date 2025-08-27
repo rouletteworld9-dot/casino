@@ -1,4 +1,4 @@
-const { validateBet, VALID_BET_TYPES } = require("./betValidator");
+const { validateBet, VALID_BET_TYPES, RED_NUMBERS, BLACK_NUMBERS } = require("./betValidator");
 
 function generateWinningNumber(gameState) {
   if (gameState.nextWinningNumber !== null) {
@@ -9,11 +9,35 @@ function generateWinningNumber(gameState) {
     return Math.floor(Math.random() * 37);
   }
 
-  // Count total bet amounts per number to pick least bet number
   const numberBetAmounts = {};
 
   gameState.bets.forEach((bet) => {
-    bet.numbers.forEach((num) => {
+    let numbers = [];
+
+    switch (bet.type) {
+      case "red":
+        numbers = RED_NUMBERS;
+        break;
+      case "black":
+        numbers = BLACK_NUMBERS;
+        break;
+      case "odd":
+        numbers = Array.from({ length: 36 }, (_, i) => i + 1).filter((n) => n % 2 === 1);
+        break;
+      case "even":
+        numbers = Array.from({ length: 36 }, (_, i) => i + 1).filter((n) => n % 2 === 0);
+        break;
+      case "low":
+        numbers = Array.from({ length: 18 }, (_, i) => i + 1);
+        break;
+      case "high":
+        numbers = Array.from({ length: 18 }, (_, i) => i + 19);
+        break;
+      default:
+        numbers = bet.numbers || [];
+    }
+
+    numbers.forEach((num) => {
       numberBetAmounts[num] = (numberBetAmounts[num] || 0) + bet.amount;
     });
   });
@@ -30,6 +54,7 @@ function generateWinningNumber(gameState) {
 
   return winningNumber;
 }
+
 
 function updateLastResults(currentResults, winningNumber, roundId, bets = []) {
   // Find the winning bet to get user details and amounts
