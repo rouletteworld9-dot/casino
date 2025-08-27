@@ -69,7 +69,6 @@ async function handleBettingPhaseEnd(io, expectedRoundId) {
 async function handleResultPhase(io, expectedRoundId) {
   const currentState = await gameStateService.getGameState();
 
-  console.log("currentState", currentState.bets);
   if (currentState.roundId !== expectedRoundId) {
     return;
   }
@@ -113,7 +112,7 @@ async function handleResultPhase(io, expectedRoundId) {
 }
 
 async function placeBets(socket, data) {
-  console.log("outside placebets", data)
+  
   const gameState = await gameStateService.getGameState();
 
   if (gameState.phase !== "betting") {
@@ -124,15 +123,13 @@ async function placeBets(socket, data) {
     ...data,
     roundId: gameState.roundId,
   });
+  
 
-  console.log("result ",result.processedBets)
 
   const updatedState = {
     ...gameState,
     bets: [...gameState.bets, ...result.processedBets],
   };
-
-  console.log("updated bet state", updatedState)
 
   await gameStateService.setGameState(updatedState);
   return result;

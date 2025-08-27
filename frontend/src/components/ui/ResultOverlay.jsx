@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useGameStore } from "../../stores/useGameStore";
 
-const ResultOverlay = ({ isWin = true, amount = 10, onClose }) => {
+const ResultOverlay = ({ onClose }) => {
+
+  const { winStatus : { isWin, amount } } = useGameStore()
+  if(isWin===null) return;
+
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.4 },
+      transition: { duration: 0.4, delay: 4 },
     },
   };
 

@@ -19,7 +19,6 @@ import UserHeaderDropdown from "./ui/UserHeaderDropdown";
 import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
-import { useGameSocket } from "../hooks/useGameSocket";
 import { useSingleUser } from "../hooks/useAdminUsers";
 
 const IconButton = ({ icon: Icon, ...props }) => (
@@ -47,6 +46,8 @@ export default function Header() {
     { name: "PROMOTIONS", key: "promotions", icon: Gift },
     { name: "TOURNAMENTS", key: "tournaments", icon: Trophy },
   ];
+
+  console.log("user realbalance", user?.realBalance)
 
   return (
     <motion.header
@@ -80,7 +81,7 @@ export default function Header() {
                   <CircleUser size={18} />{" "}
                   <span className="font-semibold text-white">
                     {showBalance
-                      ? `₹${singleUser?.realBalance || "0000"}`
+                      ? `₹${user?.realBalance || singleUser?.realBalance}`
                       : "••••"}{" "}
                   </span>
                   <motion.button

@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "../components/header";
 import RouletteBoard from "./RouletteBoard";
 import RouletteGame from "./roulette-game";
 import ChipSelector from "../components/ui/ChipSelector";
 import LastResults from "../components/ui/LastResults";
 import { useAuthStore } from "../stores/useAuthStore";
-import { useGameSocket } from "../hooks/useGameSocket";
 import PhaseTimer from "../components/ui/PhaseTimer";
 import WinnerList from "../components/WinnerList";
 import ChipManager from "../components/ChipManager";
 import ResultOverlay from "../components/ui/ResultOverlay";
+import { useGameStore } from "../stores/useGameStore";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
 
-  const { phase, round , lastResults} = useGameSocket(user?._id);
-
-  // const [showSpinningWinners, setShowSpinningWinners] = useState(false);
-
-  // useEffect(() => {
-  //   if (phase === "spinning") {
-  //     setShowSpinningWinners(true);
-  //     const t = setTimeout(() => setShowSpinningWinners(false), 5000); // hide after 2s
-  //     return () => clearTimeout(t);
-  //   }
-  // }, [phase]);
+  const { phase, round , lastResults } = useGameStore();
 
   return (
     <div className="relative w-full flex flex-col">
@@ -38,7 +28,7 @@ const AutoRoulette = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-      <ResultOverlay/>
+        <ResultOverlay/>
         {/* last results */}
         <div className="bg-black/10 absolute top-11 left-140 flex justify-center items-center">
           <LastResults />
@@ -46,7 +36,7 @@ const AutoRoulette = () => {
 
         {/* wheel */}
         <div className="relative w-full flex justify-center">
-          <div className="absolute left-0 z-20">
+          <div className="absolute left-0 z-60">
             <RouletteGame />
           </div>
         </div>
@@ -100,8 +90,9 @@ const AutoRoulette = () => {
         </ChipManager>
 
         {/* phase timer */}
-        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100">
-          <PhaseTimer phase={phase} />
+        <div className="">
+        {/* <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100"> */}
+          <PhaseTimer/>
         </div>
       </div>
     </div>

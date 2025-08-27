@@ -156,7 +156,7 @@ async function placeBets(socket, data) {
     totalBetAmount
   );
 
-  await deductUserBalance(user, realDeduction, tokenDeduction);
+  const deductedBalance = await deductUserBalance(user, realDeduction, tokenDeduction);
 
   return {
     processedBets: processUserBets(
@@ -167,8 +167,8 @@ async function placeBets(socket, data) {
     ),
     totalAmount: totalBetAmount,
     userBalance: {
-      realBalance: user.realBalance,
-      playTokens: user.playTokens,
+      realBalance: deductedBalance.realBalance,
+      playTokens: deductedBalance.playTokens,
     },
   };
 }

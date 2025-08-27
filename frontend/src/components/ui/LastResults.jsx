@@ -2,6 +2,7 @@ import React from "react";
 import { useGameSocket } from "../../hooks/useGameSocket";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useDelay } from "../../hooks/useDelay";
+import { useGameStore } from "../../stores/useGameStore";
 
 const rouletteColors = {
   red: [
@@ -22,8 +23,7 @@ const getColorClass = (num) => {
 };
 
 const LastResults = () => {
-  const user = useAuthStore((state) => state.user);
-  const { lastResults } = useGameSocket(user?._id);
+  const { lastResults } = useGameStore();
 
   const delayedResults = useDelay(lastResults, 5000);
 
@@ -34,6 +34,7 @@ const LastResults = () => {
           key={res.roundId || idx}
           className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-bold border border-white shadow-md ${getColorClass(res.result)}`}
         >
+       
           {res.result}
         </div>
       ))}

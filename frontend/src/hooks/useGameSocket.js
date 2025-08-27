@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socket } from "../socket";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../stores/useAuthStore";
+import { useGameStore } from "../stores/useGameStore";
 
 export function useGameSocket() {
   const user = useAuthStore((state) => state.user);
   let userId = user?._id;
 
-  const [round, setRound] = useState(null);
-  const [phase, setPhase] = useState(null);
-  const [result, setResult] = useState(null);
-  const [bets, setBets] = useState([]);
-  const [recentWinners, setRecentWinners] = useState([]);
-  const [lastResults, setLastResults] = useState([]);
-  const [messages, setMessages] = useState("");
-  const [preResult, setPreResult] = useState(null);
-
+  // Get state and actions from Zustand store
+  const {
+    round,
+    setWinStatus,
+    setConnection,
+    setRound,
+    setPhase,
+    setResult,
+    setLastResults,
+    setRecentWinners,
+    setMessages,
+    updateGameState,
+  } = useGameStore();
 
   useEffect(() => {
     if (!userId) return;
@@ -23,7 +28,7 @@ export function useGameSocket() {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("✅ Connected to server with id:", socket.id);
+      setConnection(true, socket.id);
     });
 
     socket.on("error", (err) => {
@@ -32,26 +37,31 @@ export function useGameSocket() {
     });
 
     socket.on("syncState", (data) => {
-      setRound(data.roundId);
-      setPhase(data.phase);
-      setResult(data.winningNumber);
-      setLastResults(data.lastResults);
+      updateGameState({
+        round: data.roundId,
+        phase: data.phase,
+        result: data.winningNumber,
+        lastResults: data.lastResults,
+        recentWinners: data.recentWinners,
+        isGameRunning: data.isGameRunning,
+      });
     });
 
     // Game lifecycle
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
+      setWinStatus(null, null);
       setMessages("Game started");
     });
 
-    socket.on("bettingClosed", () => {
+    socket.on("bettingClosed", (data) => {
       setPhase("spinning");
+      betsPlaced;
       setMessages("Betting closed");
     });
 
     socket.on("spinning", (data) => {
-      setPreResult(data.winningNumber);
       setMessages(`Waiting for result`);
     });
 
@@ -80,30 +90,42 @@ export function useGameSocket() {
     });
 
     socket.on("betResult", (data) => {
+      try {
+        if (data?.balances) {
+          setTimeout(() => {
+            const current = useAuthStore.getState().user; // fresh state le lo
+            if (current) {
+              useAuthStore.setState({
+                user: {
+                  ...current,
+                  realBalance: data.balances.realBalance,
+                  playTokens: data.balances.playTokens,
+                },
+              });
+            }
+          }, 5000); // 5s delay
+        }
+      } catch (_) {}
+
+      setWinStatus(data.win, data.payout);
       setMessages(data.win ? `You won ${data.payout}` : "You lost");
     });
 
     return () => {
-      socket.off(" ");
-      socket.off("lastResults");
+      socket.off("connect");
+      socket.off("syncState");
       socket.off("gameStarted");
       socket.off("bettingClosed");
       socket.off("spinning");
-      socket.off("result");
+      socket.off("roundResult");
       socket.off("betResult");
       socket.off("error");
       socket.off("betsPlaced");
       socket.disconnect();
+      setConnection(false);
     };
   }, [userId]);
 
-  const updateBetData = (field, value) => {
-    setBetData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-  
   // Place a bet
   const emitPlaceBet = (data) => {
     console.log(data);
@@ -111,32 +133,18 @@ export function useGameSocket() {
       toast.error("No round active");
       return;
     }
-
-    console.log(data, "at socket");
-
     socket.emit("placeBets", data);
-
-    setBets((prev) => [...prev, betData]);
     toast.success("Bet placed!");
   };
 
   const forceResult = (num) => {
-    if (!num) return;
+    if (!num && num !== 0) return;
     socket.emit("forceResult", num);
     toast.success("Result Adjusted Success");
   };
 
   return {
-    round,
-    phase,
-    result,
-    bets,
     emitPlaceBet,
-    preResult,
-    recentWinners,
-    updateBetData,
-    messages,
-    lastResults,
     forceResult,
   };
 }
