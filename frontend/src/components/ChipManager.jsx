@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useGameSocket } from "../hooks/useGameSocket";
 
 const getBetTypeAndNumber = (cellId) => {
@@ -21,7 +20,8 @@ const getBetTypeAndNumber = (cellId) => {
   return null;
 };
 
-const ChipManager = ({ children, userId, round }) => {
+const ChipManager = ({ children,userId, round }) => {
+
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
@@ -128,8 +128,7 @@ const ChipManager = ({ children, userId, round }) => {
       return { type: b.type, numbers: [b.number], amount };
     });
     const payload = { userId, bets: mappedBets };
-    console.log("✅ Sending to backend:", payload);
-    toast.success("Bet placed Successfully!")
+
     emitPlaceBet(payload)
     setBetLocked(true); // lock after placing bet
   }, [bets, userId, betLocked]);

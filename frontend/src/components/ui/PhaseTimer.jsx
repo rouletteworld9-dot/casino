@@ -5,7 +5,6 @@ const PhaseTimer = () => {
   // Only subscribe to the specific values we need from the store
   const phase = useGameStore(state => state.phase);
   const lastResults = useGameStore(state => state.lastResults);
-  const result = useGameStore(state=>state.result)
  
   
   const [progress, setProgress] = useState(0);

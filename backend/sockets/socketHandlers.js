@@ -38,8 +38,6 @@ async function handlePlaceBets(socket, data) {
     }
 
     const result = await gameManager.placeBets(socket, data);
-    console.log("result", result);
-
     socket.emit("betsPlaced", {
       success: true,
       betsCount: data.bets.length,

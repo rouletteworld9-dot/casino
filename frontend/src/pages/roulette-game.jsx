@@ -17,17 +17,6 @@ const RouletteGame = () => {
 
   const number = { next: lastResults[0]?.result, current: lastResults[1]?.result };
 
-  // const user = useAuthStore((state) => state.user);
-  // const { lastResults, phase } = useGameSocket(user?._id);
-  // const [result, setResult] = useState(null);
-
-  // useEffect(() => {
-  //   if (phase === "result" && lastResults?.length > 0) {
-  //     setResult(lastResults[0]?.toString() || "");
-  //   } else {
-  //     setResult(null);
-  //   }
-  // }, [phase, lastResults]);
 
   return (
     <div style={{ textAlign: "center" }}>

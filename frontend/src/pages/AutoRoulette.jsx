@@ -14,7 +14,9 @@ import { useGameStore } from "../stores/useGameStore";
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
 
-  const { phase, round , lastResults } = useGameStore();
+  const phase = useGameStore(s=>s.phase)
+  const round = useGameStore(s=>s.round)
+  const lastResults = useGameStore(s=>s.lastResults)
 
   return (
     <div className="relative w-full flex flex-col">

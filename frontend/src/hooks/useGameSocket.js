@@ -90,22 +90,17 @@ export function useGameSocket() {
     });
 
     socket.on("betResult", (data) => {
-      try {
-        if (data?.balances) {
-          setTimeout(() => {
-            const current = useAuthStore.getState().user; // fresh state le lo
-            if (current) {
-              useAuthStore.setState({
-                user: {
-                  ...current,
-                  realBalance: data.balances.realBalance,
-                  playTokens: data.balances.playTokens,
-                },
-              });
-            }
-          }, 5000); // 5s delay
-        }
-      } catch (_) {}
+
+      const current = useAuthStore.getState().user;
+      if (current && data?.balances) {
+        useAuthStore.setState({
+          user: {
+            ...current,
+            realBalance: data.balances.realBalance,
+            playTokens: data.balances.playTokens,
+          },
+        });
+      }
 
       setWinStatus(data.win, data.payout);
       setMessages(data.win ? `You won ${data.payout}` : "You lost");
@@ -128,7 +123,6 @@ export function useGameSocket() {
 
   // Place a bet
   const emitPlaceBet = (data) => {
-    console.log(data);
     if (!round) {
       toast.error("No round active");
       return;
