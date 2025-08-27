@@ -1,59 +1,43 @@
-const { validateBet, VALID_BET_TYPES, RED_NUMBERS, BLACK_NUMBERS } = require("./betValidator");
+const {
+  validateBet,
+  VALID_BET_TYPES,
+} = require("./betValidator");
+const payouts = require('./payouts');
+
 
 function generateWinningNumber(gameState) {
   if (gameState.nextWinningNumber !== null) {
     return gameState.nextWinningNumber;
   }
 
-  if (gameState.bets.length === 0 || gameState.bets.length === 1) {
+  if (gameState.bets.length === 0) {
     return Math.floor(Math.random() * 37);
   }
 
-  const numberBetAmounts = {};
-
-  gameState.bets.forEach((bet) => {
-    let numbers = [];
-
-    switch (bet.type) {
-      case "red":
-        numbers = RED_NUMBERS;
-        break;
-      case "black":
-        numbers = BLACK_NUMBERS;
-        break;
-      case "odd":
-        numbers = Array.from({ length: 36 }, (_, i) => i + 1).filter((n) => n % 2 === 1);
-        break;
-      case "even":
-        numbers = Array.from({ length: 36 }, (_, i) => i + 1).filter((n) => n % 2 === 0);
-        break;
-      case "low":
-        numbers = Array.from({ length: 18 }, (_, i) => i + 1);
-        break;
-      case "high":
-        numbers = Array.from({ length: 18 }, (_, i) => i + 19);
-        break;
-      default:
-        numbers = bet.numbers || [];
-    }
-
-    numbers.forEach((num) => {
-      numberBetAmounts[num] = (numberBetAmounts[num] || 0) + bet.amount;
-    });
-  });
-
-  let minAmount = Infinity;
-  let winningNumber = Math.floor(Math.random() * 37);
-
-  for (const [num, amount] of Object.entries(numberBetAmounts)) {
-    if (amount < minAmount) {
-      minAmount = amount;
-      winningNumber = parseInt(num, 10);
+  // Calculate total payout for each possible number (0-36)
+  const payoutForNumber = {};
+  
+  for (let number = 0; number <= 36; number++) {
+    payoutForNumber[number] = 0;
+    
+    // Check each bet to see if this number wins
+    for (const bet of gameState.bets) {
+      if (validateBet(bet, number)) {
+        payoutForNumber[number] += bet.amount * payouts[bet.type];
+      }
     }
   }
-
-  return winningNumber;
+  
+  // Find number(s) with minimum total payout
+  let minPayout = Math.min(...Object.values(payoutForNumber));
+  let numbersWithMinPayout = Object.keys(payoutForNumber)
+    .filter(num => payoutForNumber[num] === minPayout)
+    .map(num => parseInt(num));
+  
+  // Randomly select from numbers that minimize payout
+  return numbersWithMinPayout[Math.floor(Math.random() * numbersWithMinPayout.length)];
 }
+
 
 
 function updateLastResults(currentResults, winningNumber, roundId, bets = []) {
