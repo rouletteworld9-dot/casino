@@ -20,7 +20,7 @@ const getBetTypeAndNumber = (cellId) => {
   return null;
 };
 
-const ChipManager = ({ children, userId, round }) => {
+const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
@@ -32,14 +32,27 @@ const ChipManager = ({ children, userId, round }) => {
     setBets([]);
   }, [round]);
 
+  // 🔹 Lock betting outside of betting phase
+  useEffect(() => {
+    if (phase !== "betting") {
+      setBetLocked(true);
+    } else {
+      setBetLocked(false);
+    }
+  }, [phase]);
+
   const addBet = useCallback(
     (cellId, coinValue) => {
-      if (betLocked) return; // prevent adding bets after locking
+      if (betLocked || phase !== "betting") {
+        toast.error("Betting is closed. Wait for next round.");
+        return; // prevent adding bets after locking/when not betting
+      }
 
       const betType = getBetTypeAndNumber(cellId);
       if (!betType) return;
 
       setBets((prev) => {
+
         if (
           cellId === "red" &&
           prev.find((b) => b.type === "color" && b.color === "black")
@@ -54,6 +67,7 @@ const ChipManager = ({ children, userId, round }) => {
         }
 
         let matchFn =
+
           betType.type === "color"
             ? (b) => b.type === "color" && b.color === betType.color
             : (b) => b.type === betType.type && b.number === betType.number;
@@ -85,7 +99,7 @@ const ChipManager = ({ children, userId, round }) => {
         return updated;
       });
     },
-    [betLocked]
+    [betLocked, phase]
   );
 
   const cellTotals = useMemo(() => {
@@ -134,9 +148,7 @@ const ChipManager = ({ children, userId, round }) => {
   }, [bets, cellTotals]);
 
   const placeBet = useCallback(() => {
-    // if (bets.length === 0 || betLocked) return;
-
-    const mappedBets = bets.map((b) => {
+ const mappedBets = bets.map((b) => {
       const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
       if (b.type === "color") {
         // Flatten color to its explicit type (red/black) with no number
@@ -145,10 +157,10 @@ const ChipManager = ({ children, userId, round }) => {
       return { type: b.type, numbers: [b.number], amount };
     });
     const payload = { userId, bets: mappedBets };
-
     emitPlaceBet(payload);
-    setBetLocked(true); // lock after placing bet
-  }, [bets, userId, betLocked]);
+
+    setBetLocked(true);// clear chips from board after placing bet
+  }, [bets, userId, betLocked, phase]);
 
   return children({
     selectedCoin,

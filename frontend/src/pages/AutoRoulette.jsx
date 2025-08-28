@@ -34,7 +34,7 @@ const AutoRoulette = () => {
         </div>
       ) : (
         <div
-          className="pt-20 overflow-hidden max-h-[100vh]"
+          className="pt-20 overflow-hidden md:max-h-[100vh] rotate-0"
           style={{
             backgroundImage: "url('/game/roulettetable.webp')",
             backgroundSize: "cover",
