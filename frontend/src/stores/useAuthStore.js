@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { jwtDecode } from "jwt-decode";
 import api from "../utils/axios";
 
 export const useAuthStore = create((set) => ({

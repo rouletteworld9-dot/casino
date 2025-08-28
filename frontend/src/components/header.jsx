@@ -11,6 +11,7 @@ import {
   CirclePlus,
   EyeOff,
   Eye,
+  Coins,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -19,7 +20,6 @@ import UserHeaderDropdown from "./ui/UserHeaderDropdown";
 import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
-import { useGameSocket } from "../hooks/useGameSocket";
 import { useSingleUser } from "../hooks/useAdminUsers";
 
 const IconButton = ({ icon: Icon, ...props }) => (
@@ -78,10 +78,20 @@ export default function Header() {
               >
                 <span className="text-white flex items-center space-x-2 text-xs cursor-pointer">
                   <CircleUser size={18} />{" "}
-                  <span className="font-semibold text-white">
-                    {showBalance
-                      ? `₹${singleUser?.realBalance || "0000"}`
-                      : "••••"}{" "}
+                  <span className="font-semibold text-white flex items-center gap-2">
+                    {showBalance ? (
+                      <>
+                        <span>
+                          {`₹${user?.realBalance || singleUser?.realBalance}`} |
+                        </span>
+                        <span className="flex text-yellow-400 items-center gap-1">
+                          <Coins className="w-4 h-4 text-yellow-400" />
+                          {`${user?.playTokens || singleUser?.playTokens}`}
+                        </span>
+                      </>
+                    ) : (
+                      "****  ****"
+                    )}
                   </span>
                   <motion.button
                     onClick={(e) => {

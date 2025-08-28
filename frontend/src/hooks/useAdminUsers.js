@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import adminUsersApi from "../api/admin/adminUsersApi";
 import toast from "react-hot-toast";
+import transactionApi from "../api/admin/transactionApi";
 
 export const useAdminUsers = () => {
   const queryClient = useQueryClient();
@@ -32,10 +33,10 @@ export const useAdminUsers = () => {
   return {
     adminAllUsers: getAllUsers.data,
     deleteUserFn: deleteUserMutation.mutate,
-    deleteUserLoading:deleteUserMutation.isPending,
+    deleteUserLoading: deleteUserMutation.isPending,
     adminAllUsersLoading: getAllUsers.isLoading,
     updateStatusFn: updateUserStatus.mutate,
-    updateStatusLoading :updateUserStatus.isPending
+    updateStatusLoading: updateUserStatus.isPending,
   };
 };
 
@@ -48,7 +49,18 @@ export const useSingleUser = (id) => {
 
   return {
     singleUser: getSingleUser.data,
-
     singleUserLoading: getSingleUser.isLoading,
+  };
+};
+
+export const usebetHistory = () => {
+  const betHistoryFn = useQuery({
+    queryKey: ["betHistory"],
+    queryFn: () => transactionApi.betHistory(),
+  });
+
+  return {
+    betHistory: betHistoryFn.data,
+    betHistoryLoading :betHistoryFn.isLoading
   };
 };

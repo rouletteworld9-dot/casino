@@ -6,7 +6,6 @@ import { usePaymentSettings } from "../../hooks/usePaymentSettings";
 
 const ShowQR = ({ setShowQR, amount }) => {
   const { paymentSettings } = usePaymentSettings();
-  console.log(paymentSettings, "payment settings sss");
 
   const [utr, setUtr] = useState("");
 

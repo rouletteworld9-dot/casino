@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/header";
-import bgImage from "../../public/game/bg-autoroulette.webp";
+import bgImage from "/game/bg-autoroulette.webp";
 import { useNavigate } from "react-router-dom";
 const GuestCasinoPage = () => {
   const navigate = useNavigate();

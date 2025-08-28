@@ -6,8 +6,7 @@ import { useGameSocket } from "../../hooks/useGameSocket";
 import { useAuthStore } from "../../stores/useAuthStore";
 
 const Dashboard = () => {
-  const user = useAuthStore((state) => state.user);
-  const { round, phase, lastResults } = useGameSocket(user?._id);
+  const { round, phase, lastResults } = useGameSocket();
 
   // useEffect(() => {
   //   const timer = setInterval(() => {

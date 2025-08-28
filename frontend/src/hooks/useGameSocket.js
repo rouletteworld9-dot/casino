@@ -1,27 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socket } from "../socket";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../stores/useAuthStore";
+import { useGameStore } from "../stores/useGameStore";
 
 export function useGameSocket() {
   const user = useAuthStore((state) => state.user);
   let userId = user?._id;
 
-  const [round, setRound] = useState(null);
-  const [phase, setPhase] = useState(null);
-  const [result, setResult] = useState(null);
-  const [bets, setBets] = useState([]);
-  const [recentWinners, setRecentWinners] = useState([]);
-  const [lastResults, setLastResults] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [preResult, setPreResult] =useState(null)
-
-  const [betData, setBetData] = useState({
-    userId,
-    amount: 0,
-    betType: "",
-    number: null,
-  });
+  // Get state and actions from Zustand store
+  const {
+    round,
+    setWinStatus,
+    setConnection,
+    setRound,
+    setPhase,
+    setResult,
+    setLastResults,
+    setRecentWinners,
+    setMessages,
+    updateGameState,
+  } = useGameStore();
 
   useEffect(() => {
     if (!userId) return;
@@ -29,35 +28,41 @@ export function useGameSocket() {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("✅ Connected to server with id:", socket.id);
+      setConnection(true, socket.id);
+    });
+
+    socket.on("error", (err) => {
+      if (err?.message) toast.error(err.message);
+      console.error("Socket error:", err);
     });
 
     socket.on("syncState", (data) => {
-      setRound(data.roundId);
-      setPhase(data.phase);
-      setResult(data.winningNumber);
-      setLastResults(data.lastResults);
+      updateGameState({
+        round: data.roundId,
+        phase: data.phase,
+        result: data.winningNumber,
+        lastResults: data.lastResults,
+        recentWinners: data.recentWinners,
+        isGameRunning: data.isGameRunning,
+      });
     });
-
-    // socket.on("lastResults", (data) => {
-    //   setLastResults(data);
-    // });
 
     // Game lifecycle
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
-      setMessages((m) => [...m, "Game started"]);
+      setWinStatus(null, null);
+      setMessages("Game started");
     });
 
-    socket.on("bettingClosed", () => {
+    socket.on("bettingClosed", (data) => {
       setPhase("spinning");
-      setMessages((m) => [...m, "Betting closed"]);
+      betsPlaced;
+      setMessages("Betting closed");
     });
 
     socket.on("spinning", (data) => {
-      setPreResult(data.winningNumber)
-      setMessages((m) => [...m, `Spinning... number = ${data.winningNumber}`]);
+      setMessages(`Waiting for result`);
     });
 
     socket.on("roundResult", (data) => {
@@ -65,75 +70,76 @@ export function useGameSocket() {
       setResult(data.winningNumber);
       setLastResults(data.lastResults);
       setRecentWinners(data.recentWinners);
-      setMessages((m) => [...m, `Result = ${data.winningNumber}`]);
+      setMessages(`Result = ${data.winningNumber}`);
+    });
+
+    // Update balances immediately after server deducts on bet placement
+    socket.on("betsPlaced", (data) => {
+      try {
+        const current = useAuthStore.getState().user;
+        if (current && data?.balances) {
+          useAuthStore.setState({
+            user: {
+              ...current,
+              realBalance: data.balances.realBalance,
+              playTokens: data.balances.playTokens,
+            },
+          });
+        }
+      } catch (_) {}
     });
 
     socket.on("betResult", (data) => {
-      setMessages((m) => [
-        ...m,
-        data.win ? `You won ${data.payout}` : "You lost",
-      ]);
+
+      const current = useAuthStore.getState().user;
+      if (current && data?.balances) {
+        useAuthStore.setState({
+          user: {
+            ...current,
+            realBalance: data.balances.realBalance,
+            playTokens: data.balances.playTokens,
+          },
+        });
+      }
+
+      setWinStatus(data.win, data.payout);
+      setMessages(data.win ? `You won ${data.payout}` : "You lost");
     });
 
     return () => {
+      socket.off("connect");
       socket.off("syncState");
-      socket.off("lastResults");
       socket.off("gameStarted");
       socket.off("bettingClosed");
       socket.off("spinning");
-      socket.off("result");
+      socket.off("roundResult");
       socket.off("betResult");
+      socket.off("error");
+      socket.off("betsPlaced");
       socket.disconnect();
+      setConnection(false);
     };
   }, [userId]);
 
-  const updateBetData = (field, value) => {
-    setBetData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
   // Place a bet
-  const placeBet = () => {
+  const emitPlaceBet = (data) => {
     if (!round) {
       toast.error("No round active");
       return;
     }
-
-    if (!betData.amount || betData.amount <= 0) {
-      toast.error("Enter a valid bet amount");
-      return;
-    }
-
-    socket.emit("placeBet", {
-      roundId: round,
-      userId,
-      socketId: socket.id,
-      ...betData,
-    });
-
-    setBets((prev) => [...prev, betData]);
+    socket.emit("placeBets", data);
+    console.log(data , "place bet data")
     toast.success("Bet placed!");
   };
 
   const forceResult = (num) => {
-    if (!num) return;
+    if (!num && num !== 0) return;
     socket.emit("forceResult", num);
     toast.success("Result Adjusted Success");
   };
 
   return {
-    round,
-    phase,
-    result,
-    bets,
-    betData,
-    placeBet,
-    preResult,
-    recentWinners,
-    updateBetData,
-    messages,
-    lastResults,
+    emitPlaceBet,
     forceResult,
   };
 }

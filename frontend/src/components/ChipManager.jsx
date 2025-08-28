@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useGameSocket } from "../hooks/useGameSocket";
 
 const getBetTypeAndNumber = (cellId) => {
   if (/^\d+$/.test(cellId) && Number(cellId) >= 0 && Number(cellId) <= 36) {
@@ -24,6 +24,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
+  const { emitPlaceBet } = useGameSocket();
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
@@ -51,7 +52,22 @@ const ChipManager = ({ children, userId, round, phase }) => {
       if (!betType) return;
 
       setBets((prev) => {
-        let matchFn = 
+
+        if (
+          cellId === "red" &&
+          prev.find((b) => b.type === "color" && b.color === "black")
+        ) {
+          return prev;
+        }
+        if (
+          cellId === "black" &&
+          prev.find((b) => b.type === "color" && b.color === "red")
+        ) {
+          return prev;
+        }
+
+        let matchFn =
+
           betType.type === "color"
             ? (b) => b.type === "color" && b.color === betType.color
             : (b) => b.type === betType.type && b.number === betType.number;
@@ -93,7 +109,11 @@ const ChipManager = ({ children, userId, round, phase }) => {
         b.type === "straight"
           ? String(b.number)
           : b.type === "dozen"
-            ? `${b.number}st12`
+            ? b.number === 1
+              ? "1st12"
+              : b.number === 2
+                ? "2nd12"
+                : "3rd12"
             : b.type === "column"
               ? b.number === 1
                 ? "2to1_bottom"
@@ -128,17 +148,18 @@ const ChipManager = ({ children, userId, round, phase }) => {
   }, [bets, cellTotals]);
 
   const placeBet = useCallback(() => {
-    if (bets.length === 0) return;
-    if (betLocked || phase !== "betting") {
-      toast.error("Betting is closed. Wait for next round.");
-      return;
-    }
-    const payload = { userId, bets };
-    console.log("✅ Sending to backend:", payload);
-    toast.success("Bet placed Successfully!")
-    // socket.emit("placeBet", payload)
-    setBetLocked(true); // lock after placing bet
-    setBets([]); // clear chips from board after placing bet
+ const mappedBets = bets.map((b) => {
+      const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
+      if (b.type === "color") {
+        // Flatten color to its explicit type (red/black) with no number
+        return { type: b.color, amount };
+      }
+      return { type: b.type, numbers: [b.number], amount };
+    });
+    const payload = { userId, bets: mappedBets };
+    emitPlaceBet(payload);
+
+    setBetLocked(true);// clear chips from board after placing bet
   }, [bets, userId, betLocked, phase]);
 
   return children({

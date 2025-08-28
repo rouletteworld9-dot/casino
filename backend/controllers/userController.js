@@ -1,3 +1,4 @@
+const Bet = require("../models/Bet");
 const User = require("../models/User");
 
 exports.getSingleUser = async (req, res) => {
@@ -14,3 +15,19 @@ exports.getSingleUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+exports.getUserBetsHistory = async(req , res)=>{
+    const {id} = req.user
+   try {
+
+    const Bets = await Bet.find({user : id})
+
+    if (!Bets) {
+      return res.status(404).json({ message: "No bets Found" });
+    }
+
+    res.status(200).json(Bets);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}

@@ -3,10 +3,11 @@ import RouletteSpinner from "../components/RouletteSpinner";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useAuthStore } from "../stores/useAuthStore";
 import Wheel from "../components/wheel";
+import { useGameStore } from "../stores/useGameStore";
 
 const RouletteGame = () => {
-  const user = useAuthStore((state) => state.user);
-  const { lastResults , phase} = useGameSocket(user?._id);
+
+  const { lastResults , phase} = useGameStore();
   const rouletteData = {
     numbers: [
       0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5,
@@ -14,20 +15,8 @@ const RouletteGame = () => {
     ],
   };
 
+  const number = { next: lastResults[0]?.result, current: lastResults[1]?.result };
 
-  const number = { next: lastResults[0]?.result, current: 32 };
-
-  // const user = useAuthStore((state) => state.user);
-  // const { lastResults, phase } = useGameSocket(user?._id);
-  // const [result, setResult] = useState(null);
-
-  // useEffect(() => {
-  //   if (phase === "result" && lastResults?.length > 0) {
-  //     setResult(lastResults[0]?.toString() || "");
-  //   } else {
-  //     setResult(null);
-  //   }
-  // }, [phase, lastResults]);
 
   return (
     <div style={{ textAlign: "center" }}>
