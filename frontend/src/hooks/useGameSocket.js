@@ -20,6 +20,7 @@ export function useGameSocket() {
     setRecentWinners,
     setMessages,
     updateGameState,
+    betsPlaced
   } = useGameStore();
 
   useEffect(() => {

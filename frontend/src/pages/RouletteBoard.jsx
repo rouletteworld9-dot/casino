@@ -282,6 +282,7 @@ const RouletteBoard = ({
                   }}
                 >
                   2ND 12
+                  {renderTotalChip("2nd12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"
@@ -376,20 +377,22 @@ const RouletteBoard = ({
               EVEN
               {renderTotalChip("even")}
             </div>
-            <div className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white relative">
+            <div
+              className="bg-[#2939A5] text-white text-lg font-bold h-10 flex items-center justify-center border border-white relative cursor-pointer"
+              onClick={() => onCellClick("red")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(
+                  e.dataTransfer.getData("text/coinValue")
+                );
+                if (!Number.isNaN(value)) onCellDrop("red", value);
+              }}
+            >
               <div
-                className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
+                className="w-10 h-10 bg-white flex items-center justify-center"
                 style={{
                   clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
-                }}
-                onClick={() => onCellClick("red")}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const value = Number(
-                    e.dataTransfer.getData("text/coinValue")
-                  );
-                  if (!Number.isNaN(value)) onCellDrop("red", value);
                 }}
               >
                 <div
@@ -401,20 +404,22 @@ const RouletteBoard = ({
                 {renderTotalChip("red")}
               </div>
             </div>
-            <div className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative">
+            <div
+              className="bg-[#2939A5] text-white text-xs font-bold h-10 flex items-center justify-center border border-white relative cursor-pointer"
+              onClick={() => onCellClick("black")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const value = Number(
+                  e.dataTransfer.getData("text/coinValue")
+                );
+                if (!Number.isNaN(value)) onCellDrop("black", value);
+              }}
+            >
               <div
-                className="w-10 h-10 bg-white flex items-center justify-center cursor-pointer"
+                className="w-10 h-10 bg-white flex items-center justify-center"
                 style={{
                   clipPath: "polygon(51% 22%, 100% 50%, 52% 76%, 0% 50%)",
-                }}
-                onClick={() => onCellClick("black")}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const value = Number(
-                    e.dataTransfer.getData("text/coinValue")
-                  );
-                  if (!Number.isNaN(value)) onCellDrop("black", value);
                 }}
               >
                 <div

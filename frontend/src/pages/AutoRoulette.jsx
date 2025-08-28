@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import InsufficientBalanceModal from "../components/InsufficientBalanceModal";
 import Header from "../components/header";
 import RouletteBoard from "./RouletteBoard";
 import RouletteGame from "./roulette-game";
@@ -14,6 +15,15 @@ import LiveButton from "../components/ui/LiveButton";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
+  const [showInsufficient, setShowInsufficient] = useState(true);
+
+  useEffect(() => {
+    // Check for balance property (adjust as needed for your user object)
+    //change with 10 rs this is for testing purpose
+    if (user && (user.balance !== undefined ? user.balance : user.wallet) < 10000) { 
+      setShowInsufficient(true);
+    }
+  }, [user]);
 
   const { phase, round, lastResults, loading, setLoading } = useGameStore();
   useEffect(() => {
@@ -23,6 +33,7 @@ const AutoRoulette = () => {
   }, [setLoading]);
   return (
     <div className="relative w-full flex flex-col">
+      <InsufficientBalanceModal open={showInsufficient} onClose={() => setShowInsufficient(false)} />
       <Header />
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center bg-black">
