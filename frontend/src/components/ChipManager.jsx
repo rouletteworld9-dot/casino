@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useGameSocket } from "../hooks/useGameSocket";
+import { toast } from "react-hot-toast";
 
 const getBetTypeAndNumber = (cellId) => {
   if (/^\d+$/.test(cellId) && Number(cellId) >= 0 && Number(cellId) <= 36) {
@@ -43,8 +44,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
   const addBet = useCallback(
     (cellId, coinValue) => {
-      if (betLocked || phase !== "betting") {
-        toast.error("Betting is closed. Wait for next round.");
+      if (betLocked) {
         return; // prevent adding bets after locking/when not betting
       }
 
@@ -52,22 +52,52 @@ const ChipManager = ({ children, userId, round, phase }) => {
       if (!betType) return;
 
       setBets((prev) => {
-
+        // --- Color (red/black) mutual exclusion ---
         if (
           cellId === "red" &&
           prev.find((b) => b.type === "color" && b.color === "black")
         ) {
+          toast("You can only bet on one color at a time.");
           return prev;
         }
         if (
           cellId === "black" &&
           prev.find((b) => b.type === "color" && b.color === "red")
         ) {
+          toast("You can only bet on one color at a time.");
           return prev;
         }
 
-        let matchFn =
+        // --- Column or Dozen: only one bet per type allowed, show toast once ---
+        const hasConflict =
+          (betType.type === "column" &&
+            prev.some((b) => b.type === "column")) ||
+          (betType.type === "dozen" && prev.some((b) => b.type === "dozen"));
+        if (hasConflict) {
+          toast(`You can only bet on one ${betType.type} at a time.`);
+          return prev;
+        }
 
+        // --- Low/High: mutually exclusive ---
+        if (
+          (betType.type === "low" && prev.some((b) => b.type === "high")) ||
+          (betType.type === "high" && prev.some((b) => b.type === "low"))
+        ) {
+          toast("You can only bet on low or high, not both.");
+          return prev;
+        }
+
+        // --- Even/Odd: mutually exclusive ---
+        if (
+          (betType.type === "even" && prev.some((b) => b.type === "odd")) ||
+          (betType.type === "odd" && prev.some((b) => b.type === "even"))
+        ) {
+          toast("You can only bet on low or high, not both.");
+          return prev;
+        }
+
+        // --- Normal stacking logic for same bet (allow multiple chips on same bet) ---
+        let matchFn =
           betType.type === "color"
             ? (b) => b.type === "color" && b.color === betType.color
             : (b) => b.type === betType.type && b.number === betType.number;
@@ -139,16 +169,43 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
   const betsByCell = useMemo(() => {
     const out = {};
-    Object.keys(cellTotals).forEach((id) => {
-      out[id] = bets
-        .find((b) => cellTotals[id] && cellTotals[id] > 0)
-        ?.bets.map((a) => a.amount);
+    bets.forEach((b) => {
+      let cellId =
+        b.type === "straight"
+          ? String(b.number)
+          : b.type === "dozen"
+            ? b.number === 1
+              ? "1st12"
+              : b.number === 2
+                ? "2nd12"
+                : "3rd12"
+            : b.type === "column"
+              ? b.number === 1
+                ? "2to1_bottom"
+                : b.number === 2
+                  ? "2to1_middle"
+                  : "2to1_top"
+              : b.type === "low"
+                ? "1-18"
+                : b.type === "high"
+                  ? "19-36"
+                  : b.type === "even"
+                    ? "even"
+                    : b.type === "odd"
+                      ? "odd"
+                      : b.type === "color"
+                        ? b.color
+                        : null;
+
+      if (cellId) {
+        out[cellId] = (out[cellId] || []).concat(b.bets.map((a) => a.amount));
+      }
     });
     return out;
-  }, [bets, cellTotals]);
+  }, [bets]);
 
   const placeBet = useCallback(() => {
- const mappedBets = bets.map((b) => {
+    const mappedBets = bets.map((b) => {
       const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
       if (b.type === "color") {
         // Flatten color to its explicit type (red/black) with no number
@@ -158,8 +215,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
     });
     const payload = { userId, bets: mappedBets };
     emitPlaceBet(payload);
-
-    setBetLocked(true);// clear chips from board after placing bet
+    setBetLocked(true); // clear chips from board after placing bet
   }, [bets, userId, betLocked, phase]);
 
   return children({
