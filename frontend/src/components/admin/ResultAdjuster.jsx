@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useResultAdjuster } from "../../hooks/useResultAdjuster";
 import { useGameSocket } from "../../hooks/useGameSocket";
+import toast from "react-hot-toast";
 const ResultAdjuster = () => {
- 
   const [number, setNumber] = useState("");
-  const {forceResult}=useGameSocket()
+  const { forceResult } = useGameSocket();
 
   const handleSubmitResult = () => {
-    forceResult(number)
+    if (!number) {
+      toast.error("Please select a number");
+    } else {
+      forceResult(number);
+    }
   };
 
   return (
