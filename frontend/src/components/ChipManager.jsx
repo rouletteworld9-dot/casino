@@ -49,6 +49,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
 
       const betType = getBetTypeAndNumber(cellId);
+      console.log(betType, "bet type");
       if (!betType) return;
 
       setBets((prev) => {
@@ -86,6 +87,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
           toast("You can only bet on low or high, not both.");
           return prev;
         }
+
 
         // --- Even/Odd: mutually exclusive ---
         if (
@@ -217,6 +219,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
     emitPlaceBet(payload);
     setBetLocked(true); // clear chips from board after placing bet
   }, [bets, userId, betLocked, phase]);
+
 
   return children({
     selectedCoin,

@@ -44,21 +44,13 @@ const AutoRoulette = () => {
           />
         </div>
       ) : (
-        <div
-          className="pt-20 overflow-hidden md:max-h-[100vh] rotate-0"
-          style={{
-            backgroundImage: "url('/game/roulettetable.webp')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <div className="absolute top-11 right-10">
+        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-b from-blue-600 to-blue-900">
+          <div className="absolute top-2 right-10">
             <LiveButton />
           </div>
           <ResultOverlay />
           {/* last results */}
-          <div className="bg-black/10 absolute top-11 left-140 flex justify-center items-center">
+          <div className="bg-black/10 absolute top-2 left-140 flex justify-center items-center">
             <LastResults />
           </div>
 

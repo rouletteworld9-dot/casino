@@ -27,8 +27,9 @@ const CasinoGamesUI = () => {
 
             <GameContainer
               className="
-                grid grid-cols-7
-                
+                grid grid-cols-2
+                md:grid-cols-7
+                sm:grid-cols-3
                 gap-3 sm:gap-4
               "
             />
