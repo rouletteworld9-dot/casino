@@ -92,7 +92,7 @@ const RouletteBoard = ({
     if (!total) return null;
     // Use the color of the last denomination for style, or default
     const denoms = bets[cellId];
-    const lastDenom =  
+    const lastDenom =
       Array.isArray(denoms) && denoms.length > 0
         ? denoms[denoms.length - 1]
         : 10;
@@ -282,7 +282,6 @@ const RouletteBoard = ({
                   }}
                 >
                   2ND 12
-                  {renderTotalChip("2nd12")}
                 </div>
                 <div
                   className="col-span-4 text-white text-xs font-bold h-14 flex items-center justify-center border border-white cursor-pointer relative"

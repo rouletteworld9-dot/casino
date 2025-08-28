@@ -193,26 +193,26 @@ const PhaseTimer = () => {
           className="-rotate-90"
           style={{ filter: `drop-shadow(0 0 6px ${strokeColor}aa)` }}
         >
-          <circle
-            cx={SIZE / 2}
-            cy={SIZE / 2}
-            r={circleProps.r}
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth={STROKE}
-            fill="none"
-          />
-          <circle
-            cx={SIZE / 2}
-            cy={SIZE / 2}
-            r={circleProps.r}
-            stroke={strokeColor}
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={`${circleProps.visibleLen} ${circleProps.C}`}
-            strokeDashoffset={offset}
-            style={{ transition: "stroke-dashoffset 100ms linear" }}
-          />
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={circleProps.r}
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth={STROKE}
+          fill="none"
+        />
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={circleProps.r}
+          stroke={strokeColor}
+          strokeWidth={STROKE}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={`${circleProps.visibleLen} ${circleProps.C}`}
+          strokeDashoffset={offset}
+          // style={{ transition: "stroke-dashoffset 100ms linear" }}
+        />
         </svg>
 
         {/* Countdown Timer Display */}

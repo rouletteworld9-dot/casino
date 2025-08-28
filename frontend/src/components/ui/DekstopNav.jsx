@@ -9,19 +9,19 @@ export default function DesktopNav({ onNavigate, specials }) {
     },
     {
       name: "SPORT",
-      link: "/casino/game",
+      // link: "/casino/game",
     },
     {
       name: "STATISTICS",
-      link: "/casino/game",
+      // link: "/casino/game",
     },
     {
       name: "RESULTS",
-      link: "/casino/game",
+      // link: "/casino/game",
     },
     {
       name: "APPS",
-      link: "/casino/game",
+      // link: "/casino/game",
     },
   ];
 
@@ -43,7 +43,7 @@ export default function DesktopNav({ onNavigate, specials }) {
         {specials.map(({ name, key, icon: Icon }) => (
           <NavButton
             key={key}
-            onClick={() => onNavigate(key)}
+            // onClick={() => onNavigate(key)}
             className="flex items-center space-x-2 font-semibold text-xs uppercase"
           >
             <Icon size={18} /> <span>{name}</span>

@@ -128,6 +128,7 @@ export function useGameSocket() {
       return;
     }
     socket.emit("placeBets", data);
+    console.log(data , "place bet data")
     toast.success("Bet placed!");
   };
 

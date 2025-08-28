@@ -61,5 +61,6 @@ export const usebetHistory = () => {
 
   return {
     betHistory: betHistoryFn.data,
+    betHistoryLoading :betHistoryFn.isLoading
   };
 };

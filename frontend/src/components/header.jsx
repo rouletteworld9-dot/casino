@@ -48,8 +48,6 @@ export default function Header() {
     { name: "TOURNAMENTS", key: "tournaments", icon: Trophy },
   ];
 
-  console.log("user realbalance", user?.realBalance);
-
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -88,7 +86,7 @@ export default function Header() {
                         </span>
                         <span className="flex text-yellow-400 items-center gap-1">
                           <Coins className="w-4 h-4 text-yellow-400" />
-                          {`${user?.playTokns || singleUser?.playTokens}`}
+                          {`${user?.playTokens || singleUser?.playTokens}`}
                         </span>
                       </>
                     ) : (

@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { DollarSign } from "lucide-react";
 import { FaFilter } from "react-icons/fa";
 import { usebetHistory } from "../../hooks/useAdminUsers";
+import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 
 function UserBetTransaction() {
- const {betHistory} = usebetHistory()
+ const { betHistory, betHistoryLoading } = usebetHistory();
 
   // Format date to DD.MM format
   const formatDate = (dateString) => {
@@ -40,20 +41,23 @@ function UserBetTransaction() {
     return status === "lost" ? "Loss" : status === "won" ? "Win" : status;
   };
 
+  if(betHistoryLoading){
+    return <TableSkeleton/>
+  }
 
 
   return (
     <div className="overflow-x-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-2">
-        <div className="w-16 h-16 text-yellow-600 flex items-center justify-center">
+      <div className="flex items-center gap-4 mb-2 py-4">
+        <div className=" text-yellow-600 flex items-center justify-center">
           <DollarSign size={28} />
         </div>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-white">
           Bet Transaction history
         </h1>
       </div>
-      <div className="border-b border-[#2D2342] mb-4 mt-2" />
+      {/* <div className="border-b border-[#2D2342] mb-4 mt-2" /> */}
 
       {/* Table */}
       <div className="overflow-x-auto">

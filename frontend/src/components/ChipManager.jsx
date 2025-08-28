@@ -95,7 +95,11 @@ const ChipManager = ({ children, userId, round }) => {
         b.type === "straight"
           ? String(b.number)
           : b.type === "dozen"
-            ? `${b.number}st12`
+            ? b.number === 1
+              ? "1st12"
+              : b.number === 2
+                ? "2nd12"
+                : "3rd12"
             : b.type === "column"
               ? b.number === 1
                 ? "2to1_bottom"
@@ -141,8 +145,6 @@ const ChipManager = ({ children, userId, round }) => {
       return { type: b.type, numbers: [b.number], amount };
     });
     const payload = { userId, bets: mappedBets };
-
-    emitPlaceBet(payload);
 
     emitPlaceBet(payload);
     setBetLocked(true); // lock after placing bet
