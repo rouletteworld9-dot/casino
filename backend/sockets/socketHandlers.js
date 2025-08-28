@@ -22,6 +22,7 @@ async function handleConnection(socket) {
 }
 
 async function handlePlaceBets(socket, data) {
+  console.log("handlePlaceBets", data);
   try {
     if (!data?.userId || !data?.bets) {
       return socket.emit("error", { message: "Invalid request data" });
@@ -29,6 +30,7 @@ async function handlePlaceBets(socket, data) {
 
     const validation = validateMultipleBets(data.bets);
     if (!validation.isValid) {
+      console.log("invalid", validation.errors);
       return socket.emit("error", {
         message: "Invalid bet data",
         errors: validation.errors,
@@ -36,7 +38,6 @@ async function handlePlaceBets(socket, data) {
     }
 
     const result = await gameManager.placeBets(socket, data);
-
     socket.emit("betsPlaced", {
       success: true,
       betsCount: data.bets.length,

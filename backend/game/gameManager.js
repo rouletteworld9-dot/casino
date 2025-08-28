@@ -112,6 +112,7 @@ async function handleResultPhase(io, expectedRoundId) {
 }
 
 async function placeBets(socket, data) {
+  
   const gameState = await gameStateService.getGameState();
 
   if (gameState.phase !== "betting") {
@@ -122,6 +123,8 @@ async function placeBets(socket, data) {
     ...data,
     roundId: gameState.roundId,
   });
+  
+
 
   const updatedState = {
     ...gameState,

@@ -43,10 +43,23 @@ async function validateUserBalance(userId, totalAmount) {
 }
 
 async function deductUserBalance(user, realAmount, tokenAmount) {
-  user.realBalance -= realAmount;
-  user.playTokens -= tokenAmount;
-  await user.save();
-  return user;
+  const updatedUser = await User.findOneAndUpdate(
+    {
+      _id: user._id,
+      realBalance: { $gte: realAmount },
+      playTokens: { $gte: tokenAmount },
+    },
+    {
+      $inc: { realBalance: -realAmount, playTokens: -tokenAmount },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    throw new Error("Insufficient balance");
+  }
+
+  return updatedUser;
 }
 
 async function settleBets(bets, winningNumber, io) {
@@ -69,6 +82,7 @@ async function settleBets(bets, winningNumber, io) {
 
     const isWin = validateBet(bet, winningNumber);
     let payout = 0;
+
 
     if (isWin) {
       payout = bet.amount * VALID_BET_TYPES[bet.type].payout + bet.amount;
@@ -117,7 +131,7 @@ async function settleBets(bets, winningNumber, io) {
       numbers: bet.numbers,
       amount: bet.amount,
       roundId: bet.roundId,
-      status: isWin ? "win" : "lose",
+      status: isWin ? "won" : "lost",
       payout: payout,
     });
     await dbBet.save();
@@ -142,7 +156,7 @@ async function placeBets(socket, data) {
     totalBetAmount
   );
 
-  await deductUserBalance(user, realDeduction, tokenDeduction);
+  const deductedBalance = await deductUserBalance(user, realDeduction, tokenDeduction);
 
   return {
     processedBets: processUserBets(
@@ -153,8 +167,8 @@ async function placeBets(socket, data) {
     ),
     totalAmount: totalBetAmount,
     userBalance: {
-      realBalance: user.realBalance,
-      playTokens: user.playTokens,
+      realBalance: deductedBalance.realBalance,
+      playTokens: deductedBalance.playTokens,
     },
   };
 }

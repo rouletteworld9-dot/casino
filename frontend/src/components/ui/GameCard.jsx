@@ -18,8 +18,11 @@ const GameCard = ({ game }) => {
       }}
       variants={itemVariants}
       whileHover={{ scale: 1.02, y: -2 }}
-      className={`relative rounded-lg overflow-hidden cursor-pointer group ${game.image} aspect-[3/4]`}
-    >
+      className={`relative bg-cover rounded-lg overflow-hidden cursor-pointer group aspect-[3/4]`}
+      style={{
+        backgroundImage: `url(${game.image})`,
+      }}
+    > 
       {game.isTop && (
         <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded font-bold z-10">
           TOP
@@ -33,9 +36,9 @@ const GameCard = ({ game }) => {
           <Info className="w-4 h-4" />
         </motion.button>
       )}
-      <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-30">
+      {/* <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-30">
         {game.icon}
-      </div>
+      </div> */}
       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
       <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
         <h3 className="text-white font-bold text-sm leading-tight mb-1">

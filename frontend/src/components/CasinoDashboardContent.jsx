@@ -41,7 +41,7 @@ const CasinoDashboardContent = () => {
       {/* Top Games Section */}
       <div className="bg-[#231528] p-3 rounded-t-lg">
         <h1 className="mb-4 text-2xl font-semibold">TOP</h1>
-        <GameContainer className="lg:grid-cols-5 sm:grid-cols-2" />
+        <GameContainer className="lg:grid-cols-4 sm:grid-cols-2" />
       </div>
     </div>
   );

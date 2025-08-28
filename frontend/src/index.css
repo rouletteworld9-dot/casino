@@ -26,6 +26,69 @@
   background: #17071d;
 }
 
+/* Casino-style animations */
+@keyframes casino-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes casino-sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+@keyframes casino-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes casino-shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.casino-glow {
+  animation: casino-glow 2s ease-in-out infinite;
+}
+
+.casino-sparkle {
+  animation: casino-sparkle 1.5s ease-in-out infinite;
+}
+
+.casino-bounce {
+  animation: casino-bounce 1s ease-in-out infinite;
+}
+
+.casino-shine {
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  background-size: 200% 100%;
+  animation: casino-shine 2s ease-in-out infinite;
+}
+
 .scroll-hidden {
   -ms-overflow-style: none; /* IE & Edge */
   scrollbar-width: none; /* Firefox */

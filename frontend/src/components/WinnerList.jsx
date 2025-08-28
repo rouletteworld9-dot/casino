@@ -3,10 +3,10 @@ import anime from "animejs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
-import { User } from "lucide-react";
+import { useGameStore } from "../stores/useGameStore";
 
 export default function WinnerList() {
-  const { recentWinners: newWinners } = useGameSocket();
+  const { recentWinners: newWinners } = useGameStore();
   const delayedWinners = useDelay(newWinners, 4000);
 
   const [winners, setWinners] = useState([]);
@@ -166,7 +166,6 @@ export default function WinnerList() {
     </div>
   );
 
-  console.log(newWinner, "winner");
   // Reverse so latest shows first
   const data = winners.slice().reverse();
 
