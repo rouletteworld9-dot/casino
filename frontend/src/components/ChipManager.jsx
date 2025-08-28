@@ -49,6 +49,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
 
       const betType = getBetTypeAndNumber(cellId);
+      console.log(betType, "bet type");
       if (!betType) return;
 
       setBets((prev) => {
@@ -64,6 +65,18 @@ const ChipManager = ({ children, userId, round, phase }) => {
           prev.find((b) => b.type === "color" && b.color === "red")
         ) {
           return prev;
+        }
+
+        if (betType.type === "dozen") {
+          const filtered = prev.filter((b) => b.type !== "dozen");
+          return [
+            ...filtered,
+            {
+              type: "dozen",
+              number: betType.number,
+              bets: [{ amount: coinValue }],
+            },
+          ];
         }
 
         let matchFn =
@@ -159,8 +172,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
     const payload = { userId, bets: mappedBets };
     emitPlaceBet(payload);
 
-    setBetLocked(true);// clear chips from board after placing bet
-  }, [bets, userId, betLocked, phase]);
+    setBetLocked(true); // lock after placing bet
+  }, [bets, userId, betLocked]);
 
   return children({
     selectedCoin,

@@ -10,7 +10,6 @@ const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
 
 const Wheel = (props) => {
-
   var totalNumbers = 37;
   var singleSpinDuration = 4000;
   var singleRotationDegree = 360 / totalNumbers;
@@ -60,7 +59,6 @@ const Wheel = (props) => {
   };
 
   const spinWheel = useCallback((number) => {
-
     const bezier = [0.205, 0.184, 0.244, 1.005];
     var ballMinNumberOfSpins = 1;
     var ballMaxNumberOfSpins = 2;
@@ -157,7 +155,7 @@ const Wheel = (props) => {
 
     if (nextNumber != null && nextNumber !== "" && props.phase === "result") {
       const nextNumberInt = parseInt(nextNumber);
- 
+
       // Stop continuous spinning before result spin
       anime.remove([".layer-2", ".layer-4", ".ball-container"]);
       spinWheel(nextNumberInt);
@@ -173,6 +171,7 @@ const Wheel = (props) => {
     top: -120,
     backgroundSize: "cover",
     backgroundPosition: "center",
+    borderRadius : 500
   };
 
   return (
