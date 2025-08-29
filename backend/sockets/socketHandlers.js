@@ -22,7 +22,7 @@ async function handleConnection(socket) {
 }
 
 async function handlePlaceBets(socket, data) {
-  console.log("handlePlaceBets", data);
+
   try {
     if (!data?.userId || !data?.bets) {
       return socket.emit("error", { message: "Invalid request data" });

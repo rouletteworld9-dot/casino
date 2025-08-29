@@ -21,9 +21,6 @@
 }
 
 @media screen and (max-width: 375px) {
-  body {
-    padding: 0 20px;
-  }
 
   .roulette-wheel {
     float: none;

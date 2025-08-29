@@ -9,8 +9,8 @@ body {
   user-select: none;
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
-  margin: 0;
-  padding: 0;
+  margin: 0%;
+  padding: 0%;
 }
 
 #app {
@@ -40,14 +40,12 @@ body {
   }
 }
 
-/* @media screen and (max-width: 320px) {
-  
-
+@media screen and (max-width: 320px) {
   .roulette-wheel {
     float: none;
     left: 30px;
   }
-} */
+}
 
 .roulette-wheel .layer-2,
 .roulette-wheel .layer-3,

@@ -67,7 +67,7 @@ const PhaseTimer = () => {
 
       const timer = setTimeout(() => {
         setShowLastResult(true);
-        setPulseEffect(true);
+        // setPulseEffect(true);
       }, 2000);
 
       return () => clearTimeout(timer);
@@ -107,6 +107,7 @@ const PhaseTimer = () => {
         newTimeLeft < previousTimeRef.current
       ) {
         setIsScaling(true);
+        setPulseEffect(true);
         setTimeout(() => setIsScaling(false), 300);
       }
 
@@ -126,6 +127,7 @@ const PhaseTimer = () => {
   useEffect(() => {
     if (phase === "spinning") {
       setShowNextGame(false);
+      setShowNextGame(true)
       const timer = setTimeout(() => setShowNextGame(true), 1000);
       return () => clearTimeout(timer);
     } else {
@@ -153,10 +155,10 @@ const PhaseTimer = () => {
   // Early returns for different states
   if (showNextGame) {
     return (
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showNextGame && (
           <motion.div
-            key="waiting"
+            key="waiting-overlay"
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -164,11 +166,12 @@ const PhaseTimer = () => {
             className="fixed inset-0 w-screen h-screen bg-black/30 flex items-center justify-center z-50"
           >
             <motion.div
+              key="waiting-text"
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -40, opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="text-casinoGold text-lg font-semibold uppercase opacity-90"
+              className="shine-text text-lg font-semibold uppercase opacity-90"
             >
               Waiting For the Result...
             </motion.div>
@@ -193,26 +196,26 @@ const PhaseTimer = () => {
           className="-rotate-90"
           style={{ filter: `drop-shadow(0 0 6px ${strokeColor}aa)` }}
         >
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={circleProps.r}
-          stroke="rgba(255,255,255,0.08)"
-          strokeWidth={STROKE}
-          fill="none"
-        />
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={circleProps.r}
-          stroke={strokeColor}
-          strokeWidth={STROKE}
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={`${circleProps.visibleLen} ${circleProps.C}`}
-          strokeDashoffset={offset}
-          // style={{ transition: "stroke-dashoffset 100ms linear" }}
-        />
+          <circle
+            cx={SIZE / 2}
+            cy={SIZE / 2}
+            r={circleProps.r}
+            stroke="rgba(255,255,255,0.08)"
+            strokeWidth={STROKE}
+            fill="none"
+          />
+          <circle
+            cx={SIZE / 2}
+            cy={SIZE / 2}
+            r={circleProps.r}
+            stroke={strokeColor}
+            strokeWidth={STROKE}
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={`${circleProps.visibleLen} ${circleProps.C}`}
+            strokeDashoffset={offset}
+            // style={{ transition: "stroke-dashoffset 100ms linear" }}
+          />
         </svg>
 
         {/* Countdown Timer Display */}
@@ -246,27 +249,7 @@ const PhaseTimer = () => {
         >
           {step === "place" ? "🎯 Place Your Bets" : "⚠️ Bet Closing"}
         </div>
-
-        {/* Progress indicator */}
-        {/* <div className="mt-2 flex justify-center">
-          <div className="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-green-500 to-yellow-500 transition-all duration-1000"
-              style={{ width: `${(progress / 2) * 100}%` }}
-            />
-          </div>
-        </div> */}
       </div>
-
-      {/* Last Result Display */}
-      {showLastResult && lastResult !== null && (
-        <div className="text-center animate-bounce">
-          <div className="text-sm text-yellow-400 font-bold mb-1">
-            🎉 Last Result: {lastResult} 🎉
-          </div>
-          <div className="text-xs text-gray-400">Get ready for next round!</div>
-        </div>
-      )}
     </div>
   );
 };
