@@ -17,7 +17,7 @@ export default function App() {
   
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-deepPurple">
+      <div className=" bg-deepPurple">
         <RouterProvider router={router} />
       </div>
       <ReactQueryDevtools initialIsOpen={false} />
