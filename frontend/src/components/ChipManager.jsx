@@ -25,12 +25,14 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
+  const [betHistory, setBetHistory] = useState([]); // for undo
   const { emitPlaceBet } = useGameSocket();
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
     setBetLocked(false);
     setBets([]);
+    setBetHistory([]);
   }, [round]);
 
   // 🔹 Lock betting outside of betting phase
@@ -45,12 +47,13 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const addBet = useCallback(
     (cellId, coinValue) => {
       if (betLocked) {
-        return; // prevent adding bets after locking/when not betting
+        return;
       }
-
       const betType = getBetTypeAndNumber(cellId);
-      console.log(betType, "bet type");
       if (!betType) return;
+
+      // Save current state to history BEFORE making changes
+      setBetHistory((prev) => [...prev, bets]);
 
       setBets((prev) => {
         // --- Color (red/black) mutual exclusion ---
@@ -68,7 +71,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
           toast("You can only bet on one color at a time.");
           return prev;
         }
-
         // --- Column: only one column bet allowed ---
         if (
           betType.type === "column" &&
@@ -85,17 +87,14 @@ const ChipManager = ({ children, userId, round, phase }) => {
           toast("You can only bet on one dozen at a time.");
           return prev;
         }
-
         // --- Low/High: mutually exclusive ---
         if (
           (betType.type === "low" && prev.some((b) => b.type === "high")) ||
           (betType.type === "high" && prev.some((b) => b.type === "low"))
         ) {
-           toast("You can only bet on low or high, not both.");
+          toast("You can only bet on low or high, not both.");
           return prev;
         }
-
-
         // --- Even/Odd: mutually exclusive ---
         if (
           (betType.type === "even" && prev.some((b) => b.type === "odd")) ||
@@ -104,15 +103,12 @@ const ChipManager = ({ children, userId, round, phase }) => {
           toast("You can only bet on even or odd, not both.");
           return prev;
         }
-
         // --- Normal stacking logic for same bet (allow multiple chips on same bet) ---
         let matchFn =
           betType.type === "color"
             ? (b) => b.type === "color" && b.color === betType.color
             : (b) => b.type === betType.type && b.number === betType.number;
-
         const idx = prev.findIndex(matchFn);
-
         if (idx === -1) {
           return [
             ...prev,
@@ -129,7 +125,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
                 },
           ];
         }
-
         const updated = [...prev];
         updated[idx] = {
           ...updated[idx],
@@ -138,8 +133,44 @@ const ChipManager = ({ children, userId, round, phase }) => {
         return updated;
       });
     },
-    [betLocked, phase]
+    [betLocked, bets] // Added bets as dependency
   );
+
+  // Double all bets
+  const doubleBets = useCallback(() => {
+    if (betLocked || bets.length === 0) return;
+    
+    // Save current state to history BEFORE making changes
+    setBetHistory((prev) => [...prev, bets]);
+    
+    setBets((prev) =>
+      prev.map((b) => ({
+        ...b,
+        bets: b.bets.concat(b.bets.map((a) => ({ ...a }))),
+      }))
+    );
+    console.log("Double bets: ", bets);
+  }, [betLocked, bets]);
+
+  // Undo last action - Fixed version
+  const undoBet = useCallback(() => {
+    if (betLocked) return;
+    
+    setBetHistory((prevHistory) => {
+      if (prevHistory.length === 0) return prevHistory;
+      
+      // Get the last saved state
+      const lastState = prevHistory[prevHistory.length - 1];
+      
+      // Restore the bets to the last saved state
+      setBets(lastState);
+      
+      console.log("Undo last bet: Restoring to", lastState);
+      
+      // Remove the last history entry
+      return prevHistory.slice(0, -1);
+    });
+  }, [betLocked]);
 
   const cellTotals = useMemo(() => {
     const totals = {};
@@ -227,7 +258,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
     setBetLocked(true); // clear chips from board after placing bet
   }, [bets, userId, betLocked, phase]);
 
-
   return children({
     selectedCoin,
     setSelectedCoin,
@@ -238,6 +268,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
     onPlaceBet: placeBet,
     hasBets: bets.length > 0,
     betLocked,
+    onDoubleBets: doubleBets,
+    onUndo: undoBet,
   });
 };
 

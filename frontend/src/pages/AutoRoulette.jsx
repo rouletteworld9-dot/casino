@@ -12,6 +12,7 @@ import ChipManager from "../components/ChipManager";
 import ResultOverlay from "../components/ui/ResultOverlay";
 import { useGameStore } from "../stores/useGameStore";
 import LiveButton from "../components/ui/LiveButton";
+import {Undo2 } from 'lucide-react';
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
@@ -20,7 +21,10 @@ const AutoRoulette = () => {
   useEffect(() => {
     // Check for balance property (adjust as needed for your user object)
     //change with 10 rs this is for testing purpose
-    if (user && (user.balance !== undefined ? user.balance : user.wallet) < 10000) { 
+    if (
+      user &&
+      (user.balance !== undefined ? user.balance : user.wallet) < 10000
+    ) {
       setShowInsufficient(true);
     }
   }, [user]);
@@ -33,7 +37,10 @@ const AutoRoulette = () => {
   }, [setLoading]);
   return (
     <div className="relative w-full flex flex-col">
-      <InsufficientBalanceModal open={showInsufficient} onClose={() => setShowInsufficient(false)} />
+      <InsufficientBalanceModal
+        open={showInsufficient}
+        onClose={() => setShowInsufficient(false)}
+      />
       <Header />
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center bg-black">
@@ -63,7 +70,7 @@ const AutoRoulette = () => {
 
           <WinnerList />
           {/* chips + board together */}
-          <ChipManager userId={user?._id} round={round}>
+          <ChipManager userId={user?._id} round={round} phase={phase}>
             {({
               selectedCoin,
               setSelectedCoin,
@@ -74,29 +81,43 @@ const AutoRoulette = () => {
               onPlaceBet,
               hasBets,
               betLocked,
+              onDoubleBets,
+              onUndo,
             }) => (
               <>
-                <div
-                  className={`
-                  fixed left-1/2 -translate-x-1/2 z-30
-                  transition-all duration-700 ease-in-out
-                  ${
-                    phase === "betting"
-                      ? "opacity-100 bottom-4 pointer-events-auto"
-                      : "opacity-0 bottom-0 pointer-events-none"
-                  }
-                `}
-                >
-                  <div className=" py-1 rounded-full ">
-                    <ChipSelector
-                      hasBets={hasBets}
-                      handlePlaceBet={onPlaceBet}
-                      selectedCoin={selectedCoin}
-                      onSelect={setSelectedCoin}
-                      betLocked={betLocked}
-                    />
+                {phase === "betting" && (
+                  <div className="fixed bottom-0 left-0 w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center shadow-2xl">
+                    <div className="w-full max-w-2xl flex flex-row items-center justify-center gap-2">
+                      {/* 2x Button Far Left */}
+                      <button
+                        className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 mr-2 cursor-pointer"
+                        onClick={onDoubleBets}
+                        disabled={betLocked || !hasBets}
+                        aria-label="Double Bets"
+                      >
+                        2x
+                      </button>
+                      {/* Chips Centered */}
+                      <ChipSelector
+                        selectedCoin={selectedCoin}
+                        onSelect={setSelectedCoin}
+                        betLocked={betLocked}
+                        handlePlaceBet={onPlaceBet}
+                        hasBets={hasBets}
+                        hidePlaceBet
+                      />
+                      {/* Undo Button Far Right */}
+                      <button
+                        className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 ml-2 cursor-pointer"
+                        onClick={onUndo}
+                        disabled={betLocked || !hasBets}
+                        aria-label="Undo Bet"
+                      >
+                       <Undo2 />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <RouletteBoard
                   bets={betsByCell}
@@ -108,9 +129,8 @@ const AutoRoulette = () => {
               </>
             )}
           </ChipManager>
-
           {/* phase timer */}
-          <div className="">
+          <div>
             {/* <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100"> */}
             <PhaseTimer />
           </div>
