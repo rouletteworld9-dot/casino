@@ -20,7 +20,7 @@ exports.getUserBetsHistory = async(req , res)=>{
     const {id} = req.user
    try {
 
-    const Bets = await Bet.find({user : id})
+    const Bets = await Bet.find({user : id}).sort({createdAt : -1})
 
     if (!Bets) {
       return res.status(404).json({ message: "No bets Found" });

@@ -7,20 +7,21 @@ import React, {
 } from "react";
 import { useGameStore } from "../../stores/useGameStore";
 import { motion, AnimatePresence } from "framer-motion";
+import useCountdown from "../../hooks/useCountdown";
+
 const PhaseTimer = () => {
-  // Only subscribe to the specific values we need from the store
   const phase = useGameStore((state) => state.phase);
   const lastResults = useGameStore((state) => state.lastResults);
 
+  const { remaining, formatted } = useCountdown();
+
   const [progress, setProgress] = useState(0);
   const [showNextGame, setShowNextGame] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
   const [isScaling, setIsScaling] = useState(false);
   const [showLastResult, setShowLastResult] = useState(false);
   const [pulseEffect, setPulseEffect] = useState(false);
 
   const rafRef = useRef(null);
-  const startRef = useRef(0);
   const previousTimeRef = useRef(0);
   const phaseRef = useRef(phase);
 
@@ -75,59 +76,40 @@ const PhaseTimer = () => {
     phaseRef.current = phase;
   }, [phase, lastResults?.length]); // Only depend on length, not the entire array
 
-  // Optimized betting phase timer
+  // Simplified betting phase timer using useCountdown data
   useEffect(() => {
-    if (phase !== "betting") {
+    if (phase !== "betting" || remaining === null) {
       cleanup();
+      setProgress(0);
       return;
     }
 
-    // Reset state
-    setProgress(0);
-    setTimeLeft(14);
-    setIsScaling(false);
-    setShowLastResult(false);
-    startRef.current = 0;
-    previousTimeRef.current = 14;
+    // Calculate progress based on remaining time (assuming 15 second total)
+    const total = 15; // 15 seconds total
+    const elapsed = total - remaining;
+    const p = Math.min(2, (elapsed / total) * 2);
+    setProgress(p);
 
-    const tick = (now) => {
-      if (!startRef.current) startRef.current = now;
+    // Trigger pulse and scaling effects
+    if (
+      remaining !== previousTimeRef.current &&
+      p >= 1 &&
+      remaining < previousTimeRef.current &&
+      remaining > 0
+    ) {
+      setIsScaling(true);
+      setPulseEffect(true);
+      setTimeout(() => setIsScaling(false), 300);
+    }
 
-      const elapsed = now - startRef.current;
-      const p = Math.min(2, (elapsed / TOTAL) * 2);
-      setProgress(p);
-
-      const remaining = Math.max(0, TOTAL - elapsed);
-      const newTimeLeft = Math.ceil(remaining / 1000);
-
-      // Trigger scale effect during closing phase
-      if (
-        newTimeLeft !== previousTimeRef.current &&
-        p >= 1 &&
-        newTimeLeft < previousTimeRef.current
-      ) {
-        setIsScaling(true);
-        setPulseEffect(true);
-        setTimeout(() => setIsScaling(false), 300);
-      }
-
-      setTimeLeft(newTimeLeft);
-      previousTimeRef.current = newTimeLeft;
-
-      if (p < 2) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return cleanup;
-  }, [phase, TOTAL, cleanup]);
+    previousTimeRef.current = remaining;
+  }, [phase, remaining, cleanup]);
 
   // Optimized next game effect
   useEffect(() => {
     if (phase === "spinning") {
       setShowNextGame(false);
-      setShowNextGame(true)
+      setShowNextGame(true);
       const timer = setTimeout(() => setShowNextGame(true), 1000);
       return () => clearTimeout(timer);
     } else {
@@ -214,7 +196,6 @@ const PhaseTimer = () => {
             strokeLinecap="round"
             strokeDasharray={`${circleProps.visibleLen} ${circleProps.C}`}
             strokeDashoffset={offset}
-            // style={{ transition: "stroke-dashoffset 100ms linear" }}
           />
         </svg>
 
@@ -227,7 +208,9 @@ const PhaseTimer = () => {
                 : "scale-100"
             }`}
           >
-            <div className="text-lg font-bold leading-none">{timeLeft}</div>
+            <div className="text-lg font-bold leading-none">
+              {remaining !== null ? remaining : 0}
+            </div>
             <div className="text-[8px] leading-none opacity-80">SEC</div>
           </div>
         </div>

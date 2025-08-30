@@ -1,40 +1,24 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import ResultHistory from "./ResultHistory";
 import ResultAdjuster from "./ResultAdjuster";
-import { useGameSocket } from "../../hooks/useGameSocket";
-import { useAuthStore } from "../../stores/useAuthStore";
+import { useGameStore } from "../../stores/useGameStore";
+import React from "react";
+
+const CurrentPeriod = React.memo(() => {
+  const round = useGameStore((state) => state.round);
+  const phase = useGameStore((state) => state.phase);
+
+  return (
+    <div className="bg-blue-400 text-white p-4 rounded-lg">
+      <div className="flex justify-between items-center">
+        <span className="font-semibold ">Period: {round}</span>
+        <span className="font-bold text-xl capitalize ">{phase}</span>
+      </div>
+    </div>
+  );
+});
 
 const Dashboard = () => {
-  const { round, phase, lastResults } = useGameSocket();
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setCountdown((prev) => {
-  //       if (prev <= 1) {
-  //         // Generate new period and reset countdown
-  //         const newPeriod = generateNewPeriod();
-  //         setCurrentPeriod(newPeriod);
-  //         return 60; // Reset to 60 seconds
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000);
-
-  //   return () => clearInterval(timer);
-  // }, []);
-
-  const generateNewPeriod = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hour = String(now.getHours()).padStart(2, "0");
-    const minute = String(now.getMinutes()).padStart(2, "0");
-    const second = String(now.getSeconds()).padStart(2, "0");
-    return `${year}${month}${day}${hour}${minute}${second}`;
-  };
-
+  
   return (
     <div className="space-y-6 p-6 bg-midnightPurple min-h-screen rounded-lg">
       {/* Header */}
@@ -43,15 +27,10 @@ const Dashboard = () => {
       </div>
 
       {/* Current Period and Countdown */}
-      <div className="bg-blue-400 text-white p-4 rounded-lg">
-        <div className="flex justify-between items-center">
-          <span className="font-semibold">Period: {round}</span>
-          <span className="font-bold text-xl">{phase}</span>
-        </div>
-      </div>
+      <CurrentPeriod />
 
       {/* Result History Table */}
-      <ResultHistory lastResults={lastResults} />
+      <ResultHistory />
 
       <ResultAdjuster />
     </div>

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { DollarSign } from "lucide-react";
-import { FaFilter } from "react-icons/fa";
 import { usebetHistory } from "../../hooks/useAdminUsers";
 import TableSkeleton from "../ui/Skeletons/TableSkeleton";
 
 function UserBetTransaction() {
- const { betHistory, betHistoryLoading } = usebetHistory();
+  const { betHistory, betHistoryLoading } = usebetHistory();
 
   // Format date to DD.MM format
   const formatDate = (dateString) => {
@@ -41,10 +40,9 @@ function UserBetTransaction() {
     return status === "lost" ? "Loss" : status === "won" ? "Win" : status;
   };
 
-  if(betHistoryLoading){
-    return <TableSkeleton/>
+  if (betHistoryLoading) {
+    return <TableSkeleton />;
   }
-
 
   return (
     <div className="overflow-x-auto">
@@ -69,7 +67,7 @@ function UserBetTransaction() {
               <th className="px-2 py-2 text-left">ROUND ID</th>
               <th className="px-2 py-2 text-left">TRANSACTION</th>
               <th className="px-2 py-2 text-left">BET RESULT</th>
-              <th className="px-2 py-2 text-left">NUMBERS</th>
+              <th className="px-2 py-2 text-left">NUMBER</th>
               <th className="px-2 py-2 text-left">BET TYPE</th>
               <th className="px-2 py-2 text-left">AMOUNT</th>
               <th className="px-2 py-2 text-left">PAYOUT</th>

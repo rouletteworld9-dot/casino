@@ -12,6 +12,7 @@ import ChipManager from "../components/ChipManager";
 import ResultOverlay from "../components/ui/ResultOverlay";
 import { useGameStore } from "../stores/useGameStore";
 import LiveButton from "../components/ui/LiveButton";
+import MuteButton from "../components/MuteButton";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
@@ -42,6 +43,7 @@ const AutoRoulette = () => {
           <div className="absolute top-2 right-10">
             <LiveButton />
           </div>
+          <MuteButton/>
           <ResultOverlay />
           {/* last results */}
           <div className="bg-black/10 absolute top-16 left-140 flex justify-center items-center">

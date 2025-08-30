@@ -1,46 +1,10 @@
 import React, { useState } from "react";
+import { useGameStore } from "../../stores/useGameStore";
 
-const ResultHistory = ({ lastResults }) => {
+const ResultHistory = () => {
 
-  console.log(lastResults)
-  // console.log("cons")
-  const [resultHistory, setResultHistory] = useState([
-    {
-      period: "20250808010401",
-      number: "3",
-      bigSmall: "Small",
-      color: "green",
-    },
-    { period: "20250808010400", number: "0", bigSmall: "Small", color: "red" },
-    { period: "20250808010399", number: "9", bigSmall: "Big", color: "green" },
-  ]);
-
-  const getColorClass = (color) => {
-    switch (color) {
-      case "red":
-        return "text-red-500";
-      case "green":
-        return "text-green-500";
-      case "purple":
-        return "text-purple-500";
-      default:
-        return "text-white";
-    }
-  };
-
-  const getColorDot = (color) => {
-    const colorMap = {
-      red: "bg-red-500",
-      green: "bg-green-500",
-      purple: "bg-purple-500",
-    };
-    return (
-      <div
-        className={`w-3 h-3 rounded-full ${colorMap[color] || "bg-gray-500"}`}
-      ></div>
-    );
-  };
-
+  const lastResults = useGameStore((state) => state.lastResults);
+ 
   const formatTime = (timestamp) => {
     if (!timestamp) return 'N/A';
     const date = new Date(timestamp);

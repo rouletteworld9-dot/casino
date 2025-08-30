@@ -9,10 +9,12 @@ export const useGameStore = create((set, get) => ({
   round: null,
   phase: null,
   result: null,
+  roundEndTime : null,
   winStatus: {
     isWin: null,
     amount: null,
   },
+  isMuted: false,
   isGameRunning: false,
 
   // Game data
@@ -30,6 +32,10 @@ export const useGameStore = create((set, get) => ({
   setPhase: (phase) => set({ phase }),
 
   setResult: (result) => set({ result }),
+
+  setRoundEndTime : (time) => set({roundEndTime:time}),
+
+  toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
 
   setLastResults: (lastResults) => set({ lastResults }),
 

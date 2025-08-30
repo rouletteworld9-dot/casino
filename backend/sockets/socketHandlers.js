@@ -13,6 +13,7 @@ async function handleConnection(socket) {
       recentWinners: gameState.recentWinners || [],
       isGameRunning: gameState.isGameRunning,
       timestamp: Date.now(),
+      roundEndTime: gameState.roundEndTime,
     });
 
     // eslint-disable-next-line no-unused-vars
