@@ -28,7 +28,7 @@ const LiveButton = ({ onClick, className = "" }) => {
     <motion.button
       onClick={onClick}
       className={`
-        relative inline-flex items-center gap-2 px-4 py-1
+        relative inline-flex items-center gap-2 sm:px-4 px-1 py-1
         sm:bg-gray-900 sm:hover:bg-gray-800 
         text-white font-semibold 
         sm:rounded-lg sm:border-2
@@ -50,14 +50,14 @@ const LiveButton = ({ onClick, className = "" }) => {
 
       {/* Pulsing background effect */}
       <motion.div
-        className="absolute sm:w-3 sm:h-3 w-2 h-2 bg-red-600 rounded-full left-4"
+        className="absolute sm:w-3 sm:flex hidden sm:h-3 w-2 h-2 bg-red-600 rounded-full left-4"
         variants={pulseVariants}
         animate="animate"
       />
 
       {/* Main red dot */}
       <motion.div
-        className="sm:w-3 sm:h-3 w-1 h-1 bg-red-600 rounded-full relative z-10"
+        className="sm:w-3 sm:h-3 w-1 h-1 bg-red-600 rounded-full relative z-10 "
         variants={dotVariants}
         animate="animate"
       />

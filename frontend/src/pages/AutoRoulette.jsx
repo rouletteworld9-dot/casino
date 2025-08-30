@@ -44,7 +44,7 @@ const AutoRoulette = () => {
           <div className="absolute sm:top-10 top-4 sm:right-10 right-0">
             <LiveButton />
           </div>
-          <MuteButton/>
+          <MuteButton />
           <ResultOverlay />
           {/* last results */}
           <div className="bg-black/10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
@@ -55,11 +55,11 @@ const AutoRoulette = () => {
           <div className="relative w-full flex justify-center">
             <div
               className={`
-      absolute left-10 transition-all duration-500 ease-in-out
+      absolute sm:left-0 left-10 transition-all duration-500 ease-in-out
       ${
         phase === "betting"
-          ? "opacity-10 sm:opacity-100 -translate-y-5 z-0"
-          : "opacity-100 translate-y-0 z-60"
+          ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
+          : "opacity-100 translate-y-0 z-60 mt-5 sm:mt-0"
       }
     `}
             >
@@ -67,12 +67,12 @@ const AutoRoulette = () => {
             </div>
           </div>
 
-          <WinnerList />
           {/* chips + board together */}
           <ChipManager userId={user?._id} round={round}>
             {({
               selectedCoin,
               setSelectedCoin,
+              totalBetAmount,
               betsByCell,
               cellTotals,
               onCellClick,
@@ -84,7 +84,7 @@ const AutoRoulette = () => {
               <>
                 <div
                   className={`
-                  fixed sm:left-1/2 right-0 sm:-translate-x-1/2 z-30
+                  fixed sm:left-1/2 right-2 sm:-translate-x-1/2 z-30
                   transition-all duration-700 ease-in-out
                   ${
                     phase === "betting"
@@ -103,6 +103,7 @@ const AutoRoulette = () => {
                     />
                   </div>
                 </div>
+                <WinnerList totalBetAmount={totalBetAmount}/>
 
                 <RouletteBoard
                   bets={betsByCell}
