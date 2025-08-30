@@ -164,18 +164,21 @@ const Wheel = (props) => {
 
   const style = {
     backgroundImage: `url(${roulette1})`,
-    width: "280px",
-    height: "280px",
-    position: "relative",
-    left: 65,
-    top: -120,
+    width: "min(60vw, 280px)", // responsive: 80% of screen width but max 280px
+    height: "min(60vw, 280px)", // keep it square
+    margin: "0 auto", 
     backgroundSize: "cover",
     backgroundPosition: "center",
-    borderRadius : 500
+    borderRadius: 500,
   };
 
   return (
-    <div style={style} className={"roulette-wheel "}>
+    <div
+      style={style}
+      className={
+        "roulette-wheel relative left-[65px] -top-[70px] lg:-top-[120px]"
+      }
+    >
       <div
         style={{
           backgroundImage: `url(${roulette2})`,
@@ -201,7 +204,7 @@ const Wheel = (props) => {
       <div className={"ball-container"} style={{ transform: "rotate(0deg)" }}>
         <div
           className={"ball"}
-          style={{ transform: "translate(0, -146.221px)" }}
+          // style={{ transform: "translate(0, -146.221px)" }}
         ></div>
       </div>
     </div>

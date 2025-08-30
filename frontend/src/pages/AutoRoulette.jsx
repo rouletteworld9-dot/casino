@@ -17,7 +17,6 @@ import MuteButton from "../components/MuteButton";
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
 
-
   const { phase, round, lastResults, loading, setLoading } = useGameStore();
 
   useEffect(() => {
@@ -28,8 +27,10 @@ const AutoRoulette = () => {
 
   return (
     <div className="relative w-full flex flex-col">
-      <InsufficientBalanceModal  />
-      <Header />
+      <InsufficientBalanceModal />
+      <div className="sm:block hidden ">
+        <Header />
+      </div>
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center bg-black">
           <img
@@ -39,20 +40,29 @@ const AutoRoulette = () => {
           />
         </div>
       ) : (
-        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-b from-blue-600 to-blue-900">
-          <div className="absolute top-2 right-10">
+        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-r from-blue-800 to-blue-900 ">
+          <div className="absolute sm:top-10 top-4 sm:right-10 right-0">
             <LiveButton />
           </div>
           <MuteButton/>
           <ResultOverlay />
           {/* last results */}
-          <div className="bg-black/10 absolute top-16 left-140 flex justify-center items-center">
+          <div className="bg-black/10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
 
           {/* wheel */}
           <div className="relative w-full flex justify-center">
-            <div className="absolute left-0 z-60">
+            <div
+              className={`
+      absolute left-10 transition-all duration-500 ease-in-out
+      ${
+        phase === "betting"
+          ? "opacity-10 sm:opacity-100 -translate-y-5 z-0"
+          : "opacity-100 translate-y-0 z-60"
+      }
+    `}
+            >
               <RouletteGame />
             </div>
           </div>
@@ -74,7 +84,7 @@ const AutoRoulette = () => {
               <>
                 <div
                   className={`
-                  fixed left-1/2 -translate-x-1/2 z-30
+                  fixed sm:left-1/2 right-0 sm:-translate-x-1/2 z-30
                   transition-all duration-700 ease-in-out
                   ${
                     phase === "betting"
@@ -83,7 +93,7 @@ const AutoRoulette = () => {
                   }
                 `}
                 >
-                  <div className=" py-1 rounded-full ">
+                  <div className="">
                     <ChipSelector
                       hasBets={hasBets}
                       handlePlaceBet={onPlaceBet}

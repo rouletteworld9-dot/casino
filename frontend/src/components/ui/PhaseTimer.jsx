@@ -168,12 +168,25 @@ const PhaseTimer = () => {
   const { step, offset, strokeColor, textColor } = computedValues;
 
   return (
-    <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3">
+    <div
+      className="fixed 
+    top-12 sm:top-auto   /* only top on small, reset on sm */
+    bottom-auto sm:bottom-18 
+    right-1 sm:right-auto
+    left-auto sm:left-1/2 sm:-translate-x-1/2
+    z-[999] flex flex-col items-center gap-2 sm:gap-3"
+    >
       {/* Main Timer */}
-      <div className="relative" style={{ width: SIZE, height: SIZE }}>
+      <div
+        className="relative"
+        style={{
+          width: window.innerWidth < 640 ? SIZE * 0.7 : SIZE, // shrink timer <sm
+          height: window.innerWidth < 640 ? SIZE * 0.7 : SIZE,
+        }}
+      >
         <svg
-          width={SIZE}
-          height={SIZE}
+          width={window.innerWidth < 640 ? SIZE * 0.7 : SIZE}
+          height={window.innerWidth < 640 ? SIZE * 0.7 : SIZE}
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           className="-rotate-90"
           style={{ filter: `drop-shadow(0 0 6px ${strokeColor}aa)` }}
@@ -226,7 +239,7 @@ const PhaseTimer = () => {
       {/* Phase Text */}
       <div className="text-center">
         <div
-          className={`${textColor} text-xs font-bold tracking-wider uppercase ${
+          className={`${textColor} text-[7px] sm:text-xs font-bold tracking-wider uppercase ${
             step === "closing" ? "animate-pulse" : ""
           }`}
         >

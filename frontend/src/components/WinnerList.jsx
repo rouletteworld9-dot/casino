@@ -121,7 +121,7 @@ export default function WinnerList() {
       className="relative transition-all scroll-hidden duration-300"
     >
       {showEffects && item === newWinner && (
-        <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1 py-0.5 rounded-full casino-bounce casino-glow text-[10px]">
+        <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1 py-0.5 rounded-full casino-bounce casino-glow sm:text-[10px]">
           NEW!
         </div>
       )}
@@ -171,7 +171,7 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-999 left-4 w-60 h-40"
+      className="fixed z-10 left-1 sm:left-4 w-30 sm:w-60 sm:h-40 h-20"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -182,14 +182,14 @@ export default function WinnerList() {
 
       <AnimatePresence mode="wait">
         {newWinner && (
-          <div className="flex space-x-2">
+          <div className="flex sm:space-x-2">
             <motion.p
               key={newWinner.username} // re-trigger animation on change
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-lg text-yellow-400 font-semibold"
+              className="text-xs sm:text-lg text-yellow-400 font-semibold"
             >
               🎉 {newWinner.username}
             </motion.p>
@@ -199,7 +199,7 @@ export default function WinnerList() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-lg text-yellow-400 font-semibold"
+              className="text-xs sm:text-lg text-yellow-400 font-semibold"
             >
               ₹{newWinner.amount}
             </motion.p>

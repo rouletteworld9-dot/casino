@@ -1,11 +1,12 @@
-
-
 body {
   font-family: sans-serif;
-  /* background-image: url('/assets/felt.png'),
+  /* background-image:
+    url("/assets/felt.png"),
     -webkit-radial-gradient(50% 40%, circle farthest-corner, #527c14, #243a0a);
-  background-size: 120px 180px, auto; */
-  /* background-attachment: fixed; */
+  background-size:
+    120px 180px,
+    auto; */
+  background-attachment: fixed;
   user-select: none;
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
@@ -17,21 +18,6 @@ body {
   contain: layout style;
   overflow: visible;
 }
-
-/* .roulette-wheel {
-  float: right;
-  width: 380px;
-  height: 380px;
-  border-radius: 100%;
-  background: url('../public/Assets/roulette_1.jpg');
-  background-size: 380px 380px;
-  shape-outside: circle(190px);
-  margin: 0 0 1em 1em;
-  box-shadow: 2px 10px 30px rgba(0, 0, 0, 0.4);
-  position: relative;
-  touch-action: none;
-  overflow: visible;
-} */
 
 @media screen and (max-width: 2640px) {
   .roulette-wheel {
@@ -57,7 +43,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-size: 280px 280px;
+   background-size: 100% 100%; 
 }
 
 .roulette-wheel .layer-2,
@@ -67,19 +53,19 @@ body {
 }
 
 .roulette-wheel .layer-2 {
-  background-image: url('/assets/roulette_2.png');
+  background-image: url("/assets/roulette_2.png");
 }
 
 .roulette-wheel .layer-3 {
-  background-image: url('/assets/roulette_3.png');
+  background-image: url("/assets/roulette_3.png");
 }
 
 .roulette-wheel .layer-4 {
-  background-image: url('/assets/roulette_4.png');
+  background-image: url("/assets/roulette_4.png");
 }
 
 .roulette-wheel .layer-5 {
-  background-image: url('/assets/roulette_5.png');
+  background-image: url("/assets/roulette_5.png");
 }
 
 .roulette-wheel svg {
@@ -95,12 +81,12 @@ body {
 
 .roulette-wheel .ball {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 4%;
+  height: 4%;
   border-radius: 7px;
   background: #fff radial-gradient(circle at 5px 5px, #fff, #444);
   box-shadow: 1px 1px 4px #000;
-  transform: translateY(-116px);
+  transform: translateY( -122px);
   top: 50%;
   left: 50%;
   margin: -7px;
@@ -112,7 +98,7 @@ body {
   display: flow-root;
   width: 1000px;
   height: 420px;
-  background: url('./assets/Board.png');
+  background: url("./assets/Board.png");
   background-size: 1000px auto;
   margin: 0 auto;
 }
@@ -138,22 +124,22 @@ body {
 }
 
 div.chip-100-placed {
-  background: url('/assets/chip_black.png') no-repeat;
+  background: url("/assets/chip_black.png") no-repeat;
   background-size: 30px 30px;
 }
 
 div.chip-20-placed {
-  background: url('/assets/chip_blue.png') no-repeat;
+  background: url("/assets/chip_blue.png") no-repeat;
   background-size: 30px 30px;
 }
 
 div.chip-10-placed {
-  background: url('/assets/chip_orange.png') no-repeat;
+  background: url("/assets/chip_orange.png") no-repeat;
   background-size: 30px 30px;
 }
 
 div.chip-5-placed {
-  background: url('/assets/chip_purple.png') no-repeat;
+  background: url("/assets/chip_purple.png") no-repeat;
   background-size: 30px 30px;
 }
 
@@ -259,8 +245,6 @@ div.chip-5-placed {
   margin: 10px 0px;
 }
 
-
-
 .roulette-wheel .layer-2,
 .roulette-wheel .layer-3,
 .roulette-wheel .layer-4,
@@ -271,7 +255,7 @@ div.chip-5-placed {
 
 /* Loading state for images */
 .roulette-wheel::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -291,4 +275,11 @@ div.chip-5-placed {
 .roulette-board {
   background-repeat: no-repeat;
   background-position: center;
+}
+
+
+@media (min-width: 1024px) {
+  .roulette-wheel .ball {
+    transform: translateY(-146.221px);
+  }
 }
