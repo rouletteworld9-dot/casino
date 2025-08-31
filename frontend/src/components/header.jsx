@@ -91,7 +91,7 @@ export default function Header() {
                     {showBalance ? (
                       <>
                         <span className="truncate">
-                          ₹{user?.realBalance || singleUser?.realBalance}
+                          ₹ {user?.realBalance || singleUser?.realBalance}
                         </span> 
                         <span className="hidden sm:flex text-yellow-400 items-center gap-1">
                           |

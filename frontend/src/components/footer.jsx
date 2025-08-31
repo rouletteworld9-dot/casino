@@ -63,9 +63,10 @@ export default function Footer() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-right"
+            className="text-right flex flex-col"
           >
             <span className="text-gray-400 text-sm">support@casino.in</span>
+            <span className="text-gray-400 text-sm">Customer Support : 7000843747</span>
           </motion.div>
         </div>
 

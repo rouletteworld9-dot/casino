@@ -65,3 +65,31 @@ function playFinish() {
   finishAudio.currentTime = 0
   finishAudio.play()
 }
+
+function announceNumber(number) {
+  if ('speechSynthesis' in window) {
+
+    const voices = speechSynthesis.getVoices();
+    
+    // Pick a female voice (depends on browser & OS)
+    const femaleVoice = voices.find(voice =>
+      voice.name.toLowerCase().includes("female") || 
+      voice.name.toLowerCase().includes("woman") ||
+      voice.name.toLowerCase().includes("samantha") || 
+      voice.name.toLowerCase().includes("zira") // some common female voices
+    ) || voices[0]; // fallback if no female voice found
+
+    const utterance = new SpeechSynthesisUtterance(number.toString());
+    utterance.voice = femaleVoice;
+    utterance.lang = "en-US"; // You can change language/accent if you want
+    utterance.pitch = 2; // slightly higher pitch = more feminine
+    utterance.rate = 1;    // speaking speed
+    speechSynthesis.speak(utterance);
+  } else {
+    console.log("Speech synthesis not supported in this browser.");
+  }
+}
+
+// Example usage when result comes:
+const result = 10; // your roulette result (0–36)
+announceNumber(result);

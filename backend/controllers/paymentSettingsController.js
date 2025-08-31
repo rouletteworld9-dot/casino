@@ -10,6 +10,7 @@ exports.updatePaymentSettings = async (req, res) => {
         let qrCodeUrl;
 
         if (req.file) {
+            console.log(req.file)
             const result = await cloudinary.uploader.upload(req.file.path, {
                 folder: "payment_qr_codes"
             });

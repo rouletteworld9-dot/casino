@@ -322,7 +322,7 @@ const ResultOverlay = () => {
                   transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
                 >
                   <p className="text-2xl font-semibold text-gray-100 mb-2">
-                    Congratulations! You won &rupee; {amount}
+                    Congratulations! You won ₹ {amount}
                   </p>
                 </motion.div>
               </motion.div>

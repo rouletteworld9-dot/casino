@@ -50,14 +50,14 @@ const LiveButton = ({ onClick, className = "" }) => {
 
       {/* Pulsing background effect */}
       <motion.div
-        className="absolute sm:w-3 sm:h-3 w-2 h-2 bg-red-600 rounded-full left-4"
+        className="absolute sm:w-3 sm:h-3 w-2 h-2 bg-green-600 rounded-full left-4"
         variants={pulseVariants}
         animate="animate"
       />
 
       {/* Main red dot */}
       <motion.div
-        className="sm:w-3 sm:h-3 w-1 h-1 bg-red-600 rounded-full relative z-10"
+        className="sm:w-3 sm:h-3 w-1 h-1 bg-green-600 rounded-full relative z-10"
         variants={dotVariants}
         animate="animate"
       />
