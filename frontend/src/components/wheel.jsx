@@ -3,8 +3,8 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { useGameSocket } from "../hooks/useGameSocket";
 
-const roulette1 = "/assets/roulette_1.jpg";
-const roulette2 = "/assets/roulette_2.png";
+const roulette1 = "/assets/roulette_1.png";
+const roulette2 = "/assets/roulette_.png";
 const roulette3 = "/assets/roulette_3.png";
 const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";

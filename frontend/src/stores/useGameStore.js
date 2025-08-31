@@ -4,12 +4,12 @@ export const useGameStore = create((set, get) => ({
   // Connection state
   isConnected: false,
   socketId: null,
-
+  totalBetAmount: 0,
   // Game state
   round: null,
   phase: null,
   result: null,
-  roundEndTime : null,
+  roundEndTime: null,
   winStatus: {
     isWin: null,
     amount: null,
@@ -33,7 +33,7 @@ export const useGameStore = create((set, get) => ({
 
   setResult: (result) => set({ result }),
 
-  setRoundEndTime : (time) => set({roundEndTime:time}),
+  setRoundEndTime: (time) => set({ roundEndTime: time }),
 
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
 
@@ -50,6 +50,8 @@ export const useGameStore = create((set, get) => ({
   // Bulk updates for efficiency
   updateGameState: (updates) => set((state) => ({ ...state, ...updates })),
 
+  setTotalBetAmount: (amount) => set({ totalBetAmount: amount }),
+
   // Reset all state
   reset: () =>
     set({
@@ -62,7 +64,9 @@ export const useGameStore = create((set, get) => ({
       lastResults: [],
       recentWinners: [],
       messages: "",
-      loading , 
-      setLoading
+      loading,
+      setLoading,
+      totalBetAmount,
+      setTotalBetAmount,
     }),
 }));

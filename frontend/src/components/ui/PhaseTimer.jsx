@@ -145,7 +145,7 @@ const PhaseTimer = () => {
             animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="fixed inset-0 w-screen h-screen bg-black/30 flex items-center justify-center z-50"
+            className="sm:flex hidden fixed inset-0 w-screen h-screen bg-black/30  items-center justify-center z-50"
           >
             <motion.div
               key="waiting-text"
@@ -172,7 +172,7 @@ const PhaseTimer = () => {
       className="fixed 
     top-12 sm:top-auto   /* only top on small, reset on sm */
     bottom-auto sm:bottom-18 
-    right-1 sm:right-auto
+    right-0 sm:right-auto
     left-auto sm:left-1/2 sm:-translate-x-1/2
     z-[999] flex flex-col items-center gap-2 sm:gap-3"
     >
@@ -221,10 +221,12 @@ const PhaseTimer = () => {
                 : "scale-100"
             }`}
           >
-            <div className="text-lg font-bold leading-none">
+            <div className="text-xs sm:text-lg font-bold leading-none">
               {remaining !== null ? remaining : 0}
             </div>
-            <div className="text-[8px] leading-none opacity-80">SEC</div>
+            <div className="text-[5px] sm:text-[8px] leading-none opacity-80">
+              SEC
+            </div>
           </div>
         </div>
 
@@ -239,7 +241,7 @@ const PhaseTimer = () => {
       {/* Phase Text */}
       <div className="text-center">
         <div
-          className={`${textColor} text-[7px] sm:text-xs font-bold tracking-wider uppercase ${
+          className={`${textColor} hidden sm:flex sm:text-xs font-bold tracking-wider uppercase ${
             step === "closing" ? "animate-pulse" : ""
           }`}
         >

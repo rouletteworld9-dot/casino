@@ -28,7 +28,7 @@ const LiveButton = ({ onClick, className = "" }) => {
     <motion.button
       onClick={onClick}
       className={`
-        relative inline-flex items-center gap-2 px-4 py-1
+        relative inline-flex items-center gap-2 sm:px-4 px-1 py-1
         sm:bg-gray-900 sm:hover:bg-gray-800 
         text-white font-semibold 
         sm:rounded-lg sm:border-2

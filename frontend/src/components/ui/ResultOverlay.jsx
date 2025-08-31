@@ -1,25 +1,12 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useGameStore } from "../../stores/useGameStore";
-const resultSound = new Audio("/sounds/result.mp3")
 
-const ResultOverlay = () => {
+const ResultOverlay = ({ onClose }) => {
   const {
-    winStatus: { isWin = true, amount },isMuted
+    winStatus: { isWin = true, amount },
   } = useGameStore();
-
-   useEffect(() => {
-    if (isWin !== null && !isMuted) {
-      const timer = setTimeout(() => {
-        resultSound.currentTime = 0;
-        resultSound.play().catch(() => {});
-      }, 4000); // 🔥 same 4s delay as overlayVariants
-
-      return () => clearTimeout(timer);
-    }
-  }, [isWin, isMuted]);
-
-  if (isWin === null) return null;
+  if (isWin === null) return;
 
   const overlayVariants = {
     hidden: { opacity: 0 },

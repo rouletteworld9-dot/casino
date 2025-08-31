@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
 import { AnimatePresence, motion } from "framer-motion";
-import { useGameSocket } from "../hooks/useGameSocket";
+// import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
+import { useAuthStore } from "../stores/useAuthStore";
+import { useSingleUser } from "../hooks/useAdminUsers";
 
 export default function WinnerList() {
+  const totalAmount = useGameStore((s) => s.totalBetAmount);
+  const result = useGameStore((state) => state.result);
+  const setTotalBetAmount = useGameStore((s) => s.setTotalBetAmount);
+
+  const delayResult = useDelay(result , 5000)
+  // console.log(totalAmount, "bet amunt");
   const { recentWinners: newWinners } = useGameStore();
   const delayedWinners = useDelay(newWinners, 4000);
+  const user = useAuthStore((s) => s.user);
+  const { singleUser } = useSingleUser(user?._id);
 
   const [winners, setWinners] = useState([]);
   const [newWinner, setNewWinner] = useState(null);
@@ -18,6 +28,12 @@ export default function WinnerList() {
 
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
+
+  useEffect(() => {
+    if (delayResult) {
+      setTotalBetAmount(0);
+    }
+  }, [delayResult]);
 
   // Handle incoming winners
   useEffect(() => {
@@ -171,12 +187,21 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-10 left-1 sm:left-4 w-30 sm:w-60 sm:h-40 h-20"
+      className="fixed z-1 left-1 sm:left-4 w-30 sm:w-60 sm:h-40 h-8"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <h1 className="flex items-center space-x-1 text-white font-bold">
+      <p className="sm:hidden text-white text-sm">
+        Total Bet : <span className="text-yellow-500">₹{totalAmount}</span>
+      </p>
+      <p className="sm:hidden text-white text-sm">
+        Balance :{" "}
+        <span className="text-yellow-500">
+          ₹{user?.realBalance || singleUser?.realBalance}
+        </span>
+      </p>
+      <h1 className="hidden sm:flex items-center space-x-1 text-white font-bold">
         <span>🏆 Winners</span>
       </h1>
 
