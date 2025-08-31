@@ -20,6 +20,8 @@ export function useGameSocket() {
     setRecentWinners,
     setMessages,
     updateGameState,
+    betsPlaced,
+    setRoundEndTime,
     setTotalBetAmount,
   } = useGameStore();
 
@@ -45,6 +47,7 @@ export function useGameSocket() {
         lastResults: data.lastResults,
         recentWinners: data.recentWinners,
         isGameRunning: data.isGameRunning,
+        roundEndTime: data.roundEndTime,
       });
     });
 
@@ -52,6 +55,7 @@ export function useGameSocket() {
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
+      setRoundEndTime(data.roundEndTime)
       setWinStatus(null, null);
       setMessages("Game started");
     });

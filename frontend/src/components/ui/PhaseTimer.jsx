@@ -14,6 +14,7 @@ const PhaseTimer = () => {
   const lastResults = useGameStore((state) => state.lastResults);
 
   const { remaining, formatted } = useCountdown();
+  console.log("remaining", remaining,formatted)
 
   const [progress, setProgress] = useState(0);
   const [showNextGame, setShowNextGame] = useState(false);

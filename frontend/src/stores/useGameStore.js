@@ -64,9 +64,9 @@ export const useGameStore = create((set, get) => ({
       lastResults: [],
       recentWinners: [],
       messages: "",
-      loading,
-      setLoading,
-      totalBetAmount,
-      setTotalBetAmount,
+      loading: false,
+      totalBetAmount: 0,
+      winStatus: { isWin: null, amount: null },
+      isMuted: false,
     }),
 }));

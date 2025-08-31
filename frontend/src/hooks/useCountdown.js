@@ -11,8 +11,16 @@ function formatTime(seconds) {
 }
 
 export default function useCountdown() {
-  const { roundEndTime, phase,isMuted  } = useGameStore();
+  const { roundEndTime, phase,isMuted , result } = useGameStore();
   const [remaining, setRemaining] = useState(null);
+
+  useEffect(()=>{
+   if(phase==="result" && result && !isMuted){
+    setTimeout(() => {
+      announceNumber(result);
+    }, 5000);
+   }
+  },[phase])
 
   useEffect(() => {
     if (phase !== "betting" || !roundEndTime) {
@@ -34,7 +42,6 @@ export default function useCountdown() {
   // 🔊 Sound control
   useEffect(() => {
     if (remaining === null || isMuted) return;
-
     if (remaining <= 0 && remaining > 0) {
       playBeep();
     } else if (remaining > 0) {
@@ -66,7 +73,7 @@ function playFinish() {
   finishAudio.play()
 }
 
-function announceNumber(number) {
+export function announceNumber(number) {
   if ('speechSynthesis' in window) {
 
     const voices = speechSynthesis.getVoices();
@@ -90,6 +97,4 @@ function announceNumber(number) {
   }
 }
 
-// Example usage when result comes:
-const result = 10; // your roulette result (0–36)
-announceNumber(result);
+
