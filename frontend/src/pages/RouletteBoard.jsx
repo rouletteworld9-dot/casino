@@ -6,7 +6,48 @@ import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
 
+const numbers = [
+  { num: 0, color: "green" },
+  { num: 32, color: "red" },
+  { num: 15, color: "black" },
+  { num: 19, color: "red" },
+  { num: 4, color: "black" },
+  { num: 21, color: "red" },
+  { num: 2, color: "black" },
+  { num: 25, color: "red" },
+  { num: 17, color: "black" },
+  { num: 34, color: "red" },
+  { num: 6, color: "black" },
+  { num: 27, color: "red" },
+  { num: 13, color: "black" },
+  { num: 36, color: "red" },
+  { num: 11, color: "black" },
+  { num: 30, color: "red" },
+  { num: 8, color: "black" },
+  { num: 23, color: "red" },
+  { num: 10, color: "black" },
+  { num: 5, color: "red" },
+  { num: 24, color: "black" },
+  { num: 16, color: "red" },
+  { num: 33, color: "black" },
+  { num: 1, color: "red" },
+  { num: 20, color: "black" },
+  { num: 14, color: "red" },
+  { num: 31, color: "black" },
+  { num: 9, color: "red" },
+  { num: 22, color: "black" },
+  { num: 18, color: "red" },
+  { num: 29, color: "black" },
+  { num: 7, color: "red" },
+  { num: 28, color: "black" },
+  { num: 12, color: "red" },
+  { num: 35, color: "black" },
+  { num: 3, color: "red" },
+  { num: 26, color: "black" },
+];
+
 // bets: { [cellId: string]: denomination[] }, cellTotals: { [cellId: string]: number }
+
 const RouletteBoard = ({
   // lastResults,
   bets = {},
@@ -15,71 +56,255 @@ const RouletteBoard = ({
   cellTotals = {},
 }) => {
   const { phase, lastResults } = useGameStore();
-  // console.log(phase , "phaaaaaase")
-  const numbers = [
-    { num: 0, color: "green" },
-    { num: 32, color: "red" },
-    { num: 15, color: "black" },
-    { num: 19, color: "red" },
-    { num: 4, color: "black" },
-    { num: 21, color: "red" },
-    { num: 2, color: "black" },
-    { num: 25, color: "red" },
-    { num: 17, color: "black" },
-    { num: 34, color: "red" },
-    { num: 6, color: "black" },
-    { num: 27, color: "red" },
-    { num: 13, color: "black" },
-    { num: 36, color: "red" },
-    { num: 11, color: "black" },
-    { num: 30, color: "red" },
-    { num: 8, color: "black" },
-    { num: 23, color: "red" },
-    { num: 10, color: "black" },
-    { num: 5, color: "red" },
-    { num: 24, color: "black" },
-    { num: 16, color: "red" },
-    { num: 33, color: "black" },
-    { num: 1, color: "red" },
-    { num: 20, color: "black" },
-    { num: 14, color: "red" },
-    { num: 31, color: "black" },
-    { num: 9, color: "red" },
-    { num: 22, color: "black" },
-    { num: 18, color: "red" },
-    { num: 29, color: "black" },
-    { num: 7, color: "red" },
-    { num: 28, color: "black" },
-    { num: 12, color: "red" },
-    { num: 35, color: "black" },
-    { num: 3, color: "red" },
-    { num: 26, color: "black" },
-  ];
+  const rows = 3;
+  const cols = 12;
 
-  // Create the main grid (excluding 0)
-  const mainNumbers = numbers.slice(1); // Remove 0 from main grid
-
-  // Arrange numbers in the traditional roulette layout (3 rows, 12 columns)
+  // map row/col to roulette number
   const getNumberAtPosition = (row, col) => {
-    const num = col * 3 + (3 - row);
-    return mainNumbers.find((n) => n.num === num);
+    const num = col * rows + (rows - row);
+    return numbers.find((n) => n.num === num);
   };
 
-  // Helper to render a styled chip on a cell (matches ChipSelector)
+  // === Overlay Bets ===
+  const renderOverlayBets = () => {
+    const hitboxes = [];
+
+    // Splits
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const num = getNumberAtPosition(r, c)?.num;
+
+        if (c < cols - 1) {
+          const numRight = getNumberAtPosition(r, c + 1)?.num;
+
+          hitboxes.push(
+            renderHitbox("split", [num, numRight], r, c, "horizontal")
+          );
+        }
+        if (r < rows - 1) {
+          const numDown = getNumberAtPosition(r + 1, c)?.num;
+          hitboxes.push(
+            renderHitbox("split", [num, numDown], r, c, "vertical")
+          );
+        }
+      }
+    }
+    // Zero splits
+    hitboxes.push(
+      renderZeroHitbox("split", [0, 1], { top: "0%", left: "10%" })
+    );
+    hitboxes.push(
+      renderZeroHitbox("split", [0, 2], { top: "0%", left: "30%" })
+    );
+    hitboxes.push(
+      renderZeroHitbox("split", [0, 3], { top: "0%", left: "50%" })
+    );
+
+    // Corners
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < cols - 1; c++) {
+        const a = getNumberAtPosition(r, c)?.num;
+        const b = getNumberAtPosition(r, c + 1)?.num;
+        const d = getNumberAtPosition(r + 1, c)?.num;
+        const e = getNumberAtPosition(r + 1, c + 1)?.num;
+        hitboxes.push(renderHitbox("corner", [a, b, d, e], r, c, "corner"));
+      }
+    }
+    // First four (0-1-2-3)
+    hitboxes.push(
+      renderZeroHitbox("corner", [0, 1, 2, 3], { top: "0%", left: "0%" })
+    );
+
+    // Streets
+    for (let c = 0; c < cols; c++) {
+      const base = getNumberAtPosition(0, c)?.num;
+      const nums = [base, base - 1, base - 2];
+      hitboxes.push(renderRailHitbox("street", nums, c));
+    }
+
+    // Lines
+    for (let c = 0; c < cols - 1; c++) {
+      const base = getNumberAtPosition(0, c)?.num;
+      const nums = [base, base - 1, base - 2, base + 3, base + 2, base + 1];
+      hitboxes.push(renderRailHitbox("line", nums, c));
+    }
+
+    return hitboxes;
+  };
+
+  // Fixed renderHitbox function with proper sizing and positioning
+  // Fixed renderHitbox function with proper sizing and positioning
+  const renderHitbox = (type, numbers, r, c, orientation) => {
+    const validNumbers = numbers
+      .filter((n) => n != null)
+      .map((n) => (typeof n === "object" ? n.num : n));
+    const id = `${type}-${validNumbers.join("-")}`;
+
+    const baseStyle = {
+      position: "absolute",
+      backgroundColor: "rgba(255, 255, 0, 0.3)", // More visible for debugging
+      border: "1px solid rgba(255, 255, 0, 0.8)",
+      cursor: "pointer",
+      zIndex: 15, // Higher z-index
+      pointerEvents: "auto",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    let specificStyle = {};
+
+    if (orientation === "horizontal") {
+      // Split bet between horizontally adjacent numbers
+      specificStyle = {
+        width: "8px", // Increased from 2px
+        height: `${100 / rows}%`,
+        left: `${((c + 1) * 100) / cols}%`,
+        top: `${(r * 100) / rows}%`,
+        transform: "translateX(-50%)",
+        border: "2px solid green",
+      };
+    } else if (orientation === "vertical") {
+      // Split bet between vertically adjacent numbers
+      specificStyle = {
+        width: `${100 / cols}%`,
+        height: "8px", // Increased from 2px
+        left: `${(c * 100) / cols}%`,
+        top: `${((r + 1) * 100) / rows}%`,
+        transform: "translateY(-50%)",
+        border: "2px solid blue",
+      };
+    } else if (orientation === "corner") {
+      // Corner bet at intersection of 4 numbers
+      specificStyle = {
+        width: "12px", // Increased from 2px
+        height: "12px", // Increased from 2px
+        left: `${((c + 1) * 100) / cols}%`,
+        top: `${((r + 1) * 100) / rows}%`,
+        transform: "translate(-50%, -50%)", // Center on intersection
+        borderRadius: "50%",
+        border: "2px solid red",
+      };
+    }
+
+    const style = { ...baseStyle, ...specificStyle };
+
+    return (
+      <div
+        key={id}
+        className="bet-hitbox"
+        data-bet-id={id} // Add this for ChipSelector to find
+        style={style}
+        onClick={() => onCellClick(id, { type, numbers })}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          const value = Number(e.dataTransfer.getData("text/coinValue"));
+          if (!Number.isNaN(value)) onCellDrop(id, value);
+        }}
+        title={`${type}: ${validNumbers.join(", ")}`} // Helpful for debugging
+      >
+        {renderTotalChip(id)}
+      </div>
+    );
+  };
+
+  // Fixed renderZeroHitbox function
+  const renderZeroHitbox = (type, numbers, pos) => {
+    const id = `${type}-${numbers.join("-")}`;
+    const style = {
+      position: "absolute",
+      top: pos.top,
+      left: pos.left,
+      width: "15%", // Increased from 10%
+      height: "25%", // Increased from 20%
+      backgroundColor: "rgba(255, 0, 255, 0.3)", // Different color for zero bets
+      border: "2px solid magenta",
+      cursor: "pointer",
+      zIndex: 15,
+      pointerEvents: "auto",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    return (
+      <div
+        key={id}
+        className="bet-hitbox"
+        style={style}
+        data-bet-id={id}
+        onClick={() => onCellClick(id, { type, numbers })}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          const value = Number(e.dataTransfer.getData("text/coinValue"));
+          if (!Number.isNaN(value)) onCellDrop(id, value);
+        }}
+        title={`${type}: ${numbers.join(", ")}`}
+      >
+        {renderTotalChip(id)}
+      </div>
+    );
+  };
+
+  // Fixed renderRailHitbox function
+  const renderRailHitbox = (type, numbers, c) => {
+    const id = `${type}-${numbers.join("-")}`;
+    const style = {
+      position: "absolute",
+      backgroundColor: "rgba(0, 255, 255, 0.3)", // Different color for rail bets
+      border: "2px solid cyan",
+      top: "100%",
+      left: `${(c * 100) / cols}%`,
+      width: `${100 / cols}%`,
+      height: "12px", // Increased from 10%
+      cursor: "pointer",
+      zIndex: 15,
+      pointerEvents: "auto",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    return (
+      <div
+        key={id}
+        className="bet-hitbox"
+        style={style}
+        data-bet-id={id}
+        onClick={() => onCellClick(id, { type, numbers })}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          const value = Number(e.dataTransfer.getData("text/coinValue"));
+          if (!Number.isNaN(value)) onCellDrop(id, value);
+        }}
+        title={`${type}: ${numbers.join(", ")}`}
+      >
+        {renderTotalChip(id)}
+      </div>
+    );
+  };
+
+ 
+
+  // Fixed overlay container - remove pointer-events: none
+  // === Chips ===
   const colorByDenom = (value) => {
     switch (value) {
       case 10:
-        return "#9CA3AF"; // gray
+        return "#9CA3AF";
       case 20:
-        return "#16A34A"; // green
+        return "#16A34A";
       case 50:
-        return "#F59E0B"; // amber/orange
+        return "#F59E0B";
       case 100:
-        return "#F97316"; // orange
+        return "#F97316";
       case 500:
-        return "#EF4444"; // red
+        return "#EF4444";
       case 2500:
-        return "#22C55E"; // green
+        return "#22C55E";
       default:
         return "#9CA3AF";
     }
@@ -87,11 +312,10 @@ const RouletteBoard = ({
 
   const winningNumber = phase === "result" && lastResults[0]?.result;
   const delayWinningNumber = useDelay(winningNumber, 5000);
-  // Show only the total amount for a cell (if any)
+
   const renderTotalChip = (cellId) => {
     const total = cellTotals[cellId];
     if (!total) return null;
-    // Use the color of the last denomination for style, or default
     const denoms = bets[cellId];
     const lastDenom =
       Array.isArray(denoms) && denoms.length > 0
@@ -99,7 +323,7 @@ const RouletteBoard = ({
         : 10;
     return (
       <div
-        className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-6 h-6 rounded-full grid place-items-center justify-items-center text-[10px]   cursor-pointer select-none shadow"
+        className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 w-6 h-6 rounded-full grid place-items-center text-[10px] cursor-pointer select-none shadow"
         style={{
           background: colorByDenom(lastDenom),
           color: "#111827",
@@ -108,7 +332,6 @@ const RouletteBoard = ({
           zIndex: 2,
         }}
       >
-        {/* stripes ring */}
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-full"
@@ -121,7 +344,6 @@ const RouletteBoard = ({
             opacity: 0.9,
           }}
         />
-        {/* center */}
         <span
           className="pointer-events-none rounded-full grid place-items-center rotate-[270deg]"
           style={{
@@ -134,7 +356,6 @@ const RouletteBoard = ({
         >
           ₹{total}
         </span>
-        {/* outer rim */}
         <span className="pointer-events-none absolute inset-0 rounded-full border border-white/30" />
       </div>
     );
@@ -148,14 +369,14 @@ const RouletteBoard = ({
 
   return (
     <div
-      className={`sm:items-center opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full z-90
+      className={`sm:items-center relative opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full z-90
     transition-all duration-900 ease-in-out 
     ${phase === "betting" ? "-mt-30 sm:-mt-50 " : ""}
     ${phase !== "betting" ? "sm:-mt-50" : ""}
   `}
     >
       <div
-        className={`sm:max-w-3xl  sm:ml-30 sm:mt-10 sm:h-full 
+        className={`sm:max-w-3xl  sm:ml-30 sm:mt-10 sm:h-full  relative
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
         [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_rotateZ(90deg)_skewX(0deg)]
         ${phase === "betting" ? "-mt-30 sm:w-lg w-2xl h-145 " : " sm:mt-0 h-130 sm:h-full w-xl "}
@@ -215,7 +436,7 @@ const RouletteBoard = ({
 
             {/* Main number grid */}
             <div className="sm:flex-1 ">
-              <div className="grid grid-cols-12 w-full">
+              <div className="grid grid-cols-12 w-full relative">
                 {Array.from({ length: 3 }, (_, row) =>
                   Array.from({ length: 12 }, (_, col) => {
                     const numberData = getNumberAtPosition(row, col);
@@ -224,11 +445,11 @@ const RouletteBoard = ({
                         id={`cell-${numberData.num}`}
                         key={`${row}-${col}`}
                         className={`${getNumberColor(numberData?.color)}
-            w-60 sm:w-9   h-16 sm:h-13
-            flex items-center justify-center 
-            text-xs sm:text-xl md:text-xl 
-              border border-white cursor-pointer relative
-            max-sm:w-full max-sm:aspect-square`}
+                                    w-60 sm:w-9   h-16 sm:h-13
+                                    flex items-center justify-center 
+                                    text-xs sm:text-xl md:text-xl 
+                                      border border-white cursor-pointer relative
+                                    max-sm:w-full max-sm:aspect-square`}
                         onClick={() =>
                           numberData && onCellClick(String(numberData.num))
                         }
@@ -267,6 +488,18 @@ const RouletteBoard = ({
                     );
                   })
                 )}
+                <div
+                  className="absolute inset-0 pointer-events-none z-10"
+                  style={{
+                    position: "absolute",
+                    top: -0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  {renderOverlayBets()}
+                </div>
               </div>
 
               {/* Bottom betting sections */}
