@@ -13,10 +13,13 @@ import ResultOverlay from "../components/ui/ResultOverlay";
 import { useGameStore } from "../stores/useGameStore";
 import LiveButton from "../components/ui/LiveButton";
 import {Undo2 } from 'lucide-react';
+import MuteButton from "../components/MuteButton";
+
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
   const [showInsufficient, setShowInsufficient] = useState(true);
+  const { phase, round, lastResults, loading, setLoading } = useGameStore()
 
   useEffect(() => {
     // Check for balance property (adjust as needed for your user object)
@@ -29,19 +32,26 @@ const AutoRoulette = () => {
     }
   }, [user]);
 
-  const { phase, round, lastResults, loading, setLoading } = useGameStore();
+  ;
+
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, [setLoading]);
+
   return (
     <div className="relative w-full flex flex-col">
       <InsufficientBalanceModal
         open={showInsufficient}
         onClose={() => setShowInsufficient(false)}
       />
-      <Header />
+     
+
+      <div className="sm:block hidden ">
+        <Header />
+      </div>
+
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center bg-black">
           <img
@@ -51,29 +61,39 @@ const AutoRoulette = () => {
           />
         </div>
       ) : (
-        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-b from-blue-600 to-blue-900">
-          <div className="absolute top-2 right-10">
+        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-r from-blue-800 to-blue-900 ">
+          <div className="absolute sm:top-10 top-4 sm:right-10 right-0">
             <LiveButton />
           </div>
+          <MuteButton />
           <ResultOverlay />
           {/* last results */}
-          <div className="bg-black/10 absolute top-2 left-140 flex justify-center items-center">
+          <div className="bg-black/10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
 
           {/* wheel */}
           <div className="relative w-full flex justify-center">
-            <div className="absolute left-0 z-60">
+            <div
+              className={`
+      absolute sm:left-0 left-10 transition-all duration-500 ease-in-out
+      ${
+        phase === "betting"
+          ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
+          : "opacity-100 translate-y-0 z-60 mt-5 sm:mt-0"
+      }
+    `}
+            >
               <RouletteGame />
             </div>
           </div>
 
-          <WinnerList />
           {/* chips + board together */}
           <ChipManager userId={user?._id} round={round} phase={phase}>
             {({
               selectedCoin,
               setSelectedCoin,
+              totalBetAmount,
               betsByCell,
               cellTotals,
               onCellClick,
@@ -85,6 +105,7 @@ const AutoRoulette = () => {
               onUndo,
             }) => (
               <>
+
                 {phase === "betting" && (
                   <div className="fixed bottom-0 left-0 w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center shadow-2xl">
                     <div className="w-full max-w-2xl flex flex-row items-center justify-center gap-2">
@@ -118,6 +139,30 @@ const AutoRoulette = () => {
                     </div>
                   </div>
                 )}
+
+                <div
+                  className={`
+                  fixed sm:left-1/2 right-2 sm:-translate-x-1/2 z-30
+                  transition-all duration-700 ease-in-out
+                  ${
+                    phase === "betting"
+                      ? "opacity-100 bottom-4 pointer-events-auto"
+                      : "opacity-0 bottom-0 pointer-events-none"
+                  }
+                `}
+                >
+                  <div className="">
+                    <ChipSelector
+                      hasBets={hasBets}
+                      handlePlaceBet={onPlaceBet}
+                      selectedCoin={selectedCoin}
+                      onSelect={setSelectedCoin}
+                      betLocked={betLocked}
+                    />
+                  </div>
+                </div>
+                <WinnerList totalBetAmount={totalBetAmount}/>
+
 
                 <RouletteBoard
                   bets={betsByCell}

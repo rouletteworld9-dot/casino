@@ -20,7 +20,9 @@ export function useGameSocket() {
     setRecentWinners,
     setMessages,
     updateGameState,
-    betsPlaced
+    betsPlaced,
+    setRoundEndTime,
+    setTotalBetAmount,
   } = useGameStore();
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export function useGameSocket() {
         lastResults: data.lastResults,
         recentWinners: data.recentWinners,
         isGameRunning: data.isGameRunning,
+        roundEndTime: data.roundEndTime,
       });
     });
 
@@ -52,6 +55,7 @@ export function useGameSocket() {
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
+      setRoundEndTime(data.roundEndTime)
       setWinStatus(null, null);
       setMessages("Game started");
     });
@@ -91,7 +95,6 @@ export function useGameSocket() {
     });
 
     socket.on("betResult", (data) => {
-
       const current = useAuthStore.getState().user;
       if (current && data?.balances) {
         useAuthStore.setState({
@@ -124,13 +127,14 @@ export function useGameSocket() {
 
   // Place a bet
   const emitPlaceBet = (data) => {
+    const total = data?.bets.reduce((a, b) => a + b.amount, 0);
     if (!round) {
       toast.error("No round active");
       return;
     }
     socket.emit("placeBets", data);
-    console.log(data , "place bet data")
     toast.success("Bet placed!");
+    setTotalBetAmount(total);
   };
 
   const forceResult = (num) => {

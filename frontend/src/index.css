@@ -10,6 +10,10 @@
   --color-midnightPurple: #332538;
 }
 
+body{
+  padding: 0;
+}
+
 /* @tailwind utilities;  */
 *::-webkit-scrollbar {
   width: 1px;
@@ -25,6 +29,36 @@
 .custom-scroll::-webkit-scrollbar-track {
   background: #17071d;
 }
+
+
+.shine-text {
+  display: inline-block;
+  position: relative;
+  color: #d4af37; /* casino gold base color */
+  background: linear-gradient(
+    120deg,
+    #d4af37 0%,
+    #ffffff 20%,
+    #d4af37 40%,
+    #d4af37 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+
 
 /* Casino-style animations */
 @keyframes casino-glow {

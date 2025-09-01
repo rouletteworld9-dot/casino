@@ -25,7 +25,9 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   const [bets, setBets] = useState([]);
   const [betLocked, setBetLocked] = useState(false);
+
   const [betHistory, setBetHistory] = useState([]); // for undo
+
   const { emitPlaceBet } = useGameSocket();
 
   // 🔹 Reset lock & clear bets when a new round starts

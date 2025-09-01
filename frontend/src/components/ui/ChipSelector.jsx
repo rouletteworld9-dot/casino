@@ -46,7 +46,7 @@ const ChipSelector = ({
               // visual drag image can be improved; default is okay
             }}
             className={
-              "w-7 sm:w-12 h-7 sm:h-12 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " +
+              "w-7 sm:w-10 h-7 sm:h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " 
               (isActive
                 ? "scale-125 shadow-[0_0_0_3px_rgba(255,255,211,0.7),0_0_18px_rgba(234,179,128,0.65)]"
                 : "shadow-md hover:scale-115")
@@ -89,7 +89,6 @@ const ChipSelector = ({
           </div>
         );
       })}
-      
       <div className=" ">
         {/* Large Button (same as before) */}
         <button
