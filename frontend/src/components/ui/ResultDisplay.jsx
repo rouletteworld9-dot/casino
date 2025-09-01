@@ -57,7 +57,7 @@ const ResultDisplay = ({ className }) => {
   const winner = numbers[index];
 
   return (
-    <div className="w-full flex justify-center sm:justify-center  py-2">
+    <div className="w-full flex justify-center sm:justify-center pointer-events-none py-2">
       <div
         className={`flex items-center relative bg-black/50 text-xl font-bold ${className}`}
       >

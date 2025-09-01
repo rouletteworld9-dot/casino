@@ -24,7 +24,6 @@ const ChipSelector = ({
 
     if (endRect) {
       const chipAnimations = [];
-  
 
       Object.entries(bets || {}).forEach(([cellId, denoms]) => {
         (denoms || []).forEach((denom) => {
@@ -33,6 +32,7 @@ const ChipSelector = ({
 
           if (startRect && startRect.width && startRect.height) {
             chipAnimations.push({
+              id: `${startRect.left}-${startRect.top}-${endRect.left}-${endRect.top}-${denom}-${Date.now()}`, // unique
               start: startRect,
               end: endRect,
               amount: denom,
@@ -158,14 +158,14 @@ const ChipSelector = ({
         </button>
       </div>
 
-      {flyingChips.map((chip, idx) => (
+      {flyingChips.map((chip) => (
         <ChipAnimation
-          key={idx}
+          key={chip.id}
           start={chip.start}
           end={chip.end}
           amount={chip.amount}
           onComplete={() => {
-            setFlyingChips((prev) => prev.filter((_, i) => i !== idx));
+            setFlyingChips((prev) => prev.filter((c) => c.id !== chip.id));
           }}
         />
       ))}

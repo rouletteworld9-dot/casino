@@ -141,34 +141,31 @@ const ChipManager = ({ children, userId, round, phase }) => {
   // Double all bets
   const doubleBets = useCallback(() => {
     if (betLocked || bets.length === 0) return;
-    
+
     // Save current state to history BEFORE making changes
     setBetHistory((prev) => [...prev, bets]);
-    
+
     setBets((prev) =>
       prev.map((b) => ({
         ...b,
         bets: b.bets.concat(b.bets.map((a) => ({ ...a }))),
       }))
     );
-    console.log("Double bets: ", bets);
   }, [betLocked, bets]);
 
   // Undo last action - Fixed version
   const undoBet = useCallback(() => {
     if (betLocked) return;
-    
+
     setBetHistory((prevHistory) => {
       if (prevHistory.length === 0) return prevHistory;
-      
+
       // Get the last saved state
       const lastState = prevHistory[prevHistory.length - 1];
-      
+
       // Restore the bets to the last saved state
       setBets(lastState);
-      
-      console.log("Undo last bet: Restoring to", lastState);
-      
+
       // Remove the last history entry
       return prevHistory.slice(0, -1);
     });
@@ -233,7 +230,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
                   ? "19-36"
                   : b.type === "even"
                     ? "even"
-                    
                     : b.type === "odd"
                       ? "odd"
                       : b.type === "color"

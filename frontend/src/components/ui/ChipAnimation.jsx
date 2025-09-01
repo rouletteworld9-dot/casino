@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 
 export default function ChipAnimation({ start, end, amount, onComplete }) {
-  console.log(start , "strat")
   if (!start || !end) return null;
 
   const x = end.left - start.left;
