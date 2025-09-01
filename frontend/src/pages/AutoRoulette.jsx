@@ -19,19 +19,12 @@ import { motion } from "framer-motion";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
-  const [showInsufficient, setShowInsufficient] = useState(true);
-  const { phase, round, lastResults, loading, setLoading } = useGameStore();
 
-  useEffect(() => {
-    // Check for balance property (adjust as needed for your user object)
-    //change with 10 rs this is for testing purpose
-    if (
-      user &&
-      (user.balance !== undefined ? user.balance : user.wallet) < 10000
-    ) {
-      setShowInsufficient(true);
-    }
-  }, [user]);
+  const phase = useGameStore((s) => s.phase);
+  const round = useGameStore((s) => s.round);
+  const lastResults = useGameStore((s) => s.lastResults);
+  const loading = useGameStore((s) => s.loading);
+  const setLoading = useGameStore((s) => s.setLoading);
 
   useEffect(() => {
     setLoading(true);
@@ -41,10 +34,8 @@ const AutoRoulette = () => {
 
   return (
     <div className="relative w-full flex flex-col">
-      <InsufficientBalanceModal
-        open={showInsufficient}
-        onClose={() => setShowInsufficient(false)}
-      />
+      <InsufficientBalanceModal/>
+     
 
       <div className="sm:block hidden ">
         <Header />

@@ -3,6 +3,7 @@ import { socket } from "../socket";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useGameStore } from "../stores/useGameStore";
+import { setAmountStore } from "../stores/setAmountStore";
 
 export function useGameSocket() {
   const user = useAuthStore((state) => state.user);
@@ -22,8 +23,9 @@ export function useGameSocket() {
     updateGameState,
     betsPlaced,
     setRoundEndTime,
-    setTotalBetAmount,
   } = useGameStore();
+
+  const setTotalBetAmount = setAmountStore((s) => s.setTotalBetAmount);
 
   useEffect(() => {
     if (!userId) return;

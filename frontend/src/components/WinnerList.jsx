@@ -6,11 +6,12 @@ import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useSingleUser } from "../hooks/useAdminUsers";
+import { setAmountStore } from "../stores/setAmountStore";
 
 export default function WinnerList() {
-  const totalAmount = useGameStore((s) => s.totalBetAmount);
+  const totalAmount = setAmountStore((s) => s.totalBetAmount);
   const result = useGameStore((state) => state.result);
-  const setTotalBetAmount = useGameStore((s) => s.setTotalBetAmount);
+  const setTotalBetAmount = setAmountStore((s) => s.setTotalBetAmount);
 
   const delayResult = useDelay(result, 5000);
   // console.log(totalAmount, "bet amunt");

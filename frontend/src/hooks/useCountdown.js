@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useGameStore } from "../stores/useGameStore";
 const tickAudio = new Audio("/sounds/tick.mp3");
-const finishAudio = new Audio("/sounds/finish.mp3")
+const finishAudio = new Audio("/sounds/finish.mp3");
 
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -11,16 +11,16 @@ function formatTime(seconds) {
 }
 
 export default function useCountdown() {
-  const { roundEndTime, phase,isMuted , result } = useGameStore();
+  const { roundEndTime, phase, isMuted, result } = useGameStore();
   const [remaining, setRemaining] = useState(null);
 
-  useEffect(()=>{
-   if(phase==="result" && result && !isMuted){
-    setTimeout(() => {
-      announceNumber(result);
-    }, 5000);
-   }
-  },[phase])
+  useEffect(() => {
+    if (phase === "result" && result && !isMuted) {
+      setTimeout(() => {
+        announceNumber(result);
+      }, 5000);
+    }
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "betting" || !roundEndTime) {
@@ -65,36 +65,66 @@ function playTick() {
 
 function playBeep() {
   console.log("Beep sound 🔊");
-
 }
 
 function playFinish() {
-  finishAudio.currentTime = 0
-  finishAudio.play()
+  finishAudio.currentTime = 0;
+  finishAudio.play();
 }
 
-export function announceNumber(number) {
-  if ('speechSynthesis' in window) {
+function getVoices() {
+  return new Promise((resolve) => {
+    let voices = speechSynthesis.getVoices();
+    if (voices.length) {
+      resolve(voices);
+      return;
+    }
+    speechSynthesis.onvoiceschanged = () => {
+      voices = speechSynthesis.getVoices();
+      resolve(voices);
+    };
+  });
+}
 
-    const voices = speechSynthesis.getVoices();
-    
-    // Pick a female voice (depends on browser & OS)
-    const femaleVoice = voices.find(voice =>
-      voice.name.toLowerCase().includes("female") || 
-      voice.name.toLowerCase().includes("woman") ||
-      voice.name.toLowerCase().includes("samantha") || 
-      voice.name.toLowerCase().includes("zira") // some common female voices
-    ) || voices[0]; // fallback if no female voice found
 
-    const utterance = new SpeechSynthesisUtterance(number.toString());
-    utterance.voice = femaleVoice;
-    utterance.lang = "en-US"; // You can change language/accent if you want
-    utterance.pitch = 2; // slightly higher pitch = more feminine
-    utterance.rate = 1;    // speaking speed
-    speechSynthesis.speak(utterance);
-  } else {
+export async function announceNumber(number) {
+  if (!("speechSynthesis" in window)) {
     console.log("Speech synthesis not supported in this browser.");
+    return;
   }
-}
 
+  const voices = await getVoices();
+
+  const preferredFemaleVoiceNames = [
+    "Samantha",
+    "Google UK English Female",
+    "Google US English Female",
+    "Zira",
+  ];
+
+  // Pick female voice from preferred list
+  let femaleVoice = voices.find((v) =>
+    preferredFemaleVoiceNames.includes(v.name)
+  );
+
+  // If not found, try to detect by name keywords
+  if (!femaleVoice) {
+    femaleVoice = voices.find((v) =>
+      /female|woman|samantha|zira|uk english/i.test(v.name)
+    );
+  }
+
+  if (!femaleVoice) {
+    console.warn("No female voice found, skipping announcement.");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(number.toString());
+  utterance.voice = femaleVoice;
+  utterance.lang = "en-US";
+  utterance.pitch = 1.4;   // higher pitch
+  utterance.rate = 1.05;
+
+  speechSynthesis.speak(utterance);
+}
 
