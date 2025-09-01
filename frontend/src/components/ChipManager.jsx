@@ -233,6 +233,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
                   ? "19-36"
                   : b.type === "even"
                     ? "even"
+                    
                     : b.type === "odd"
                       ? "odd"
                       : b.type === "color"

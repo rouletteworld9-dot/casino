@@ -161,7 +161,7 @@ const ResultOverlay = ({ onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/80 flex items-center justify-center z-50 backdrop-blur-md"
+      className="z-90 fixed inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/80 flex items-center justify-center backdrop-blur-md"
       variants={overlayVariants}
       initial="hidden"
       animate="visible"
@@ -215,7 +215,7 @@ const ResultOverlay = ({ onClose }) => {
       )}
 
       <motion.div
-        className={`relative bg-gradient-to-br rounded-3xl p-10 text-center shadow-[0_0_80px_rgba(0,0,0,0.8)] max-w-lg w-full mx-4 border-2 
+        className={`relative bg-gradient-to-br rounded-3xl p-10 text-center shadow-[0_0_80px_rgba(0,0,0,0.8)] max-w-lg w-full mx-4
           backdrop-blur-xl overflow-hidden`}
         variants={cardVariants}
         initial="hidden"
@@ -249,7 +249,7 @@ const ResultOverlay = ({ onClose }) => {
               {/* Win Icon */}
               <div className="relative mb-5 flex items-center justify-center ">
                 <motion.div
-                  className="w-16 h-16 bg-gradient-to-br from-yellow-200 to-white rounded-full flex items-center justify-center"
+                  className="w-10 sm:w-16 h-10 sm:h-16 bg-gradient-to-br from-yellow-200 to-white rounded-full flex items-center justify-center"
                   animate={{
                     scale: [1, 1.1, 1],
                     rotate: [0, 5, -5, 0],
@@ -283,7 +283,7 @@ const ResultOverlay = ({ onClose }) => {
                 className="text-white space-y-4"
               >
                 <motion.h2
-                  className="text-6xl font-black mb-4 relative"
+                  className="text-2xl sm:text-6xl font-black mb-4 relative"
                   style={{
                     background:
                       "linear-gradient(45deg, #facc15, #fde047, #fbbf24)",
@@ -308,8 +308,8 @@ const ResultOverlay = ({ onClose }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
                 >
-                  <p className="text-2xl font-semibold text-gray-100 mb-2">
-                    Congratulations! You won ₹ {amount}
+                  <p className="text-lg sm:text-2xl font-semibold text-gray-100 mb-2">
+                    Congratulations! You won ${amount}
                   </p>
                 </motion.div>
               </motion.div>
@@ -320,7 +320,7 @@ const ResultOverlay = ({ onClose }) => {
 
               <div className="relative flex items-center mb-5 justify-center ">
                 <motion.div
-                  className="w-16 h-16 bg-gradient-to-br from-red-200 to-white rounded-full flex items-center justify-center"
+                  className="w-10 sm:w-16 h-10 sm:h-16 bg-gradient-to-br from-red-200 to-white rounded-full flex items-center justify-center"
                   animate={{
                     rotate: [0, -15, 15, -15, 0],
                     scale: [1, 0.95, 1],
@@ -333,7 +333,7 @@ const ResultOverlay = ({ onClose }) => {
                   }}
                 >
                   <svg
-                    className="w-10 h-10 text-red-700"
+                    className="w-4 h-4 sm:w-10 sm:h-10 text-red-700"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -355,7 +355,7 @@ const ResultOverlay = ({ onClose }) => {
                 className="text-white space-y-4"
               >
                 <motion.h2
-                  className="text-6xl font-black mb-4"
+                  className="text-4xl sm:text-6xl font-black mb-4"
                   style={{
                     background:
                       "linear-gradient(45deg, #ef4444, #f87171, #fca5a5, #f87171, #ef4444)",
@@ -379,7 +379,7 @@ const ResultOverlay = ({ onClose }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.5 }}
                 >
-                  <p className="text-2xl font-semibold text-gray-200 mb-2">
+                  <p className="text-lg sm:text-2xl font-semibold text-gray-200 mb-2">
                     Better Luck Next time...
                   </p>
                 </motion.div>

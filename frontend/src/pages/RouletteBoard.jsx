@@ -149,16 +149,16 @@ const RouletteBoard = ({
   return (
     <div
       className={`sm:items-center opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full
-    transition-all duration-900 ease-in-out
-    ${phase === "betting" ? "-mt-10 sm:-mt-25 " : ""}
-    ${phase !== "betting" ? "sm:-mt-25" : ""}
+    transition-all duration-900 ease-in-out 
+    ${phase === "betting" ? "-mt-10 sm:-mt-50 " : ""}
+    ${phase !== "betting" ? "sm:-mt-50" : ""}
   `}
     >
       <div
-        className={`sm:max-w-3xl sm:ml-30 sm:mt-10 sm:h-full 
+        className={`sm:max-w-4xl  sm:ml-30 sm:mt-10 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
         [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_rotateZ(90deg)_skewX(0deg)]
-        ${phase === "betting" ? " w-lg h-100 " : "mt-35 sm:mt-0 h-120 sm:h-full w-lg "}
+        ${phase === "betting" ? "-mt-60  w-lg h-100 " : "mt-20 sm:mt-0 h-110 sm:h-full w-lg "}
         transition-all duration-500 ease-in-out
     `}
       >
@@ -168,8 +168,9 @@ const RouletteBoard = ({
             {/* Zero section */}
             <div className="flex flex-col">
               <div
+                onClick={() => onCellClick("0")}
                 className="
-      w-10 h-36 sm:w-20
+      w-10 h-42 sm:w-20
       flex items-center justify-center 
       [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
       bg-white 
@@ -177,6 +178,7 @@ const RouletteBoard = ({
     "
               >
                 <div
+                  id={`cell-0`}
                   className={`
         ${getNumberColor("green")} 
         w-full h-full flex items-center justify-center 
@@ -184,7 +186,6 @@ const RouletteBoard = ({
         [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
         relative
       `}
-                  onClick={() => onCellClick("0")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
@@ -220,9 +221,10 @@ const RouletteBoard = ({
                     const numberData = getNumberAtPosition(row, col);
                     return (
                       <div
+                        id={`cell-${numberData.num}`}
                         key={`${row}-${col}`}
                         className={`${getNumberColor(numberData?.color)}
-            w-60 sm:w-9 h-12 
+            w-60 sm:w-9 h-14 
             flex items-center justify-center 
             text-xs sm:text-xl md:text-xl 
               border border-white cursor-pointer relative
@@ -268,9 +270,10 @@ const RouletteBoard = ({
               </div>
 
               {/* Bottom betting sections */}
-              <div className="grid grid-cols-3 bg-[#2939A5]">
+              <div className="grid grid-cols-3 ">
                 <div
-                  className=" text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  id="cell-1st12"
+                  className="bg-[#2939A5] text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("1st12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -286,7 +289,8 @@ const RouletteBoard = ({
                   {renderTotalChip("1st12")}
                 </div>
                 <div
-                  className=" text-white  sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  id="cell-2nd12"
+                  className="bg-[#2939A5] text-white  sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("2nd12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -297,12 +301,13 @@ const RouletteBoard = ({
                     if (!Number.isNaN(value)) onCellDrop("2nd12", value);
                   }}
                 >
-                  2 <span className="text-[7px] mr-1">ST </span>
+                  2 <span className="text-[7px] mr-1">nd </span>
                   12
                   {renderTotalChip("2nd12")}
                 </div>
                 <div
-                  className=" text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  id="cell-3rd12"
+                  className="bg-[#2939A5] text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("3rd12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -313,7 +318,7 @@ const RouletteBoard = ({
                     if (!Number.isNaN(value)) onCellDrop("3rd12", value);
                   }}
                 >
-                  3 <span className="text-[7px] mr-1">ST </span>
+                  3 <span className="text-[7px] mr-1">rd </span>
                   12
                   {renderTotalChip("3rd12")}
                 </div>
@@ -321,9 +326,10 @@ const RouletteBoard = ({
             </div>
 
             {/* Right side betting areas */}
-            <div className="flex flex-col bg-[#2939A5] sm:w-16 w-50">
+            <div className="flex flex-col  sm:w-16 w-60">
               <div
-                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-12 flex items-center justify-center border border-white cursor-pointer relative"
+                id="cell-2to1_top"
+                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_top")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -340,7 +346,8 @@ const RouletteBoard = ({
                 </span>
               </div>
               <div
-                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-12 flex items-center justify-center border border-white cursor-pointer relative"
+                id="cell-2to1_middle"
+                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_middle")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -357,7 +364,8 @@ const RouletteBoard = ({
                 </span>
               </div>
               <div
-                className="w-10 sm:w-full bg-[#2939A5] text-white  text-sm   h-12 flex items-center justify-center border border-white cursor-pointer relative"
+                id="cell-2to1_bottom"
+                className="w-10 sm:w-full bg-[#2939A5] text-white  text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_bottom")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -377,8 +385,9 @@ const RouletteBoard = ({
           </div>
 
           {/* Bottom section with 1-18, EVEN, etc. */}
-          <div className="sm:w-92 overflow-hidden  w-88 sm:ml-20 ml-10 grid grid-cols-6">
+          <div className="sm:w-92 overflow-hidden  w-87 sm:ml-20 ml-10 grid grid-cols-6">
             <div
+              id="cell-1-18"
               className=" bg-[#2939A5] text-white text-lg h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("1-18")}
               onDragOver={(e) => e.preventDefault()}
@@ -392,6 +401,7 @@ const RouletteBoard = ({
               {renderTotalChip("1-18")}
             </div>
             <div
+              id="cell-even"
               className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("even")}
               onDragOver={(e) => e.preventDefault()}
@@ -405,6 +415,7 @@ const RouletteBoard = ({
               {renderTotalChip("even")}
             </div>
             <div
+              id="cell-red"
               className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white relative cursor-pointer"
               onClick={() => onCellClick("red")}
               onDragOver={(e) => e.preventDefault()}
@@ -430,6 +441,7 @@ const RouletteBoard = ({
               </div>
             </div>
             <div
+              id="cell-black"
               className="bg-[#2939A5] text-white text-xs   h-10 flex items-center justify-center border border-white relative cursor-pointer"
               onClick={() => onCellClick("black")}
               onDragOver={(e) => e.preventDefault()}
@@ -455,6 +467,7 @@ const RouletteBoard = ({
               </div>
             </div>
             <div
+              id="cell-odd"
               className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("odd")}
               onDragOver={(e) => e.preventDefault()}
@@ -468,6 +481,7 @@ const RouletteBoard = ({
               {renderTotalChip("odd")}
             </div>
             <div
+              id="cell-19-36"
               className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("19-36")}
               onDragOver={(e) => e.preventDefault()}

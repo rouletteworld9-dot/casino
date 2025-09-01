@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useGameSocket } from "../hooks/useGameSocket";
 
 const roulette1 = "/assets/roulette_1.png";
-const roulette2 = "/assets/roulette_.png";
+const roulette2 = "/assets/roulette_2.png";
 const roulette3 = "/assets/roulette_3.png";
 const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
@@ -166,7 +166,7 @@ const Wheel = (props) => {
     backgroundImage: `url(${roulette1})`,
     width: "min(60vw, 280px)", // responsive: 80% of screen width but max 280px
     height: "min(60vw, 280px)", // keep it square
-    margin: "0 auto", 
+    margin: "0 auto",
     backgroundSize: "cover",
     backgroundPosition: "center",
     borderRadius: 500,
@@ -176,7 +176,7 @@ const Wheel = (props) => {
     <div
       style={style}
       className={
-        "roulette-wheel relative left-[65px] -top-[70px] lg:-top-[120px]"
+        "  roulette-wheel relative left-[65px] -top-[70px] lg:-top-[120px]"
       }
     >
       <div

@@ -12,7 +12,7 @@ export default function WinnerList() {
   const result = useGameStore((state) => state.result);
   const setTotalBetAmount = useGameStore((s) => s.setTotalBetAmount);
 
-  const delayResult = useDelay(result , 5000)
+  const delayResult = useDelay(result, 5000);
   // console.log(totalAmount, "bet amunt");
   const { recentWinners: newWinners } = useGameStore();
   const delayedWinners = useDelay(newWinners, 4000);
@@ -29,11 +29,11 @@ export default function WinnerList() {
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
 
-  useEffect(() => {
-    if (delayResult) {
-      setTotalBetAmount(0);
-    }
-  }, [delayResult]);
+  // useEffect(() => {
+  //   if (delayResult) {
+  //     setTotalBetAmount(0);
+  //   }
+  // }, [delayResult]);
 
   // Handle incoming winners
   useEffect(() => {
@@ -192,8 +192,8 @@ export default function WinnerList() {
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <p className="sm:hidden text-white text-sm">
-        Total Bet : <span className="text-yellow-500">₹{totalAmount}</span>
+      <p  className="sm:hidden text-white text-sm">
+        Total Bet : <span id="total-bet-label" className="text-yellow-500">₹{totalAmount}</span>
       </p>
       <p className="sm:hidden text-white text-sm">
         Balance :{" "}
