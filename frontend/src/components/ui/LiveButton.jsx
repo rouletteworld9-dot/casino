@@ -50,7 +50,7 @@ const LiveButton = ({ onClick, className = "" }) => {
 
       {/* Pulsing background effect */}
       <motion.div
-        className="absolute sm:w-3 sm:h-3 w-2 h-2 bg-green-600 rounded-full left-4"
+        className="absolute hidden sm:block sm:w-3 sm:h-3 w-2 h-2 bg-green-600 rounded-full left-4"
         variants={pulseVariants}
         animate="animate"
       />

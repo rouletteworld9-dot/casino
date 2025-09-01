@@ -22,6 +22,12 @@ export const useGameStore = create((set, get) => ({
   recentWinners: [],
   messages: "",
   loading: false,
+  flyingChips: [],
+
+  setFlyingChips: (next) =>
+    set((state) => ({
+      flyingChips: typeof next === "function" ? next(state.flyingChips) : next,
+    })),
 
   // Actions to update state (called from useGameSocket)
   setConnection: (connected, socketId = null) =>
@@ -68,5 +74,6 @@ export const useGameStore = create((set, get) => ({
       totalBetAmount: 0,
       winStatus: { isWin: null, amount: null },
       isMuted: false,
+      flyingChips,
     }),
 }));

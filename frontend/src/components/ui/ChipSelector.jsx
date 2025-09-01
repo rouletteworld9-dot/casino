@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import ChipAnimation from "./ChipAnimation";
+import { useGameStore } from "../../stores/useGameStore";
 
 const DEFAULT_DENOMINATIONS = [10, 20, 50, 100, 500, 2500];
 
 const ChipSelector = ({
+  bets,
   denominations = DEFAULT_DENOMINATIONS,
   selectedCoin,
   betLocked,
@@ -10,6 +13,40 @@ const ChipSelector = ({
   handlePlaceBet,
   hasBets,
 }) => {
+  const flyingChips = useGameStore((s) => s.flyingChips);
+  const setFlyingChips = useGameStore((s) => s.setFlyingChips);
+
+  const handleBetClick = () => {
+    if (betLocked || !hasBets) return;
+
+    const totalRef = document.getElementById("total-bet-label");
+    const endRect = totalRef?.getBoundingClientRect();
+
+    if (endRect) {
+      const chipAnimations = [];
+  
+
+      Object.entries(bets || {}).forEach(([cellId, denoms]) => {
+        (denoms || []).forEach((denom) => {
+          const cellEl = document.getElementById(`cell-${cellId}`);
+          const startRect = cellEl?.getBoundingClientRect();
+
+          if (startRect && startRect.width && startRect.height) {
+            chipAnimations.push({
+              start: startRect,
+              end: endRect,
+              amount: denom,
+            });
+          }
+        });
+      });
+
+      setFlyingChips((prev) => [...prev, ...chipAnimations]);
+    }
+
+    handlePlaceBet();
+  };
+
   const colorByDenom = (value) => {
     switch (value) {
       case 10:
@@ -34,7 +71,6 @@ const ChipSelector = ({
       {denominations.map((value) => {
         const isActive = selectedCoin === value;
         return (
-          
           <div
             key={value}
             role="button"
@@ -46,7 +82,7 @@ const ChipSelector = ({
               // visual drag image can be improved; default is okay
             }}
             className={
-              "w-7 sm:w-10 h-7 sm:h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " 
+              "w-7 sm:w-10 h-7 sm:h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " +
               (isActive
                 ? "scale-125 shadow-[0_0_0_3px_rgba(255,255,211,0.7),0_0_18px_rgba(234,179,128,0.65)]"
                 : "shadow-md hover:scale-115")
@@ -92,7 +128,7 @@ const ChipSelector = ({
       <div className=" ">
         {/* Large Button (same as before) */}
         <button
-          className={`px-4 sm:px-6 md:px-8 
+          className={`cursor-pointer px-4 sm:px-6 md:px-8 
                 py-1 sm:py-2 
                 rounded-full font-bold 
                 text-sm sm:text-base md:text-lg 
@@ -100,7 +136,7 @@ const ChipSelector = ({
                 bg-gradient-to-r from-yellow-400 to-yellow-600 
                 text-black border-2 border-yellow-700 hidden sm:flex
                 ${!hasBets || betLocked ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}`}
-          onClick={handlePlaceBet}
+          onClick={handleBetClick}
           disabled={betLocked || !hasBets}
         >
           Place Bet
@@ -108,19 +144,31 @@ const ChipSelector = ({
 
         {/* Small Compact Button */}
         <button
-          className={`px-2 py-0.5 
+          className={`px-2 py-0.5 cursor-pointer 
                 rounded-full font-bold 
                 text-[10px] leading-none
                 shadow-md transition sm:hidden
                 bg-gradient-to-r from-yellow-400 to-yellow-600 
                 text-black border border-yellow-700 
                 ${!hasBets || betLocked ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}`}
-          onClick={handlePlaceBet}
+          onClick={handleBetClick}
           disabled={betLocked || !hasBets}
         >
           Bet
         </button>
       </div>
+
+      {flyingChips.map((chip, idx) => (
+        <ChipAnimation
+          key={idx}
+          start={chip.start}
+          end={chip.end}
+          amount={chip.amount}
+          onComplete={() => {
+            setFlyingChips((prev) => prev.filter((_, i) => i !== idx));
+          }}
+        />
+      ))}
     </div>
   );
 };

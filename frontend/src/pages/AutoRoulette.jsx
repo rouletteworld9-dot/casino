@@ -12,14 +12,15 @@ import ChipManager from "../components/ChipManager";
 import ResultOverlay from "../components/ui/ResultOverlay";
 import { useGameStore } from "../stores/useGameStore";
 import LiveButton from "../components/ui/LiveButton";
-import {Undo2 } from 'lucide-react';
+import { Undo2 } from "lucide-react";
 import MuteButton from "../components/MuteButton";
-
+import ResultDisplay from "../components/ui/ResultDisplay";
+import { motion } from "framer-motion";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
   const [showInsufficient, setShowInsufficient] = useState(true);
-  const { phase, round, lastResults, loading, setLoading } = useGameStore()
+  const { phase, round, lastResults, loading, setLoading } = useGameStore();
 
   useEffect(() => {
     // Check for balance property (adjust as needed for your user object)
@@ -31,8 +32,6 @@ const AutoRoulette = () => {
       setShowInsufficient(true);
     }
   }, [user]);
-
-  ;
 
   useEffect(() => {
     setLoading(true);
@@ -46,7 +45,6 @@ const AutoRoulette = () => {
         open={showInsufficient}
         onClose={() => setShowInsufficient(false)}
       />
-     
 
       <div className="sm:block hidden ">
         <Header />
@@ -61,31 +59,50 @@ const AutoRoulette = () => {
           />
         </div>
       ) : (
-        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-r from-blue-800 to-blue-900 ">
+        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-t from-indigo-900 via-blue-950 to-black/80 ">
           <div className="absolute sm:top-10 top-4 sm:right-10 right-0">
             <LiveButton />
           </div>
+
           <MuteButton />
           <ResultOverlay />
           {/* last results */}
-          <div className="bg-black/10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
+          <div className="bg-black/10  left-5 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
 
           {/* wheel */}
-          <div className="relative w-full flex justify-center">
-            <div
+          <div className=" h-30 relative w-full flex justify-center ">
+            <ResultDisplay className="absolute z-80 top-0 sm:bottom-0" />
+
+            <motion.div
               className={`
-      absolute sm:left-0 left-10 transition-all duration-500 ease-in-out
-      ${
-        phase === "betting"
-          ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
-          : "opacity-100 translate-y-0 z-60 mt-5 sm:mt-0"
-      }
-    `}
+    absolute sm:left-0 left-10 
+    transition-all duration-700 ease-in-out
+    ${
+      phase === "betting"
+        ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
+        : "opacity-100 translate-y-0 z-10 mt-5 sm:mt-0"
+    }
+  `}
+              initial={{ scale: 1 }}
+              animate={{
+                // only animate on small screens
+                scale:
+                  (phase === "spinning" || phase === "result") &&
+                  window.innerWidth < 640
+                    ? [1, 1.4, 1] // zoom animation
+                    : 1,
+              }}
+              transition={{
+                duration: phase === "spinning" || phase === "result" ? 3 : 2,
+                repeat:
+                  phase === "spinning" || phase === "result" ? Infinity : 0,
+                ease: "easeInOut",
+              }}
             >
               <RouletteGame />
-            </div>
+            </motion.div>
           </div>
 
           {/* chips + board together */}
@@ -105,13 +122,12 @@ const AutoRoulette = () => {
               onUndo,
             }) => (
               <>
-
                 {phase === "betting" && (
-                  <div className="fixed bottom-0 left-0 w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center shadow-2xl">
-                    <div className="w-full max-w-2xl flex flex-row items-center justify-center gap-2">
+                  <div className="fixed bottom-0 sm:-bottom-1 sm:left-0 -right-35 w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center shadow-2xl">
+                    <div className="w-full max-w-2xl flex sm:flex-row flex-col items-center justify-center gap-2">
                       {/* 2x Button Far Left */}
                       <button
-                        className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 mr-2 cursor-pointer"
+                        className="w-9 sm:w-12 h-9 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:mr-2 cursor-pointer"
                         onClick={onDoubleBets}
                         disabled={betLocked || !hasBets}
                         aria-label="Double Bets"
@@ -120,6 +136,7 @@ const AutoRoulette = () => {
                       </button>
                       {/* Chips Centered */}
                       <ChipSelector
+                        bets={betsByCell}
                         selectedCoin={selectedCoin}
                         onSelect={setSelectedCoin}
                         betLocked={betLocked}
@@ -129,40 +146,17 @@ const AutoRoulette = () => {
                       />
                       {/* Undo Button Far Right */}
                       <button
-                        className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 ml-2 cursor-pointer"
+                        className="w-9 sm:w-12 h-9 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:ml-2 cursor-pointer"
                         onClick={onUndo}
                         disabled={betLocked || !hasBets}
                         aria-label="Undo Bet"
                       >
-                       <Undo2 />
+                        <Undo2 />
                       </button>
                     </div>
                   </div>
                 )}
-
-                <div
-                  className={`
-                  fixed sm:left-1/2 right-2 sm:-translate-x-1/2 z-30
-                  transition-all duration-700 ease-in-out
-                  ${
-                    phase === "betting"
-                      ? "opacity-100 bottom-4 pointer-events-auto"
-                      : "opacity-0 bottom-0 pointer-events-none"
-                  }
-                `}
-                >
-                  <div className="">
-                    <ChipSelector
-                      hasBets={hasBets}
-                      handlePlaceBet={onPlaceBet}
-                      selectedCoin={selectedCoin}
-                      onSelect={setSelectedCoin}
-                      betLocked={betLocked}
-                    />
-                  </div>
-                </div>
-                <WinnerList totalBetAmount={totalBetAmount}/>
-
+                <WinnerList totalBetAmount={totalBetAmount} />
 
                 <RouletteBoard
                   bets={betsByCell}
