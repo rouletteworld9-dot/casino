@@ -170,10 +170,10 @@ const PhaseTimer = () => {
   return (
     <div
       className="fixed 
-    top-12 sm:top-auto   /* only top on small, reset on sm */
+    top-8 sm:top-auto   /* only top on small, reset on sm */
     bottom-auto sm:bottom-18 
-    right-0 sm:right-auto
-    left-auto sm:left-1/2 sm:-translate-x-1/2
+    left-2 sm:right-auto
+     sm:left-1/2 sm:-translate-x-1/2
     z-[999] flex flex-col items-center gap-2 sm:gap-3"
     >
       {/* Main Timer */}

@@ -57,16 +57,16 @@ const ResultDisplay = ({ className }) => {
   const winner = numbers[index];
 
   return (
-    <div className="w-full flex justify-center sm:justify-center pointer-events-none py-2">
+    <div className="w-full sm:h-40 flex justify-center sm:justify-center pointer-events-none py-2">
       <div
-        className={`flex items-center relative bg-black/50 text-xl font-bold ${className}`}
+        className={`flex sm:h-20 items-center relative text-xl font-bold ${className}`}
       >
         {/* Left neighbor */}
         <div
           style={{
             clipPath: "polygon(0 0, 100% 0, 85% 100%, 15% 100%)",
           }}
-          className="flex items-center justify-center w-20 h-13 text-2xl text-gray-200/20 -rotate-12 border-y-2 border-gray-300/50 -mr-[3px]"
+          className="flex items-center justify-center w-20 h-13 bg-black/10 text-2xl text-gray-200/20 -rotate-12 border-y-2 border-gray-300/50 -mr-[3px]"
         >
           {leftNeighbor.num}
         </div>
@@ -99,7 +99,7 @@ const ResultDisplay = ({ className }) => {
           style={{
             clipPath: "polygon(15% 0, 85% 0, 100% 100%, 0% 100%)",
           }}
-          className="flex items-center justify-center w-20 h-13 text-2xl text-gray-200/20 rotate-12 border-y-2 border-gray-300/50 -ml-[3px]"
+          className="flex items-center justify-center w-20 h-13 bg-black/10 text-2xl text-gray-200/20 rotate-12 border-y-2 border-gray-300/50 -ml-[3px]"
         >
           {rightNeighbor.num}
         </div>

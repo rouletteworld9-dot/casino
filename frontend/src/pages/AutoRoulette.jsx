@@ -34,8 +34,7 @@ const AutoRoulette = () => {
 
   return (
     <div className="relative w-full flex flex-col">
-      <InsufficientBalanceModal/>
-     
+      <InsufficientBalanceModal />
 
       <div className="sm:block hidden ">
         <Header />
@@ -63,12 +62,12 @@ const AutoRoulette = () => {
           </div>
 
           {/* wheel */}
-          <div className=" h-30 relative w-full flex justify-center ">
-            <ResultDisplay className="absolute z-80 top-0 sm:bottom-0" />
+          <div className="h-30 relative w-full flex justify-center ">
+            <ResultDisplay className="absolute sm:fixed z-80 top-0 sm:top-120" />
 
             <motion.div
               className={`
-    absolute sm:left-0 left-10 
+    absolute sm:left-0 left-8 
     transition-all duration-700 ease-in-out
     ${
       phase === "betting"
@@ -82,11 +81,11 @@ const AutoRoulette = () => {
                 scale:
                   (phase === "spinning" || phase === "result") &&
                   window.innerWidth < 640
-                    ? [1, 1.4, 1] // zoom animation
+                    ? [1, 1.2, 1] // zoom animation
                     : 1,
               }}
               transition={{
-                duration: phase === "spinning" || phase === "result" ? 3 : 2,
+                duration: phase === "spinning" || phase === "result" ? 5 : 5,
                 repeat:
                   phase === "spinning" || phase === "result" ? Infinity : 0,
                 ease: "easeInOut",

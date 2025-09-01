@@ -30,11 +30,11 @@ export default function WinnerList() {
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (delayResult) {
-  //     setTotalBetAmount(0);
-  //   }
-  // }, [delayResult]);
+  useEffect(() => {
+    if (delayResult) {
+      setTotalBetAmount(0);
+    }
+  }, [delayResult]);
 
   // Handle incoming winners
   useEffect(() => {
