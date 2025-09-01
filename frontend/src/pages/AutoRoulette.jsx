@@ -81,7 +81,7 @@ const AutoRoulette = () => {
                 scale:
                   (phase === "spinning" || phase === "result") &&
                   window.innerWidth < 640
-                    ? [1, 1.2, 1] // zoom animation
+                    ? [1, 1.4, 1] // zoom animation
                     : 1,
               }}
               transition={{

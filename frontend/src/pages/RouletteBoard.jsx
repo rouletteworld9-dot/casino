@@ -150,15 +150,15 @@ const RouletteBoard = ({
     <div
       className={`sm:items-center opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full z-90
     transition-all duration-900 ease-in-out 
-    ${phase === "betting" ? "-mt-10 sm:-mt-50 " : ""}
+    ${phase === "betting" ? "-mt-30 sm:-mt-50 " : ""}
     ${phase !== "betting" ? "sm:-mt-50" : ""}
   `}
     >
       <div
-        className={`sm:max-w-4xl  sm:ml-30 sm:mt-10 sm:h-full 
+        className={`sm:max-w-3xl  sm:ml-30 sm:mt-10 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
         [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_rotateZ(90deg)_skewX(0deg)]
-        ${phase === "betting" ? "-mt-60  w-lg h-100 " : "mt-20 sm:mt-0 h-110 sm:h-full w-lg "}
+        ${phase === "betting" ? "-mt-30 sm:w-lg w-2xl h-145 " : " sm:mt-0 h-130 sm:h-full w-xl "}
         transition-all duration-500 ease-in-out
     `}
       >
@@ -170,7 +170,7 @@ const RouletteBoard = ({
               <div
                 onClick={() => onCellClick("0")}
                 className="
-      w-10 h-42 sm:w-20
+      w-10 h-48 sm:w-20 sm:h-40
       flex items-center justify-center 
       [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
       bg-white 
@@ -224,7 +224,7 @@ const RouletteBoard = ({
                         id={`cell-${numberData.num}`}
                         key={`${row}-${col}`}
                         className={`${getNumberColor(numberData?.color)}
-            w-60 sm:w-9 h-14 
+            w-60 sm:w-9   h-16 sm:h-13
             flex items-center justify-center 
             text-xs sm:text-xl md:text-xl 
               border border-white cursor-pointer relative
@@ -273,7 +273,7 @@ const RouletteBoard = ({
               <div className="grid grid-cols-3 ">
                 <div
                   id="cell-1st12"
-                  className="bg-[#2939A5] text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  className="bg-[#2939A5] text-white sm:text-xl text-xl  sm:h-13 h-16 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("1st12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -290,7 +290,7 @@ const RouletteBoard = ({
                 </div>
                 <div
                   id="cell-2nd12"
-                  className="bg-[#2939A5] text-white  sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  className="bg-[#2939A5] text-white  sm:text-xl text-xl sm:h-13  h-16 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("2nd12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -307,7 +307,7 @@ const RouletteBoard = ({
                 </div>
                 <div
                   id="cell-3rd12"
-                  className="bg-[#2939A5] text-white sm:text-lg text-xl   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                  className="bg-[#2939A5] text-white sm:text-lg text-xl sm:h-13  h-16 flex items-center justify-center border border-white cursor-pointer relative"
                   onClick={() => onCellClick("3rd12")}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -326,10 +326,10 @@ const RouletteBoard = ({
             </div>
 
             {/* Right side betting areas */}
-            <div className="flex flex-col  sm:w-16 w-60">
+            <div className="flex flex-col  sm:w-14 w-60">
               <div
                 id="cell-2to1_top"
-                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm  sm:h-13   h-16 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_top")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -347,7 +347,7 @@ const RouletteBoard = ({
               </div>
               <div
                 id="cell-2to1_middle"
-                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                className="w-10 sm:w-full bg-[#2939A5] text-white text-sm   sm:h-13   h-16  flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_middle")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -365,7 +365,7 @@ const RouletteBoard = ({
               </div>
               <div
                 id="cell-2to1_bottom"
-                className="w-10 sm:w-full bg-[#2939A5] text-white  text-sm   h-14 flex items-center justify-center border border-white cursor-pointer relative"
+                className="w-10 sm:w-full bg-[#2939A5] text-white  text-sm     h-16 sm:h-13 flex items-center justify-center border border-white cursor-pointer relative"
                 onClick={() => onCellClick("2to1_bottom")}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -385,10 +385,12 @@ const RouletteBoard = ({
           </div>
 
           {/* Bottom section with 1-18, EVEN, etc. */}
-          <div className="sm:w-92 overflow-hidden  w-87 sm:ml-20 ml-10 grid grid-cols-6">
+          <div
+            className={`sm:w-94 overflow-hidden sm:ml-20 ml-10 grid grid-cols-6 ${phase === "betting" ? "w-120 " : "w-102"}`}
+          >
             <div
               id="cell-1-18"
-              className=" bg-[#2939A5] text-white text-lg h-10 flex items-center justify-center border border-white cursor-pointer relative"
+              className=" bg-[#2939A5] text-white text-lg sm:h-12   h-16 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("1-18")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -402,7 +404,7 @@ const RouletteBoard = ({
             </div>
             <div
               id="cell-even"
-              className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
+              className="bg-[#2939A5] text-white text-lg sm:h-12 h-16 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("even")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -416,7 +418,7 @@ const RouletteBoard = ({
             </div>
             <div
               id="cell-red"
-              className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white relative cursor-pointer"
+              className="bg-[#2939A5] text-white text-lg sm:h-12 h-16 flex items-center justify-center border border-white relative cursor-pointer"
               onClick={() => onCellClick("red")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -442,7 +444,7 @@ const RouletteBoard = ({
             </div>
             <div
               id="cell-black"
-              className="bg-[#2939A5] text-white text-xs   h-10 flex items-center justify-center border border-white relative cursor-pointer"
+              className="bg-[#2939A5] text-white text-xs sm:h-12  h-16 flex items-center justify-center border border-white relative cursor-pointer"
               onClick={() => onCellClick("black")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -468,7 +470,7 @@ const RouletteBoard = ({
             </div>
             <div
               id="cell-odd"
-              className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
+              className="bg-[#2939A5] text-white text-lg  sm:h-12 h-16 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("odd")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -482,7 +484,7 @@ const RouletteBoard = ({
             </div>
             <div
               id="cell-19-36"
-              className="bg-[#2939A5] text-white text-lg   h-10 flex items-center justify-center border border-white cursor-pointer relative"
+              className="bg-[#2939A5] text-white text-lg sm:h-12 h-16 flex items-center justify-center border border-white cursor-pointer relative"
               onClick={() => onCellClick("19-36")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
