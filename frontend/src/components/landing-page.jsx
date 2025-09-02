@@ -52,7 +52,7 @@ export default function LandingPage({ isLoggedIn }) {
     <div className="min-h-screen">
       <Header />
       {/* Hero Section */}
-      <HeroSlider className="rounded-none h-[80vh]" />
+      <HeroSlider className="rounded-none sm:h-[80vh] h-[30vh]" />
 
       {/* Game Categories */}
       <GameCards />
@@ -61,7 +61,7 @@ export default function LandingPage({ isLoggedIn }) {
       {/* Promotions */}
       <section className="py-16 px-4 bg-black/20">
         <div className="container mx-auto">
-          <motion.h2
+          <motion.h2  
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

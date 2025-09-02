@@ -13,7 +13,7 @@ export default function MuteButton() {
     <button
       onClick={toggleMute}
       // className="fixed top-16 right-4 bg-goldCasino text-white p-2 rounded-full shadow-sm shadow-white cursor-pointer"
-      className="fixed top-15 sm:top-20 sm:right-4 right-2 bg-goldCasino z-[50] text-white sm:p-2 p-1.5 rounded-full shadow-sm shadow-white cursor-pointer"
+      className="fixed top-15 sm:top-20 sm:right-4 right-2 bg-goldCasino z-[50] text-white sm:p-2 p-2.5 rounded-full shadow-sm shadow-white cursor-pointer"
     >
       {isMuted ? "🔇" : "🔊"}
     </button>

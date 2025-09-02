@@ -1,9 +1,29 @@
 import { motion } from "framer-motion";
 import NavButton from "./NavButton";
 
-
 export default function MobileNav({ onNavigate, specials, onClose }) {
-  const navItems = ["CASINO", "SPORT", "STATISTICS", "RESULTS", "APPS"];
+  const navItems = [
+    {
+      name: "CASINO",
+      link: "/casino/game",
+    },
+    {
+      name: "SPORT",
+      // link: "/casino/game",
+    },
+    {
+      name: "STATISTICS",
+      // link: "/casino/game",
+    },
+    {
+      name: "RESULTS",
+      // link: "/casino/game",
+    },
+    {
+      name: "APPS",
+      // link: "/casino/game",
+    },
+  ];
 
   return (
     <motion.nav
@@ -16,12 +36,12 @@ export default function MobileNav({ onNavigate, specials, onClose }) {
           <NavButton
             key={name}
             onClick={() => {
-              onNavigate(name.toLowerCase());
+              onNavigate(name.link);
               onClose();
             }}
             className="font-semibold w-40 text-start text-sm uppercase"
           >
-            {name}
+            {name.name}
           </NavButton>
         ))}
         {specials.map(({ name, key, icon: Icon }) => (

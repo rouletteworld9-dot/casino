@@ -44,7 +44,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-   background-size: 100% 100%; 
+   background-size: 90% 90%; 
 }
 
 .roulette-wheel .layer-2,
@@ -87,7 +87,7 @@ body {
   border-radius: 7px;
   background: #fff radial-gradient(circle at 5px 5px, #fff, #444);
   box-shadow: 1px 1px 4px #000;
-  transform: translateY( -122px);
+  transform: translateY( -120px);
   top: 50%;
   left: 50%;
   margin: -7px;
