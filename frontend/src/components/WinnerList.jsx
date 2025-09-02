@@ -188,7 +188,7 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-1 left-1 sm:left-4 w-30 sm:w-60 sm:h-40 h-8"
+      className="fixed z-1 left-1 sm:left-4 w-30 sm:w-60 sm:h-45 h-14"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -236,7 +236,7 @@ export default function WinnerList() {
       <hr className="h-1 border-gray-600 mt-2" />
 
       <div
-        className="px-3 py-2 h-full overflow-y-auto scroll-hidden"
+        className="sm:px-3 py-2 h-full overflow-y-auto scroll-hidden"
         ref={listRef}
       >
         {data.length === 0 ? (

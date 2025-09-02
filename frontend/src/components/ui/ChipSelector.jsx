@@ -82,7 +82,7 @@ const ChipSelector = ({
               // visual drag image can be improved; default is okay
             }}
             className={
-              "w-7 sm:w-10 h-7 sm:h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " +
+              "w-10 h-10 rounded-full relative grid place-items-center text-[9px] font-bold cursor-pointer transition select-none " +
               (isActive
                 ? "scale-125 shadow-[0_0_0_3px_rgba(255,255,211,0.7),0_0_18px_rgba(234,179,128,0.65)]"
                 : "shadow-md hover:scale-115")
@@ -110,7 +110,7 @@ const ChipSelector = ({
             {/* center */}
             <span
               className="pointer-events-none rounded-full grid place-items-center 
-             w-[22px] h-[22px] sm:w-[30px] sm:h-[30px]"
+             w-[30px] h-[30px] "
               style={{
                 background:
                   "radial-gradient(circle at 30% 30%, #f8fafc 0%, #e5e7eb 65%, #d1d5db 100%)",
@@ -144,9 +144,9 @@ const ChipSelector = ({
 
         {/* Small Compact Button */}
         <button
-          className={`px-2 py-0.5 cursor-pointer 
+          className={`p-3 cursor-pointer 
                 rounded-full font-bold 
-                text-[10px] leading-none
+                text-[12px] leading-none
                 shadow-md transition sm:hidden
                 bg-gradient-to-r from-yellow-400 to-yellow-600 
                 text-black border border-yellow-700 

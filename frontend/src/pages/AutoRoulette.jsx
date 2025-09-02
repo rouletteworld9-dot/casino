@@ -34,7 +34,7 @@ const AutoRoulette = () => {
 
   return (
     <div className="relative w-full flex flex-col">
-      <InsufficientBalanceModal />
+      {/* <InsufficientBalanceModal /> */}
 
       <div className="sm:block hidden ">
         <Header />
@@ -42,10 +42,17 @@ const AutoRoulette = () => {
 
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center bg-black">
+          {/* Mobile image */}
+          <img
+            src="/game/rouletteLoadingMobile.jpeg"
+            alt="loading"
+            className="sm:hidden h-[100vh] w-full object-cover"
+          />
+          {/* Desktop image */}
           <img
             src="/game/rouletteLoading.webp"
             alt="loading"
-            className="bg-cover h-[100vh] w-full"
+            className="hidden sm:block h-[100vh] w-full object-cover"
           />
         </div>
       ) : (
@@ -67,7 +74,7 @@ const AutoRoulette = () => {
 
             <motion.div
               className={`
-    absolute sm:left-0 left-8 
+    absolute sm:left-0 left-0 
     transition-all duration-700 ease-in-out
     ${
       phase === "betting"
@@ -85,7 +92,7 @@ const AutoRoulette = () => {
                     : 1,
               }}
               transition={{
-                duration: phase === "spinning" || phase === "result" ? 5 : 5,
+                duration: phase === "spinning" || phase === "result" ? 5 : 0,
                 repeat:
                   phase === "spinning" || phase === "result" ? Infinity : 0,
                 ease: "easeInOut",
@@ -113,11 +120,11 @@ const AutoRoulette = () => {
             }) => (
               <>
                 {phase === "betting" && (
-                  <div className="fixed bottom-0 sm:-bottom-1 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center shadow-2xl">
+                  <div className="fixed bottom-0 sm:-bottom-1 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center ">
                     <div className="w-full max-w-2xl flex sm:flex-row flex-col items-center justify-center gap-2">
                       {/* 2x Button Far Left */}
                       <button
-                        className="w-9 sm:w-12 h-9 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:mr-2 cursor-pointer"
+                        className="w-11 sm:w-12 h-11 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:mr-2 cursor-pointer"
                         onClick={onDoubleBets}
                         disabled={betLocked || !hasBets}
                         aria-label="Double Bets"
@@ -136,7 +143,7 @@ const AutoRoulette = () => {
                       />
                       {/* Undo Button Far Right */}
                       <button
-                        className="w-9 sm:w-12 h-9 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:ml-2 cursor-pointer"
+                        className="w-11 sm:w-12 h-11 sm:h-12 rounded-full bg-gray-700 hover:bg-gray-800 text-white font-bold shadow-md flex items-center justify-center transition-all duration-150 disabled:opacity-60 sm:ml-2 cursor-pointer"
                         onClick={onUndo}
                         disabled={betLocked || !hasBets}
                         aria-label="Undo Bet"
