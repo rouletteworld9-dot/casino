@@ -10,6 +10,21 @@
   --color-midnightPurple: #332538;
 }
 
+.overlay-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 2; /* ensure overlay is above board */
+}
+
+.bet-hitbox {
+  pointer-events: auto;
+  /* background: rgba(255, 0, 0, 0.2); */
+  z-index: 3;
+}
+
+
 body{
   padding: 0;
 }
