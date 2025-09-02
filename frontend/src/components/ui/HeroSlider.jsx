@@ -88,20 +88,6 @@ export default function HeroSlider({
             {slide.description}
           </motion.p>
 
-          {/* Play Button (Only when logged out and showPlay flag exists) */}
-          {!isLoggedIn && slide?.showPlay && (
-            <motion.button
-              className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <Play size={20} />
-              Play
-            </motion.button>
-          )}
         </div>
       </div>
 

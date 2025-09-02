@@ -1,11 +1,9 @@
 import { AnimatePresence } from "framer-motion";
 import React from "react";
 import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
-import { useAuthStore } from "../stores/useAuthStore";
-import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
-import { transform } from "typescript";
+// import { transform } from "typescript";
 
 const numbers = [
   { num: 0, color: "green" },
