@@ -20,7 +20,7 @@ export default function useCountdown() {
         announceNumber(result);
       }, 5000);
     }
-  }, [phase]);
+  }, [phase, isMuted]);
 
   useEffect(() => {
     if (phase !== "betting" || !roundEndTime) {
