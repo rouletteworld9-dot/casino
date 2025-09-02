@@ -91,13 +91,13 @@ const RouletteBoard = ({
     }
     // Zero splits
     hitboxes.push(
-      renderZeroHitbox("split", [0, 1], { top: "0%", left: "10%" })
+      renderZeroHitbox("split", [0, 1], { top: "70%", left: "-1%" })
     );
     hitboxes.push(
-      renderZeroHitbox("split", [0, 2], { top: "0%", left: "30%" })
+      renderZeroHitbox("split", [0, 2], { top: "35%", left: "-1%" })
     );
     hitboxes.push(
-      renderZeroHitbox("split", [0, 3], { top: "0%", left: "50%" })
+      renderZeroHitbox("split", [0, 3], { top: "0%", left: "-1%" })
     );
 
     // Corners
@@ -112,7 +112,12 @@ const RouletteBoard = ({
     }
     // First four (0-1-2-3)
     hitboxes.push(
-      renderZeroHitbox("corner", [0, 1, 2, 3], { top: "0%", left: "0%" })
+      renderZeroHitbox("corner", [0, 1, 2, 3], {
+        top: "0%",
+        left: "0%",
+        width: "32px",
+        height: "0px",
+      })
     );
 
     // Streets
@@ -133,11 +138,12 @@ const RouletteBoard = ({
   };
 
   // Fixed renderHitbox function with proper sizing and positioning
-  // Fixed renderHitbox function with proper sizing and positioning
   const renderHitbox = (type, numbers, r, c, orientation) => {
     const validNumbers = numbers
       .filter((n) => n != null)
-      .map((n) => (typeof n === "object" ? n.num : n));
+      .map((n) => (typeof n === "object" ? n.num : n))
+      .sort((a, b) => a - b);
+
     const id = `${type}-${validNumbers.join("-")}`;
 
     const baseStyle = {
@@ -216,8 +222,8 @@ const RouletteBoard = ({
       position: "absolute",
       top: pos.top,
       left: pos.left,
-      width: "15%", // Increased from 10%
-      height: "25%", // Increased from 20%
+      width: pos.width ? pos.width : "0%", // Increased from 10%
+      height: pos.height ? pos.height : "30%", // Increased from 20%
       backgroundColor: "rgba(255, 0, 255, 0.3)", // Different color for zero bets
       border: "2px solid magenta",
       cursor: "pointer",
@@ -265,6 +271,7 @@ const RouletteBoard = ({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      transform: "translateX(50%)",
     };
 
     return (
@@ -286,8 +293,6 @@ const RouletteBoard = ({
       </div>
     );
   };
-
- 
 
   // Fixed overlay container - remove pointer-events: none
   // === Chips ===
@@ -391,12 +396,12 @@ const RouletteBoard = ({
               <div
                 onClick={() => onCellClick("0")}
                 className="
-      w-10 h-48 sm:w-20 sm:h-40
-      flex items-center justify-center 
-      [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
-      bg-white 
-      p-[2px]
-    "
+                          w-10 h-48 sm:w-20 sm:h-40
+                          flex items-center justify-center 
+                          [clip-path:polygon(20%_0%,80%_0%,100%_0%,100%_100%,20%_100%,0%_50%)]
+                          bg-white 
+                          p-[2px]
+                        "
               >
                 <div
                   id={`cell-0`}
@@ -435,8 +440,8 @@ const RouletteBoard = ({
             </div>
 
             {/* Main number grid */}
-            <div className="sm:flex-1 ">
-              <div className="grid grid-cols-12 w-full relative">
+            <div className="sm:flex-1 relative">
+              <div className="grid grid-cols-12 w-full relative ">
                 {Array.from({ length: 3 }, (_, row) =>
                   Array.from({ length: 12 }, (_, col) => {
                     const numberData = getNumberAtPosition(row, col);
@@ -489,13 +494,14 @@ const RouletteBoard = ({
                   })
                 )}
                 <div
-                  className="absolute inset-0 pointer-events-none z-10"
+                  className="absolute inset-0 z-10"
                   style={{
                     position: "absolute",
                     top: -0,
                     left: 0,
                     width: "100%",
                     height: "100%",
+                    pointerEvents: "none",
                   }}
                 >
                   {renderOverlayBets()}
