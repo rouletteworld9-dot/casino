@@ -151,14 +151,14 @@ const RouletteBoard = ({
       className={`sm:items-center opacity-70 sm:mb-10 items-end sm:justify-center  justify-start flex flex-col min-h-screen w-full z-90
     transition-all duration-900 ease-in-out 
     ${phase === "betting" ? " sm:-mt-50 " : ""}
-    ${phase !== "betting" ? "sm:-mt-50" : ""}
+    ${phase !== "betting" ? "sm:-mt-50 opacity-40" : ""}
   `}
     >
       <div
         className={`sm:max-w-3xl  sm:ml-40 sm:-mt-15 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
         [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_rotateZ(90deg)_skewX(0deg)]
-        ${phase === "betting" ? " sm:w-lg w-2xl h-135 " : " mt-50 h-120 sm:h-full w-xl sm:w-lg "}
+        ${phase === "betting" ? " sm:w-lg w-2xl h-140 " : " mt-50 h-120 sm:h-full w-xl sm:w-lg "}
         transition-all duration-500 ease-in-out
     `}
       >

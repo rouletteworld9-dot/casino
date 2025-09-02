@@ -87,7 +87,7 @@ body {
   border-radius: 7px;
   background: #fff radial-gradient(circle at 5px 5px, #fff, #444);
   box-shadow: 1px 1px 4px #000;
-  transform: translateY( -127px);
+  transform: translateY( -120px);
   top: 50%;
   left: 50%;
   margin: -7px;

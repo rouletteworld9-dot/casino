@@ -15,6 +15,9 @@ const Wheel = (props) => {
   var singleRotationDegree = 360 / totalNumbers;
   var lastNumber = 0;
 
+  const isSmallScreen = window.innerWidth < 768; // you can adjust breakpoint
+  const lastValue = isSmallScreen ?73  : 90;
+
   var rouletteWheelNumbers = props.rouletteData.numbers;
   const getRouletteIndexFromNumber = (number) => {
     return rouletteWheelNumbers.indexOf(parseInt(number));
@@ -109,7 +112,7 @@ const Wheel = (props) => {
         { value: 40, duration: 2000 },
         { value: 50, duration: 1000 },
         { value: 60, duration: 900 },
-        { value: 80, duration: 1000 },
+        { value: lastValue, duration: 1000 },
       ],
       rotate: [{ value: ballEndRotation, duration: singleSpinDuration }],
       loop: 0,
