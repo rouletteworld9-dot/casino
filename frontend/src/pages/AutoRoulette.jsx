@@ -64,7 +64,7 @@ const AutoRoulette = () => {
           <MuteButton />
           <ResultOverlay />
           {/* last results */}
-          <div className="bg-black/10  left-5 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
+          <div className="bg-black/10  left-10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
 
@@ -74,7 +74,7 @@ const AutoRoulette = () => {
 
             <motion.div
               className={`
-    absolute sm:left-0 left-0 
+    absolute sm:left-0 left-0 top-10 sm:top-0
     transition-all duration-700 ease-in-out
     ${
       phase === "betting"
@@ -120,7 +120,7 @@ const AutoRoulette = () => {
             }) => (
               <>
                 {phase === "betting" && (
-                  <div className="fixed bottom-0 sm:-bottom-1 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center ">
+                  <div className="fixed top-30 sm:top-128 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center ">
                     <div className="w-full max-w-2xl flex sm:flex-row flex-col items-center justify-center gap-2">
                       {/* 2x Button Far Left */}
                       <button

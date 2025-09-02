@@ -170,7 +170,7 @@ const PhaseTimer = () => {
   return (
     <div
       className="fixed 
-    top-8 sm:top-auto   /* only top on small, reset on sm */
+    top-10 sm:top-auto   /* only top on small, reset on sm */
     bottom-auto sm:bottom-18 
     left-2 sm:right-auto
      sm:left-1/2 sm:-translate-x-1/2
@@ -180,13 +180,13 @@ const PhaseTimer = () => {
       <div
         className="relative"
         style={{
-          width: window.innerWidth < 640 ? SIZE * 0.7 : SIZE, // shrink timer <sm
-          height: window.innerWidth < 640 ? SIZE * 0.7 : SIZE,
+          width: window.innerWidth < 640 ? SIZE * 0.9 : SIZE, // shrink timer <sm
+          height: window.innerWidth < 640 ? SIZE * 0.9 : SIZE,
         }}
       >
         <svg
-          width={window.innerWidth < 640 ? SIZE * 0.7 : SIZE}
-          height={window.innerWidth < 640 ? SIZE * 0.7 : SIZE}
+          width={window.innerWidth < 640 ? SIZE * 0.9 : SIZE}
+          height={window.innerWidth < 640 ? SIZE * 0.9 : SIZE}
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           className="-rotate-90"
           style={{ filter: `drop-shadow(0 0 6px ${strokeColor}aa)` }}
@@ -221,10 +221,10 @@ const PhaseTimer = () => {
                 : "scale-100"
             }`}
           >
-            <div className="text-xs sm:text-lg font-bold leading-none">
+            <div className="text-base sm:text-lg font-bold leading-none">
               {remaining !== null ? remaining : 0}
             </div>
-            <div className="text-[5px] sm:text-[8px] leading-none opacity-80">
+            <div className="text-[6px] sm:text-[8px] leading-none opacity-80">
               SEC
             </div>
           </div>

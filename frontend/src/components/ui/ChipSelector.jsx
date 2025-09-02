@@ -109,7 +109,7 @@ const ChipSelector = ({
             />
             {/* center */}
             <span
-              className="pointer-events-none rounded-full grid place-items-center 
+              className=" pointer-events-none rounded-full grid place-items-center 
              w-[30px] h-[30px] "
               style={{
                 background:
@@ -117,7 +117,7 @@ const ChipSelector = ({
                 border: "1px solid rgba(0,0,0,0.08)",
               }}
             >
-              ₹{value}
+              <span className="text-[9px]">₹{value}</span>
             </span>
 
             {/* outer rim */}
