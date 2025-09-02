@@ -23,7 +23,7 @@ const getColorClass = (num) => {
 };
 
 const LastResults = () => {
-  const { lastResults } = useGameStore();
+  const { lastResults } = useGameStore()
 
   const delayedResults = useDelay(lastResults, 5000);
 

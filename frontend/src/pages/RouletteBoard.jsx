@@ -5,6 +5,7 @@ import { useAuthStore } from "../stores/useAuthStore";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
+import { transform } from "typescript";
 
 const numbers = [
   { num: 0, color: "green" },
@@ -148,8 +149,8 @@ const RouletteBoard = ({
 
     const baseStyle = {
       position: "absolute",
-      backgroundColor: "rgba(255, 255, 0, 0.3)", // More visible for debugging
-      border: "1px solid rgba(255, 255, 0, 0.8)",
+      // backgroundColor: "rgba(255, 255, 0, 0.3)", // More visible for debugging
+      border: "1px solid transparent",
       cursor: "pointer",
       zIndex: 15, // Higher z-index
       pointerEvents: "auto",
@@ -168,7 +169,7 @@ const RouletteBoard = ({
         left: `${((c + 1) * 100) / cols}%`,
         top: `${(r * 100) / rows}%`,
         transform: "translateX(-50%)",
-        border: "2px solid green",
+        border: "2px solid transparent",
       };
     } else if (orientation === "vertical") {
       // Split bet between vertically adjacent numbers
@@ -178,7 +179,7 @@ const RouletteBoard = ({
         left: `${(c * 100) / cols}%`,
         top: `${((r + 1) * 100) / rows}%`,
         transform: "translateY(-50%)",
-        border: "2px solid blue",
+        border: "2px solid transparent",
       };
     } else if (orientation === "corner") {
       // Corner bet at intersection of 4 numbers
@@ -189,7 +190,7 @@ const RouletteBoard = ({
         top: `${((r + 1) * 100) / rows}%`,
         transform: "translate(-50%, -50%)", // Center on intersection
         borderRadius: "50%",
-        border: "2px solid red",
+        border: "2px solid transparent",
       };
     }
 
@@ -224,8 +225,8 @@ const RouletteBoard = ({
       left: pos.left,
       width: pos.width ? pos.width : "0%", // Increased from 10%
       height: pos.height ? pos.height : "30%", // Increased from 20%
-      backgroundColor: "rgba(255, 0, 255, 0.3)", // Different color for zero bets
-      border: "2px solid magenta",
+      // backgroundColor: "rgba(255, 0, 255, 0.3)", // Different color for zero bets
+      border: "2px solid transparent",
       cursor: "pointer",
       zIndex: 15,
       pointerEvents: "auto",
@@ -256,14 +257,20 @@ const RouletteBoard = ({
 
   // Fixed renderRailHitbox function
   const renderRailHitbox = (type, numbers, c) => {
-    const id = `${type}-${numbers.join("-")}`;
+    const sortedNumbers = [...numbers].sort((a, b) => a - b);
+    const id = `${type}-${sortedNumbers.join("-")}`;
+    const isStreet = id.startsWith("street")
     const style = {
       position: "absolute",
-      backgroundColor: "rgba(0, 255, 255, 0.3)", // Different color for rail bets
-      border: "2px solid cyan",
+      // backgroundColor: "rgba(0, 255, 255, 0.3)", // Different color for rail bets, // Different color for rail bets
+      border: "2px solid transparent",
       top: "100%",
-      left: `${(c * 100) / cols}%`,
-      width: `${100 / cols}%`,
+      left: isStreet 
+      ? `${(c * 100) / cols}%` 
+      : `${(c * 100) / cols + (100 / cols) }%`,
+      width: isStreet 
+      ? `${100 / cols}%`  // Street: single column width
+      : `${20 / cols }% `, 
       height: "12px", // Increased from 10%
       cursor: "pointer",
       zIndex: 15,
@@ -271,7 +278,7 @@ const RouletteBoard = ({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      transform: "translateX(50%)",
+      transform : "translate(-3px, -3px)"
     };
 
     return (
@@ -374,7 +381,7 @@ const RouletteBoard = ({
 
   return (
     <div
-      className={`sm:items-center relative opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full z-90
+      className={`sm:items-center relative opacity-70 sm:mb-10 items-end justify-center flex flex-col min-h-screen w-full z-0
     transition-all duration-900 ease-in-out 
     ${phase === "betting" ? "-mt-30 sm:-mt-50 " : ""}
     ${phase !== "betting" ? "sm:-mt-50" : ""}
@@ -453,7 +460,7 @@ const RouletteBoard = ({
                                     w-60 sm:w-9   h-16 sm:h-13
                                     flex items-center justify-center 
                                     text-xs sm:text-xl md:text-xl 
-                                      border border-white cursor-pointer relative
+                                      border-1 border-white cursor-pointer relative
                                     max-sm:w-full max-sm:aspect-square`}
                         onClick={() =>
                           numberData && onCellClick(String(numberData.num))
@@ -502,6 +509,7 @@ const RouletteBoard = ({
                     width: "100%",
                     height: "100%",
                     pointerEvents: "none",
+                    background : "transparent"
                   }}
                 >
                   {renderOverlayBets()}

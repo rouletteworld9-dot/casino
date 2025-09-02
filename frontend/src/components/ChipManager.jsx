@@ -16,7 +16,7 @@ const getBetTypeAndNumber = (cellId) => {
 
   // Handle corner bets
   if (cellId.startsWith("corner-")) {
-    const numbers = cellId.replace("corner-", "").split("-").map(Number)
+    const numbers = cellId.replace("corner-", "").split("-").map(Number);
     return { type: "corner", numbers: numbers };
   }
 
@@ -55,14 +55,22 @@ const generateCellId = (betType, numbers) => {
     const sortedNumbers = [...numbers].sort((a, b) => a - b);
     return `${betType.type}-${sortedNumbers.join("-")}`;
   }
-  
+
   // Handle other bet types
   if (betType.type === "straight") {
     return String(betType.number);
   } else if (betType.type === "dozen") {
-    return betType.number === 1 ? "1st12" : betType.number === 2 ? "2nd12" : "3rd12";
+    return betType.number === 1
+      ? "1st12"
+      : betType.number === 2
+        ? "2nd12"
+        : "3rd12";
   } else if (betType.type === "column") {
-    return betType.number === 1 ? "2to1_bottom" : betType.number === 2 ? "2to1_middle" : "2to1_top";
+    return betType.number === 1
+      ? "2to1_bottom"
+      : betType.number === 2
+        ? "2to1_middle"
+        : "2to1_top";
   } else if (betType.type === "low") {
     return "1-18";
   } else if (betType.type === "high") {
@@ -74,7 +82,7 @@ const generateCellId = (betType, numbers) => {
   } else if (betType.type === "color") {
     return betType.color;
   }
-  
+
   return null;
 };
 
@@ -103,34 +111,33 @@ const ChipManager = ({ children, userId, round, phase }) => {
     }
   }, [phase]);
 
- 
   const addBet = useCallback(
     (cellId, coinValue) => {
       console.log("🔥 addBet called:", { cellId, coinValue });
-      
+
       if (betLocked) {
         console.log("❌ Bet locked, returning");
         return;
       }
-      
+
       const betType = getBetTypeAndNumber(cellId);
       console.log("🎯 getBetTypeAndNumber result:", betType);
-      
+
       if (!betType) {
         console.log("❌ No bet type, returning");
         return;
       }
-  
+
       // FIRST: Save current bets to history BEFORE any state changes
       setBetHistory((prevHistory) => {
         const newHistory = [...prevHistory, bets];
         console.log("💾 Bet history updated (BEFORE setBets):", newHistory);
         return newHistory;
       });
-  
+
       setBets((prev) => {
         console.log("📊 Current bets state:", prev);
-        
+
         // --- Color (red/black) mutual exclusion ---
         if (
           cellId === "red" &&
@@ -184,9 +191,9 @@ const ChipManager = ({ children, userId, round, phase }) => {
           console.log("❌ Even/Odd exclusion");
           return prev;
         }
-  
+
         console.log("✅ Validation passed, proceeding with bet creation");
-  
+
         // --- Normal stacking logic for same bet (allow multiple chips on same bet) ---
         let matchFn;
         if (betType.type === "color") {
@@ -208,14 +215,17 @@ const ChipManager = ({ children, userId, round, phase }) => {
           matchFn = (b) =>
             b.type === betType.type && b.number === betType.number;
         }
-  
+
         const idx = prev.findIndex(matchFn);
-        console.log("🔍 Match search result:", { idx, matchFn: matchFn.toString() });
-        
+        console.log("🔍 Match search result:", {
+          idx,
+          matchFn: matchFn.toString(),
+        });
+
         if (idx === -1) {
           console.log("🆕 Creating NEW bet");
           let newBet;
-          
+
           // CREATE NEW BET
           if (betType.type === "color") {
             newBet = {
@@ -223,7 +233,9 @@ const ChipManager = ({ children, userId, round, phase }) => {
               color: betType.color,
               bets: [{ amount: coinValue }],
             };
-          } else if (["split", "corner", "street", "line"].includes(betType.type)) {
+          } else if (
+            ["split", "corner", "street", "line"].includes(betType.type)
+          ) {
             newBet = {
               type: betType.type,
               numbers: betType.numbers,
@@ -236,24 +248,23 @@ const ChipManager = ({ children, userId, round, phase }) => {
               bets: [{ amount: coinValue }],
             };
           }
-          
+
           console.log("🆕 New bet created:", newBet);
           const result = [...prev, newBet];
           console.log("🆕 New bets array:", result);
           return result;
-          
         } else {
           console.log("📌 Stacking on EXISTING bet at index:", idx);
           // STACK ON EXISTING BET
           const updated = [...prev];
           const oldBet = updated[idx];
           console.log("📌 Old bet:", oldBet);
-          
+
           updated[idx] = {
             ...updated[idx],
             bets: [...updated[idx].bets, { amount: coinValue }],
           };
-          
+
           console.log("📌 Updated bet:", updated[idx]);
           console.log("📌 Final bets array:", updated);
           return updated;
@@ -299,10 +310,10 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const cellTotals = useMemo(() => {
     const totals = {};
     console.log("🧮 Calculating cellTotals from bets:", bets);
-    
+
     bets.forEach((b, index) => {
       console.log(`🧮 Processing bet ${index}:`, b);
-      
+
       let cellId;
       if (b.type === "straight") {
         cellId = String(b.number);
@@ -313,7 +324,12 @@ const ChipManager = ({ children, userId, round, phase }) => {
       } else if (b.type === "dozen") {
         cellId = b.number === 1 ? "1st12" : b.number === 2 ? "2nd12" : "3rd12";
       } else if (b.type === "column") {
-        cellId = b.number === 1 ? "2to1_bottom" : b.number === 2 ? "2to1_middle" : "2to1_top";
+        cellId =
+          b.number === 1
+            ? "2to1_bottom"
+            : b.number === 2
+              ? "2to1_middle"
+              : "2to1_top";
       } else if (b.type === "low") {
         cellId = "1-18";
       } else if (b.type === "high") {
@@ -325,14 +341,14 @@ const ChipManager = ({ children, userId, round, phase }) => {
       } else if (b.type === "color") {
         cellId = b.color;
       }
-  
+
       if (cellId) {
         const total = b.bets.reduce((s, a) => s + a.amount, 0);
         totals[cellId] = total;
         console.log(`🧮 CellId: ${cellId}, Total: ${total}`);
       }
     });
-    
+
     console.log("🧮 Final cellTotals:", totals);
     return totals;
   }, [bets]);
@@ -340,10 +356,10 @@ const ChipManager = ({ children, userId, round, phase }) => {
   const betsByCell = useMemo(() => {
     const out = {};
     console.log("🎲 Calculating betsByCell from bets:", bets);
-    
+
     bets.forEach((b, index) => {
       console.log(`🎲 Processing bet ${index}:`, b);
-      
+
       let cellId;
       if (b.type === "straight") {
         cellId = String(b.number);
@@ -354,7 +370,12 @@ const ChipManager = ({ children, userId, round, phase }) => {
       } else if (b.type === "dozen") {
         cellId = b.number === 1 ? "1st12" : b.number === 2 ? "2nd12" : "3rd12";
       } else if (b.type === "column") {
-        cellId = b.number === 1 ? "2to1_bottom" : b.number === 2 ? "2to1_middle" : "2to1_top";
+        cellId =
+          b.number === 1
+            ? "2to1_bottom"
+            : b.number === 2
+              ? "2to1_middle"
+              : "2to1_top";
       } else if (b.type === "low") {
         cellId = "1-18";
       } else if (b.type === "high") {
@@ -366,25 +387,25 @@ const ChipManager = ({ children, userId, round, phase }) => {
       } else if (b.type === "color") {
         cellId = b.color;
       }
-  
+
       if (cellId) {
         const amounts = b.bets.map((a) => a.amount);
         out[cellId] = (out[cellId] || []).concat(amounts);
         console.log(`🎲 CellId: ${cellId}, Amounts: [${amounts.join(",")}]`);
       }
     });
-    
+
     console.log("🎲 Final betsByCell:", out);
     return out;
   }, [bets]);
 
   const placeBet = useCallback(() => {
     console.log("🚀 placeBet called with bets:", bets);
-    
+
     const mappedBets = bets.map((b, index) => {
       const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
       console.log(`🚀 Mapping bet ${index}:`, b, "Total amount:", amount);
-  
+
       if (b.type === "color") {
         return { type: b.color, amount };
       } else if (["split", "corner", "street", "line"].includes(b.type)) {
@@ -393,11 +414,11 @@ const ChipManager = ({ children, userId, round, phase }) => {
         return { type: b.type, numbers: [b.number], amount };
       }
     });
-  
+
     console.log("🚀 Final mapped bets:", mappedBets);
     const payload = { userId, bets: mappedBets };
     console.log("🚀 Payload to emit:", payload);
-    
+
     emitPlaceBet(payload);
     setBetLocked(true);
   }, [bets, userId, emitPlaceBet]);

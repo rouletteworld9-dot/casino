@@ -20,7 +20,7 @@
 
 .bet-hitbox {
   pointer-events: auto;
-  background: rgba(255, 0, 0, 0.2);
+  /* background: rgba(255, 0, 0, 0.2); */
   z-index: 3;
 }
 
