@@ -75,7 +75,7 @@ const AutoRoulette = () => {
             <motion.div
               className={`
     absolute sm:left-0 left-0 top-10 sm:top-0
-    transition-all duration-700 ease-in-out
+    transition-all duration-900 ease-in-out
     ${
       phase === "betting"
         ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"

@@ -6,6 +6,8 @@ const ResultOverlay = ({ onClose }) => {
   const {
     winStatus: { isWin = true, amount },
   } = useGameStore();
+  const result = useGameStore((s) => s.result);
+
   if (isWin === null) return;
 
   const overlayVariants = {
@@ -354,6 +356,28 @@ const ResultOverlay = ({ onClose }) => {
                 animate="visible"
                 className="text-white space-y-4"
               >
+                <motion.h2
+                  className="text-3xl sm:text-6xl font-black mb-4"
+                  style={{
+                    background:
+                      "linear-gradient(45deg, #facc15, #fde047, #fbbf24)",
+                    backgroundSize: "400% 400%",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                  animate={{
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"], // move gradient
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  Winning Number : {result}
+                </motion.h2>
+
                 <motion.h2
                   className="text-4xl sm:text-6xl font-black mb-4"
                   style={{

@@ -379,9 +379,7 @@ const RouletteBoard = ({
 
   return (
     <div
-      className={`sm:items-center   sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
-
-    transition-all duration-900 ease-in-out 
+      className={`sm:items-center   transition-all duration-900 ease-in-out sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
     ${phase === "betting" ? "sm:h-full sm:-mt-50 -mt-20 opacity-70" : ""}
     ${phase !== "betting" ? "sm:-mt-50 opacity-50" : ""}
   `}
