@@ -14,7 +14,7 @@ export const useGameStore = create((set, get) => ({
     isWin: null,
     amount: null,
   },
-  isMuted: false,
+  isMuted: true,
   isGameRunning: false,
 
   // Game data
