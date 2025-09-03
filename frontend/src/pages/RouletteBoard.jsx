@@ -257,18 +257,18 @@ const RouletteBoard = ({
   const renderRailHitbox = (type, numbers, c) => {
     const sortedNumbers = [...numbers].sort((a, b) => a - b);
     const id = `${type}-${sortedNumbers.join("-")}`;
-    const isStreet = id.startsWith("street")
+    const isStreet = id.startsWith("street");
     const style = {
       position: "absolute",
       // backgroundColor: "rgba(0, 255, 255, 0.3)", // Different color for rail bets, // Different color for rail bets
       border: "2px solid transparent",
       top: "100%",
-      left: isStreet 
-      ? `${(c * 100) / cols}%` 
-      : `${(c * 100) / cols + (100 / cols) }%`,
-      width: isStreet 
-      ? `${100 / cols}%`  // Street: single column width
-      : `${20 / cols }% `, 
+      left: isStreet
+        ? `${(c * 100) / cols}%`
+        : `${(c * 100) / cols + 100 / cols}%`,
+      width: isStreet
+        ? `${100 / cols}%` // Street: single column width
+        : `${20 / cols}% `,
       height: "12px", // Increased from 10%
       cursor: "pointer",
       zIndex: 15,
@@ -276,7 +276,7 @@ const RouletteBoard = ({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      transform : "translate(-3px, -3px)"
+      transform: "translate(-3px, -3px)",
     };
 
     return (
@@ -379,18 +379,18 @@ const RouletteBoard = ({
 
   return (
     <div
-      className={`sm:items-center opacity-70 sm:mb-10 items-end sm:justify-center  justify-start flex flex-col min-h-screen w-full z-90
+      className={`sm:items-center   sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
 
     transition-all duration-900 ease-in-out 
-    ${phase === "betting" ? " sm:-mt-50 " : ""}
-    ${phase !== "betting" ? "sm:-mt-50 opacity-40" : ""}
+    ${phase === "betting" ? "sm:h-full sm:-mt-50 -mt-20 opacity-70" : ""}
+    ${phase !== "betting" ? "sm:-mt-50 opacity-50" : ""}
   `}
     >
       <div
-        className={`sm:max-w-3xl  sm:ml-40 sm:-mt-15 sm:h-full 
+        className={`sm:max-w-3xl sm:ml-40 sm:mt-30 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
         [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_rotateZ(90deg)_skewX(0deg)]
-        ${phase === "betting" ? " sm:w-lg w-2xl h-140 " : " mt-50 h-120 sm:h-full w-xl sm:w-lg "}
+        ${phase === "betting" ? " sm:w-lg w-2xl h-140 " : " h-120 sm:h-full w-xl sm:w-lg "}
         transition-all duration-500 ease-in-out
     `}
       >
@@ -508,7 +508,7 @@ const RouletteBoard = ({
                     width: "100%",
                     height: "100%",
                     pointerEvents: "none",
-                    background : "transparent"
+                    background: "transparent",
                   }}
                 >
                   {renderOverlayBets()}

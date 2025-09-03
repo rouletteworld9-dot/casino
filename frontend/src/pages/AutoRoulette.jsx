@@ -33,7 +33,7 @@ const AutoRoulette = () => {
   }, [setLoading]);
 
   return (
-    <div className="relative w-full flex flex-col">
+    <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
       {/* <InsufficientBalanceModal /> */}
 
       <div className="sm:block hidden ">
@@ -41,7 +41,7 @@ const AutoRoulette = () => {
       </div>
 
       {loading ? (
-        <div className="w-full h-screen flex items-center justify-center bg-black">
+        <div className="w-full sm:h-screen flex items-center justify-center bg-black">
           {/* Mobile image */}
           <img
             src="/game/rouletteLoadingMobile.jpeg"
@@ -56,14 +56,14 @@ const AutoRoulette = () => {
           />
         </div>
       ) : (
-        <div className="pt-20 overflow-hidden md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-t from-indigo-900 via-blue-950 to-black/80 ">
+        <div className="pt-20 overflow-hidden h-full md:max-h-[100vh] md:bg-[url(/game/roulettetable.webp)] bg-cover bg-center bg-gradient-to-t from-indigo-900 via-blue-950 to-black/80 ">
           <div className="absolute sm:top-10 top-4 sm:right-10 right-0">
             <LiveButton />
           </div>
 
           <MuteButton />
           <ResultOverlay />
-          {/* last results */}
+          {/* last results */}  
           <div className="bg-black/10  left-10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
