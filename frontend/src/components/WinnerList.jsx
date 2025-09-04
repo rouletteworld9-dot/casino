@@ -28,9 +28,6 @@ export default function WinnerList() {
   const contentRef = useRef(null);
   const newWinnerRef = useRef(null);
 
-  const mobileListRef = useRef(null);
-  const mobileContentRef = useRef(null);
-
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
 
@@ -169,32 +166,14 @@ export default function WinnerList() {
         </div>
       </div>
 
-      {showEffects && item === newWinner && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"></div>
-          <div
-            className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
-            style={{ animationDelay: "0.5s" }}
-          ></div>
-          <div
-            className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
-            style={{ animationDelay: "1s" }}
-          ></div>
-          <div
-            className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
-            style={{ animationDelay: "0.8s" }}
-          ></div>
-        </div>
-      )}
-
-      {showEffects && isJackpot(item.amount) && (
+      {/* {showEffects && isJackpot(item.amount) && (
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 left-40 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
             style={{ animationDelay: "0.3s" }}
           ></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 
