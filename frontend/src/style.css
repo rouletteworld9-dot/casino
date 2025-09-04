@@ -47,6 +47,10 @@ body {
    background-size: 90% 90%; 
 }
 
+.ball-container {
+  display: none;
+}
+
 .roulette-wheel .layer-2,
 .roulette-wheel .layer-4,
 .ball-container {

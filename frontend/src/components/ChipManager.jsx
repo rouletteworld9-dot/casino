@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { toast } from "react-hot-toast";
+import useCountdown from "../hooks/useCountdown";
+import { setAmountStore } from "../stores/setAmountStore";
 
 const getBetTypeAndNumber = (cellId) => {
   // Straight number bets
@@ -48,52 +50,14 @@ const getBetTypeAndNumber = (cellId) => {
   return null;
 };
 
-const generateCellId = (betType, numbers) => {
-  // For multi-number bets, we need to generate the cellId the same way RouletteBoard does
-  if (["split", "corner", "street", "line"].includes(betType.type)) {
-    // Sort numbers to ensure consistent cellId generation
-    const sortedNumbers = [...numbers].sort((a, b) => a - b);
-    return `${betType.type}-${sortedNumbers.join("-")}`;
-  }
-
-  // Handle other bet types
-  if (betType.type === "straight") {
-    return String(betType.number);
-  } else if (betType.type === "dozen") {
-    return betType.number === 1
-      ? "1st12"
-      : betType.number === 2
-        ? "2nd12"
-        : "3rd12";
-  } else if (betType.type === "column") {
-    return betType.number === 1
-      ? "2to1_bottom"
-      : betType.number === 2
-        ? "2to1_middle"
-        : "2to1_top";
-  } else if (betType.type === "low") {
-    return "1-18";
-  } else if (betType.type === "high") {
-    return "19-36";
-  } else if (betType.type === "even") {
-    return "even";
-  } else if (betType.type === "odd") {
-    return "odd";
-  } else if (betType.type === "color") {
-    return betType.color;
-  }
-
-  return null;
-};
-
 const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
-  const [bets, setBets] = useState([]);
+  // const [bets, setBets] = useState([]);
+  const {bets, setBets} = setAmountStore(s=>s)
   const [betLocked, setBetLocked] = useState(false);
-
   const [betHistory, setBetHistory] = useState([]); // for undo
-
   const { emitPlaceBet } = useGameSocket();
+  const {  remaining } = useCountdown();
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
@@ -111,40 +75,59 @@ const ChipManager = ({ children, userId, round, phase }) => {
     }
   }, [phase]);
 
+  // 🔹 Auto place bet at the end of betting phase
+  useEffect(() => {
+    // Only proceed if we have bets and we're transitioning away from betting phase 
+    if (phase === "betting" && 
+      bets.length > 0 && 
+      !betLocked && 
+      remaining <= 1 && 
+      remaining > 0 ) {
+    
+      // Call placeBet logic directly here
+      const mappedBets = bets.map((b) => {
+        const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
+        if (b.type === "color") {
+          return { type: b.color, amount };
+        } else if (["split", "corner", "street", "line"].includes(b.type)) {
+          return { type: b.type, numbers: b.numbers, amount };
+        } else {
+          return { type: b.type, numbers: [b.number], amount };
+        }
+      });
+
+      const payload = { userId, bets: mappedBets };
+      emitPlaceBet(payload);
+      setBetLocked(true);
+    }
+  }, [phase, bets, betLocked, userId, emitPlaceBet,remaining]);
+
   const addBet = useCallback(
     (cellId, coinValue) => {
-      console.log("🔥 addBet called:", { cellId, coinValue });
 
       if (betLocked) {
-        console.log("❌ Bet locked, returning");
         return;
       }
 
       const betType = getBetTypeAndNumber(cellId);
-      console.log("🎯 getBetTypeAndNumber result:", betType);
 
       if (!betType) {
-        console.log("❌ No bet type, returning");
         return;
       }
 
       // FIRST: Save current bets to history BEFORE any state changes
       setBetHistory((prevHistory) => {
         const newHistory = [...prevHistory, bets];
-        console.log("💾 Bet history updated (BEFORE setBets):", newHistory);
         return newHistory;
       });
 
       setBets((prev) => {
-        console.log("📊 Current bets state:", prev);
-
         // --- Color (red/black) mutual exclusion ---
         if (
           cellId === "red" &&
           prev.find((b) => b.type === "color" && b.color === "black")
         ) {
           toast("You can only bet on one color at a time.");
-          console.log("❌ Color exclusion: red blocked by black");
           return prev;
         }
         if (
@@ -152,7 +135,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
           prev.find((b) => b.type === "color" && b.color === "red")
         ) {
           toast("You can only bet on one color at a time.");
-          console.log("❌ Color exclusion: black blocked by red");
           return prev;
         }
         // --- Column: only one column bet allowed ---
@@ -161,7 +143,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
           prev.some((b) => b.type === "column" && b.number !== betType.number)
         ) {
           toast("You can only bet on one column at a time.");
-          console.log("❌ Column exclusion");
           return prev;
         }
         // --- Dozen: only one dozen bet allowed ---
@@ -170,7 +151,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
           prev.some((b) => b.type === "dozen" && b.number !== betType.number)
         ) {
           toast("You can only bet on one dozen at a time.");
-          console.log("❌ Dozen exclusion");
           return prev;
         }
         // --- Low/High: mutually exclusive ---
@@ -179,7 +159,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
           (betType.type === "high" && prev.some((b) => b.type === "low"))
         ) {
           toast("You can only bet on low or high, not both.");
-          console.log("❌ Low/High exclusion");
           return prev;
         }
         // --- Even/Odd: mutually exclusive ---
@@ -188,11 +167,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
           (betType.type === "odd" && prev.some((b) => b.type === "even"))
         ) {
           toast("You can only bet on even or odd, not both.");
-          console.log("❌ Even/Odd exclusion");
           return prev;
         }
-
-        console.log("✅ Validation passed, proceeding with bet creation");
 
         // --- Normal stacking logic for same bet (allow multiple chips on same bet) ---
         let matchFn;
@@ -223,7 +199,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
         });
 
         if (idx === -1) {
-          console.log("🆕 Creating NEW bet");
           let newBet;
 
           // CREATE NEW BET
@@ -248,25 +223,18 @@ const ChipManager = ({ children, userId, round, phase }) => {
               bets: [{ amount: coinValue }],
             };
           }
-
-          console.log("🆕 New bet created:", newBet);
           const result = [...prev, newBet];
-          console.log("🆕 New bets array:", result);
           return result;
         } else {
-          console.log("📌 Stacking on EXISTING bet at index:", idx);
           // STACK ON EXISTING BET
           const updated = [...prev];
           const oldBet = updated[idx];
-          console.log("📌 Old bet:", oldBet);
 
           updated[idx] = {
             ...updated[idx],
             bets: [...updated[idx].bets, { amount: coinValue }],
           };
 
-          console.log("📌 Updated bet:", updated[idx]);
-          console.log("📌 Final bets array:", updated);
           return updated;
         }
       });
@@ -309,10 +277,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
   const cellTotals = useMemo(() => {
     const totals = {};
-    console.log("🧮 Calculating cellTotals from bets:", bets);
 
     bets.forEach((b, index) => {
-      console.log(`🧮 Processing bet ${index}:`, b);
 
       let cellId;
       if (b.type === "straight") {
@@ -400,11 +366,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
   }, [bets]);
 
   const placeBet = useCallback(() => {
-    console.log("🚀 placeBet called with bets:", bets);
-
     const mappedBets = bets.map((b, index) => {
       const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
-      console.log(`🚀 Mapping bet ${index}:`, b, "Total amount:", amount);
 
       if (b.type === "color") {
         return { type: b.color, amount };

@@ -63,7 +63,7 @@ const AutoRoulette = () => {
 
           <MuteButton />
           <ResultOverlay />
-          {/* last results */}  
+          {/* last results */}
           <div className="bg-black/10  left-10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
             <LastResults />
           </div>
@@ -73,30 +73,14 @@ const AutoRoulette = () => {
             <ResultDisplay className="absolute sm:fixed z-80 top-0 sm:top-120" />
 
             <motion.div
-              className={`
-    absolute sm:left-0 left-0 top-10 sm:top-0
-    transition-all duration-700 ease-in-out
-    ${
-      phase === "betting"
-        ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
-        : "opacity-100 translate-y-0 z-10 mt-5 sm:mt-0"
-    }
-  `}
-              initial={{ scale: 1 }}
-              animate={{
-                // only animate on small screens
-                scale:
-                  (phase === "spinning" || phase === "result") &&
-                  window.innerWidth < 640
-                    ? [1, 1.5, 1] // zoom animation
-                    : 1,
-              }}
-              transition={{
-                duration: phase === "spinning" || phase === "result" ? 5 : 0,
-                repeat:
-                  phase === "spinning" || phase === "result" ? Infinity : 0,
-                ease: "easeInOut",
-              }}
+              className="absolute sm:left-0 left-0 top-10 sm:top-0"
+              initial={{ y: 0, opacity: 1 }}
+              animate={
+                phase === "betting"
+                  ? { y: -20, opacity: 0.7, zIndex: 0 }
+                  : { y: 0, opacity: 1, zIndex: 10 }
+              }
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <RouletteGame />
             </motion.div>
