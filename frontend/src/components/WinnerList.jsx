@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
 import { AnimatePresence, motion } from "framer-motion";
-// import { useGameSocket } from "../hooks/useGameSocket";
 import { useDelay } from "../hooks/useDelay";
 import { useGameStore } from "../stores/useGameStore";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -9,33 +8,53 @@ import { useSingleUser } from "../hooks/useAdminUsers";
 import { setAmountStore } from "../stores/setAmountStore";
 
 export default function WinnerList() {
+  const phase = useGameStore((s) => s.phase);
   const totalAmount = setAmountStore((s) => s.totalBetAmount);
   const result = useGameStore((state) => state.result);
   const setTotalBetAmount = setAmountStore((s) => s.setTotalBetAmount);
-
-  const delayResult = useDelay(result, 5000);
-  // console.log(totalAmount, "bet amunt");
   const { recentWinners: newWinners } = useGameStore();
-  const delayedWinners = useDelay(newWinners, 4000);
   const user = useAuthStore((s) => s.user);
   const { singleUser } = useSingleUser(user?._id);
 
+  const delayResult = useDelay(result, 5000);
+  const delayedWinners = useDelay(newWinners, 5000);
+
   const [winners, setWinners] = useState([]);
   const [newWinner, setNewWinner] = useState(null);
+  const [messages, setMessages] = useState([
+    { username: "Alice", text: "Hello!" },
+    { username: "Bob", text: "Good luck everyone!" },
+    { username: "Charlie", text: "Let's win big!" },
+    { username: "Dave", text: "I'm feeling lucky!" },
+    { username: "Eve", text: "May the odds be in our favor!" },
+    { username: "Alice", text: "Hello!" },
+    { username: "Bob", text: "Good luck everyone!" },
+    { username: "Charlie", text: "Let's win big!" },
+    { username: "Dave", text: "I'm feeling lucky!" },
+    { username: "Eve", text: "May the odds be in our favor!" },
+    { username: "Alice", text: "Hello!" },
+    { username: "Bob", text: "Good luck everyone!" },
+    { username: "Charlie", text: "Let's win big!" },
+    { username: "Dave", text: "I'm feeling lucky!" },
+    { username: "Eve", text: "May the odds be in our favor!" },
+  ]);
+  const [newMessage, setNewMessage] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const listRef = useRef(null);
   const contentRef = useRef(null);
   const newWinnerRef = useRef(null);
+  const newMessageRef = useRef(null);
 
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
 
+  // Debug logging for phase and totals
   useEffect(() => {
-    if (delayResult) {
-      setTotalBetAmount(0);
-    }
-  }, [delayResult]);
+    console.log("Phase:", phase);
+    console.log("Total Amount:", totalAmount);
+    console.log("Balance:", user?.realBalance || singleUser?.realBalance);
+  }, [phase, totalAmount, user, singleUser]);
 
   // Handle incoming winners
   useEffect(() => {
@@ -46,7 +65,7 @@ export default function WinnerList() {
       : [delayedWinners];
 
     setWinners((prev) => {
-      const merged = [...prev, ...incoming].slice(-12); // keep last 12
+      const merged = [...prev, ...incoming].slice(-12); // Keep last 12
       return merged;
     });
 
@@ -57,9 +76,16 @@ export default function WinnerList() {
     }
   }, [delayedWinners]);
 
-  // Animate new winner
+  // Reset total bet amount on result
   useEffect(() => {
-    if (delayedWinners && newWinnerRef.current) {
+    if (delayResult) {
+      setTotalBetAmount(0);
+    }
+  }, [delayResult]);
+
+  // Animate new winner or message
+  useEffect(() => {
+    if (phase === "result" && newWinner && newWinnerRef.current) {
       anime({
         targets: newWinnerRef.current,
         scale: [0.8, 1.1, 1],
@@ -68,21 +94,30 @@ export default function WinnerList() {
         easing: "easeOutElastic(1, 0.5)",
       });
       playNotificationSound();
+    } else if (phase !== "result" && newMessage && newMessageRef.current) {
+      anime({
+        targets: newMessageRef.current,
+        scale: [0.8, 1.1, 1],
+        opacity: [0, 1],
+        duration: 800,
+        easing: "easeOutElastic(1, 0.5)",
+      });
+      playNotificationSound();
     }
-  }, [delayedWinners]);
+  }, [newWinner, newMessage, phase]);
 
-  // Cycle winners in mobile view
+  // Cycle winners or messages in mobile view
   useEffect(() => {
-    if (!winners.length) return;
+    const data = phase === "result" ? winners : messages;
+    if (!data.length) return;
 
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % winners.length);
-    }, 3000); // ⏳ show each winner for 3s
-
+      setActiveIndex((prev) => (prev + 1) % data.length);
+    }, 3000); // Show each item for 3s
     return () => clearInterval(interval);
-  }, [winners]);
+  }, [winners, messages, phase]);
 
-  // Auto-scroll loop
+  // Auto-scroll loop for desktop
   useEffect(() => {
     const container = listRef.current;
     const content = contentRef.current;
@@ -100,8 +135,8 @@ export default function WinnerList() {
       if (!isPaused.current) {
         container.scrollTop += (SPEED_PX_PER_SEC * dt) / 500;
 
-        if (container.scrollTop >= content.offsetHeight) {
-          container.scrollTop = 0; // reset to top for looping
+        if (container.scrollTop >= content.offsetHeight - container.clientHeight) {
+          container.scrollTop = 0; // Reset to top for looping
         }
       }
 
@@ -110,12 +145,12 @@ export default function WinnerList() {
 
     rafIdRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafIdRef.current);
-  }, [winners.length]);
+  }, [winners.length, messages.length, phase]);
+
 
   const playNotificationSound = () => {
     try {
-      const audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -143,7 +178,7 @@ export default function WinnerList() {
 
   const isJackpot = (amount) => amount > 10000;
 
-  const renderItem = (item, index, { showEffects, isClone }) => (
+  const renderWinnerItem = (item, index, { showEffects, isClone }) => (
     <div
       key={`${item.username}-${item.amount}-${index}${isClone ? "-clone" : ""}`}
       ref={showEffects && item === newWinner ? newWinnerRef : null}
@@ -154,19 +189,34 @@ export default function WinnerList() {
           NEW!
         </div>
       )}
-
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="text-xs font-semibold text-casinoGold truncate max-w-20">
+          <div className="text-xs font-semibold text-yellow-400 truncate max-w-20">
             ₹{item.amount || "000"}
           </div>
-          <div className="text-xs font-semibold text-casinoGold truncate max-w-20">
+          <div className="text-xs font-semibold text-yellow-400 truncate max-w-20">
             {item.username || "Anonymous"}
           </div>
         </div>
       </div>
-
-      {/* {showEffects && isJackpot(item.amount) && (
+      {showEffects && item === newWinner && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"></div>
+          <div
+            className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.8s" }}
+          ></div>
+        </div>
+      )}
+      {showEffects && isJackpot(item.amount) && (
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 left-40 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
@@ -177,25 +227,65 @@ export default function WinnerList() {
     </div>
   );
 
-  // Reverse so latest shows first
-  const data = winners.slice().reverse();
+  const renderMessageItem = (item, index, { showEffects, isClone }) => (
+    <div
+      key={`${item.username}-${item.text}-${index}${isClone ? "-clone" : ""}`}
+      ref={showEffects && item === newMessage ? newMessageRef : null}
+      className="flex items-center relative transition-all scroll-hidden duration-300"
+    >
+      {showEffects && item === newMessage && (
+        <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1 py-0.5 rounded-full casino-bounce casino-glow sm:text-[10px]">
+          NEW!
+        </div>
+      )}
+      <div className="flex items-center gap-2">
+        <span className="text-yellow-400 font-semibold text-xs truncate max-w-20">
+          {item.username}:
+        </span>
+        <span className="text-yellow-400 text-xs break-all truncate max-w-32">
+          {item.text}
+        </span>
+      </div>
+      {showEffects && item === newMessage && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"></div>
+          <div
+            className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 rounded-full casino-sparkle"
+            style={{ animationDelay: "0.8s" }}
+          ></div>
+        </div>
+      )}
+    </div>
+  );
+
+  // Reverse so latest items show first
+  const winnerData = winners.slice().reverse();
+  const messageData = messages.slice().reverse();
 
   return (
     <motion.div
-      className="fixed z-10 left-1 sm:left-4 w-[90%] sm:w-60"
+      className="fixed z-10 left-1 sm:left-4 w-[90%] sm:w-60 mt-2"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Desktop Winners Panel */}
-      <div className="hidden sm:block sm:h-45 ">
-        <h1 className="flex items-center space-x-1 text-white font-bold">
-          <span>🏆 Winners</span>
-        </h1>
+      {/* Desktop: Scrolling panel */}
 
+      <div className="hidden sm:block sm:h-45 relative z-10">
+        <h1 className="flex items-center space-x-1 text-white font-bold px-3 pt-2">
+          <span>{phase === "result" ? "🏆 Winners" : "💬 Chat"}</span>
+        </h1>
         <AnimatePresence mode="wait">
-          {newWinner && (
-            <div className="flex space-x-2 mt-1">
+          {phase === "result" && newWinner && (
+            <div className="flex space-x-2 mt-1 px-3">
               <motion.p
                 key={newWinner.username}
                 initial={{ opacity: 0, y: -10 }}
@@ -218,69 +308,133 @@ export default function WinnerList() {
               </motion.p>
             </div>
           )}
+          {phase !== "result" && newMessage && (
+            <div className="flex space-x-2 mt-1 px-3">
+              <motion.p
+                key={newMessage.username}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-xs text-yellow-400 font-semibold"
+              >
+                {newMessage.username}
+              </motion.p>
+              <motion.p
+                key={newMessage.text}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-xs text-yellow-400 font-semibold"
+              >
+                {newMessage.text}
+              </motion.p>
+            </div>
+          )}
         </AnimatePresence>
-
-        <hr className="h-1 border-gray-600 mt-2" />
-
+        <hr className="h-1 border-gray-600 mt-2 mx-3" />
         <div
-          className=" py-2 h-full overflow-y-auto scroll-hidden"
+          className="py-2 px-3 max-h-[150px] overflow-y-auto scroll-hidden"
           ref={listRef}
         >
-          {data.length === 0 ? (
-            <div className="text-center text-gray-400 py-8">
-              <div className="text-2xl mb-2">🎲</div>
-              <p className="text-xs">Waiting for winners...</p>
-            </div>
+          {phase === "result" ? (
+            winnerData.length === 0 ? (
+              <div className="text-center text-gray-400 py-8">
+                <div className="text-2xl mb-2">🎲</div>
+                <p className="text-xs">Waiting for winners...</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div ref={contentRef} className="space-y-2">
+                  {winnerData.map((w, i) =>
+                    renderWinnerItem(w, i, { showEffects: true, isClone: false })
+                  )}
+                </div>
+                <div className="space-y-1" aria-hidden="true">
+                  {winnerData.map((w, i) =>
+                    renderWinnerItem(w, i, { showEffects: false, isClone: true })
+                  )}
+                </div>
+              </div>
+            )
           ) : (
-            <div className="space-y-2">
-              <div ref={contentRef} className="space-y-2">
-                {data.map((w, i) =>
-                  renderItem(w, i, { showEffects: true, isClone: false })
-                )}
+            messageData.length === 0 ? (
+              <div className="text-center text-gray-400 py-8">
+                <div className="text-2xl mb-2">💬</div>
+                <p className="text-xs">No messages yet...</p>
               </div>
-              <div className="space-y-1" aria-hidden="true">
-                {data.map((w, i) =>
-                  renderItem(w, i, { showEffects: false, isClone: true })
-                )}
+            ) : (
+              <div className="space-y-2">
+                <div ref={contentRef} className="space-y-2">
+                  {messageData.map((msg, i) =>
+                    renderMessageItem(msg, i, { showEffects: true, isClone: false })
+                  )}
+                </div>
+                <div className="space-y-1" aria-hidden="true">
+                  {messageData.map((msg, i) =>
+                    renderMessageItem(msg, i, { showEffects: false, isClone: true })
+                  )}
+                </div>
               </div>
-            </div>
+            )
           )}
         </div>
       </div>
 
-      {/* Mobile Popup Bar */}
-      <div className="sm:hidden w-[70%]">
-        <div className="fixed bottom-15 z-50">
-          {data.length === 0 ? (
-            <p className="text-gray-400 text-[10px]">No winners yet...</p>
+      {/* Mobile: Single cycling item */}
+      <div className="sm:hidden w-[70%] relative z-10 mt-92 ">
+        <div className="fixed bottom-15 z-50 px-3 py-2 h-[38px]">
+          {phase === "result" ? (
+            winnerData.length === 0 ? (
+              <p className="text-gray-400 text-[10px]">No winners yet...</p>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-yellow-400 text-[10px] font-bold"
+                >
+                  {renderWinnerItem(winnerData[activeIndex], activeIndex, {
+                    showEffects: true,
+                    isClone: false,
+                  })}
+                </motion.div>
+              </AnimatePresence>
+            )
           ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5 }}
-                className=" text-yellow-600 text-[10px] font-bold"
-              >
-                {renderItem(data[activeIndex], activeIndex, {
-                  showEffects: true,
-                  isClone: false,
-                })}
-              </motion.div>
-            </AnimatePresence>
+            messageData.length === 0 ? (
+              <p className="text-gray-400 text-[10px]">No messages yet...</p>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-yellow-400 text-[10px] font-bold"
+                >
+                  {renderMessageItem(messageData[activeIndex], activeIndex, {
+                    showEffects: true,
+                    isClone: false,
+                  })}
+                </motion.div>
+              </AnimatePresence>
+            )
           )}
         </div>
-
-        {/* Totals below popup */}
-        <div className="text-white text-[10px] flex flex-col justify-between">
+        <div className="fixed bottom-1 left-1 w-auto text-white text-[10px] flex flex-col gap-1 z-50 px-3 py-2">
           <span>
-            Total Bet: <span className="text-yellow-400">₹{totalAmount}</span>
+            Total Bet: <span className="text-yellow-400">₹{totalAmount ?? 0}</span>
           </span>
           <span>
             Balance:{" "}
             <span className="text-yellow-400">
-              ₹{user?.realBalance || singleUser?.realBalance}
+              ₹{(user?.realBalance || singleUser?.realBalance || 0).toFixed(2)}
             </span>
           </span>
         </div>
