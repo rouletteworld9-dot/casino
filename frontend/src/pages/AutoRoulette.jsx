@@ -175,6 +175,10 @@ const AutoRoulette = () => {
                   cellTotals={cellTotals}
                   lastResults={lastResults}
                 />
+                {/* Mobile only: bottom left text */}
+                <div className="sm:hidden mb-0.2 fixed flex right-1 bottom-1 z-50 text-white text-xs px-1 py-1 rounded">
+                  Auto Roulette ₹0 - ₹50,000
+                </div>
               </>
             )}
           </ChipManager>
