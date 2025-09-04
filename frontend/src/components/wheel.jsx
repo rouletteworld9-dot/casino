@@ -168,7 +168,7 @@ const Wheel = (props) => {
       anime({
         targets: [".layer-2", ".layer-4"],
         rotate: "-=360deg",
-        duration: 1000,
+        duration: 2000,
         easing: "linear",
         loop: true,
       });
