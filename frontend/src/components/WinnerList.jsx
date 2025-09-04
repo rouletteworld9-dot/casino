@@ -114,57 +114,6 @@ export default function WinnerList() {
     rafIdRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafIdRef.current);
   }, [winners.length]);
-  // useEffect(() => {
-  //   const setupAutoScroll = (container, content, isMobile = false) => {
-  //     if (!container || !content) return;
-
-  //     if (content.offsetHeight <= container.clientHeight) return;
-
-  //     let last = performance.now();
-  //     const screenHeight = window.innerHeight;
-  //     const baseSpeed = 20;
-
-  //     // 📱 make mobile faster
-  //     const speedMultiplier = isMobile ? 2 : 1;
-
-  //     const SPEED_PX_PER_SEC =
-  //       Math.max(5, (screenHeight / 800) * baseSpeed) * speedMultiplier;
-
-  //     const step = (now) => {
-  //       const dt = Math.min(now - last, 30);
-  //       last = now;
-
-  //       if (!isPaused.current) {
-  //         container.scrollTop += (SPEED_PX_PER_SEC * dt) / 1000;
-
-  //         if (container.scrollTop >= content.offsetHeight) {
-  //           container.scrollTop = 0; // reset for looping
-  //         }
-  //       }
-
-  //       rafIdRef.current = requestAnimationFrame(step);
-  //     };
-
-  //     rafIdRef.current = requestAnimationFrame(step);
-  //     return () => cancelAnimationFrame(rafIdRef.current);
-  //   };
-
-  //   const cleanupDesktop = setupAutoScroll(
-  //     listRef.current,
-  //     contentRef.current,
-  //     true
-  //   );
-  //   const cleanupMobile = setupAutoScroll(
-  //     mobileListRef.current,
-  //     mobileContentRef.current,
-  //     true // ✅ mark as mobile
-  //   );
-
-  //   return () => {
-  //     if (cleanupDesktop) cleanupDesktop();
-  //     if (cleanupMobile) cleanupMobile();
-  //   };
-  // }, [winners.length]);
 
   const playNotificationSound = () => {
     try {

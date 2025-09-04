@@ -16,6 +16,7 @@ import { Undo2 } from "lucide-react";
 import MuteButton from "../components/MuteButton";
 import ResultDisplay from "../components/ui/ResultDisplay";
 import { motion } from "framer-motion";
+import AutoRouletteTag from "../components/ui/AutoRouletteTag";
 
 const AutoRoulette = () => {
   const [showWinMessage, setShowWinMessage] = useState(false);
@@ -167,6 +168,7 @@ const AutoRoulette = () => {
             {/* <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100"> */}
             <PhaseTimer />
           </div>
+          {/* <AutoRouletteTag/> */}
         </div>
       )}
     </div>
