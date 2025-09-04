@@ -96,7 +96,7 @@ export default function useCountdown() {
   }, []);
 
   useEffect(() => {
-    if (phase === "result" && result && !isMuted && !isPageVisible) {
+    if (phase === "result" && result && !isMuted && isPageVisible) {
       setTimeout(() => {
         announceNumber(isPageVisible, result);
       }, 5000);
