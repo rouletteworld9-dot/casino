@@ -378,15 +378,12 @@ const RouletteBoard = ({
   };
 
   return (
-    <motion.div
-  className="sm:items-center sm:mb-10 items-end h-full sm:justify-center justify-start flex flex-col sm:min-h-screen w-full z-90"
-  animate={
-    phase === "betting"
-      ? { y: -50, opacity: 0.7 }
-      : { y: 0, opacity: 0.5 }
-  }
-  transition={{ duration: 0.9, ease: "easeInOut" }}
->
+    <div
+    className={`sm:items-center   transition-all duration-900 ease-in-out sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
+  ${phase === "betting" ? "sm:h-full sm:-mt-50 -mt-20 opacity-70" : ""}
+  ${phase !== "betting" ? "sm:-mt-50 opacity-50" : ""}
+`}
+  >
       <div
         className={`sm:max-w-3xl sm:ml-40 sm:mt-30 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]
@@ -746,7 +743,7 @@ const RouletteBoard = ({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
