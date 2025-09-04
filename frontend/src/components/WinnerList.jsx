@@ -45,6 +45,7 @@ export default function WinnerList() {
   const contentRef = useRef(null);
   const newWinnerRef = useRef(null);
   const newMessageRef = useRef(null);
+
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
 
@@ -146,6 +147,7 @@ export default function WinnerList() {
     return () => cancelAnimationFrame(rafIdRef.current);
   }, [winners.length, messages.length, phase]);
 
+
   const playNotificationSound = () => {
     try {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -221,7 +223,7 @@ export default function WinnerList() {
             style={{ animationDelay: "0.3s" }}
           ></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 

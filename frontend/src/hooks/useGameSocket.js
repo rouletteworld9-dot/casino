@@ -135,8 +135,6 @@ export function useGameSocket() {
       return;
     }
     socket.emit("placeBets", data);
-    toast.success("Bet placed!");
-    console.log("Placed Bets: ", data);
     setTotalBetAmount(total);
   };
 

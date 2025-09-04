@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
 import React from "react";
 import BetPlacedAnimation from "../components/ui/BetPlacedAnimation";
 import { useDelay } from "../hooks/useDelay";
@@ -379,11 +379,11 @@ const RouletteBoard = ({
 
   return (
     <div
-      className={`sm:items-center   transition-all duration-900 ease-in-out sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
-    ${phase === "betting" ? "sm:h-full sm:-mt-50 -mt-20 opacity-70" : ""}
-    ${phase !== "betting" ? "sm:-mt-50 opacity-50" : ""}
-  `}
-    >
+    className={`sm:items-center   transition-all duration-900 ease-in-out sm:mb-10 items-end h-[100%]  sm:justify-center  justify-start flex flex-col  sm:min-h-screen w-full z-90
+  ${phase === "betting" ? "sm:h-full sm:-mt-50 -mt-20 opacity-70" : ""}
+  ${phase !== "betting" ? "sm:-mt-50 opacity-50" : ""}
+`}
+  >
       <div
         className={`sm:max-w-3xl sm:ml-40 sm:mt-30 sm:h-full 
         lg:[transform:perspective(1000px)_rotateX(10deg)_rotateY(0deg)_rotateZ(30deg)_skewX(0deg)]

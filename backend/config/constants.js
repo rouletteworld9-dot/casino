@@ -38,7 +38,30 @@ const FAKE_NAMES = [
   "Spin Doctor",
   "Gold Rush",
   "Diamond Player",
+  // New suggestions
+  "High Roller",
+  "Ace Spinner",
+  "Lady Luck",
+  "Royal Flush",
+  "Casino Shark",
+  "Lucky Streak",
+  "Midnight Gambler",
+  "Card Whisperer",
+  "The House Edge",
+  "Treasure Spinner",
+  "Silver Chips",
+  "Cash King",
+  "Mr. Blackjack",
+  "Lucky Dice",
+  "Slot Machine Pro",
+  "Golden Hand",
+  "Roulette Rebel",
+  "Jackpot Jester",
+  "Queen of Spins",
+  "Money Magnet",
+  "Spin Genius",
 ];
+
 
 module.exports = {
   GAME_TIMINGS,

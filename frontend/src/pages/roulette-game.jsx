@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-// import RouletteSpinner from "../components/RouletteSpinner";
-import { useGameSocket } from "../hooks/useGameSocket";
-import { useAuthStore } from "../stores/useAuthStore";
 import Wheel from "../components/wheel";
 import { useGameStore } from "../stores/useGameStore";
 
@@ -21,17 +17,7 @@ const RouletteGame = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      {/* <RouletteSpinner phase={phase} lastResults={lastResults} /> */}
-      <Wheel number={number} rouletteData={rouletteData} phase={phase} />
-      {/* <h2>
-        {phase === "result" && result !== null ? (
-          <span className="font-bold text-white text-2xl">
-            🎉 Result: <strong>{result}</strong>
-          </span>
-        ) : (
-          <span className="font-bold text-white text-2xl">{phase}</span>
-        )}
-      </h2> */}
+    <Wheel number={number} rouletteData={rouletteData} phase={phase} />
     </div>
   );
 };
