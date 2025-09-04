@@ -137,20 +137,22 @@ const ChipManager = ({ children, userId, round, phase }) => {
           toast("You can only bet on one color at a time.");
           return prev;
         }
-        // --- Column: only one column bet allowed ---
+        // --- Column: allow up to 2 columns ---
         if (
           betType.type === "column" &&
-          prev.some((b) => b.type === "column" && b.number !== betType.number)
+          prev.filter((b) => b.type === "column" && b.number !== betType.number).length >= 2
         ) {
-          toast("You can only bet on one column at a time.");
+          toast("You can only bet on up to two columns at a time.");
+          console.log("❌ Column exclusion: more than two columns");
           return prev;
         }
-        // --- Dozen: only one dozen bet allowed ---
+        // --- Dozen: allow up to 2 dozens ---
         if (
           betType.type === "dozen" &&
-          prev.some((b) => b.type === "dozen" && b.number !== betType.number)
+          prev.filter((b) => b.type === "dozen" && b.number !== betType.number).length >= 2
         ) {
-          toast("You can only bet on one dozen at a time.");
+          toast("You can only bet on up to two dozens at a time.");
+          console.log("❌ Dozen exclusion: more than two dozens");
           return prev;
         }
         // --- Low/High: mutually exclusive ---

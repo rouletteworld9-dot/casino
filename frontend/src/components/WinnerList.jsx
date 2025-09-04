@@ -22,10 +22,14 @@ export default function WinnerList() {
 
   const [winners, setWinners] = useState([]);
   const [newWinner, setNewWinner] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const listRef = useRef(null);
   const contentRef = useRef(null);
   const newWinnerRef = useRef(null);
+
+  const mobileListRef = useRef(null);
+  const mobileContentRef = useRef(null);
 
   const isPaused = useRef(false);
   const rafIdRef = useRef(null);
@@ -70,6 +74,17 @@ export default function WinnerList() {
     }
   }, [delayedWinners]);
 
+  // Cycle winners in mobile view
+  useEffect(() => {
+    if (!winners.length) return;
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % winners.length);
+    }, 3000); // ⏳ show each winner for 3s
+
+    return () => clearInterval(interval);
+  }, [winners]);
+
   // Auto-scroll loop
   useEffect(() => {
     const container = listRef.current;
@@ -99,6 +114,57 @@ export default function WinnerList() {
     rafIdRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafIdRef.current);
   }, [winners.length]);
+  // useEffect(() => {
+  //   const setupAutoScroll = (container, content, isMobile = false) => {
+  //     if (!container || !content) return;
+
+  //     if (content.offsetHeight <= container.clientHeight) return;
+
+  //     let last = performance.now();
+  //     const screenHeight = window.innerHeight;
+  //     const baseSpeed = 20;
+
+  //     // 📱 make mobile faster
+  //     const speedMultiplier = isMobile ? 2 : 1;
+
+  //     const SPEED_PX_PER_SEC =
+  //       Math.max(5, (screenHeight / 800) * baseSpeed) * speedMultiplier;
+
+  //     const step = (now) => {
+  //       const dt = Math.min(now - last, 30);
+  //       last = now;
+
+  //       if (!isPaused.current) {
+  //         container.scrollTop += (SPEED_PX_PER_SEC * dt) / 1000;
+
+  //         if (container.scrollTop >= content.offsetHeight) {
+  //           container.scrollTop = 0; // reset for looping
+  //         }
+  //       }
+
+  //       rafIdRef.current = requestAnimationFrame(step);
+  //     };
+
+  //     rafIdRef.current = requestAnimationFrame(step);
+  //     return () => cancelAnimationFrame(rafIdRef.current);
+  //   };
+
+  //   const cleanupDesktop = setupAutoScroll(
+  //     listRef.current,
+  //     contentRef.current,
+  //     true
+  //   );
+  //   const cleanupMobile = setupAutoScroll(
+  //     mobileListRef.current,
+  //     mobileContentRef.current,
+  //     true // ✅ mark as mobile
+  //   );
+
+  //   return () => {
+  //     if (cleanupDesktop) cleanupDesktop();
+  //     if (cleanupMobile) cleanupMobile();
+  //   };
+  // }, [winners.length]);
 
   const playNotificationSound = () => {
     try {
@@ -188,77 +254,108 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-1 left-1 sm:left-4 w-30 sm:w-60 sm:h-45 h-14"
+      className="fixed z-10 left-1 sm:left-4 w-[90%] sm:w-60"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <p  className="sm:hidden text-white text-sm">
-        Total Bet : <span id="total-bet-label" className="text-yellow-500">₹{totalAmount}</span>
-      </p>
-      <p className="sm:hidden text-white text-sm">
-        Balance :{" "}
-        <span className="text-yellow-500">
-          ₹{user?.realBalance || singleUser?.realBalance}
-        </span>
-      </p>
-      <h1 className="hidden sm:flex items-center space-x-1 text-white font-bold">
-        <span>🏆 Winners</span>
-      </h1>
+      {/* Desktop Winners Panel */}
+      <div className="hidden sm:block sm:h-45 ">
+        <h1 className="flex items-center space-x-1 text-white font-bold">
+          <span>🏆 Winners</span>
+        </h1>
 
-      <AnimatePresence mode="wait">
-        {newWinner && (
-          <div className="flex sm:space-x-2">
-            <motion.p
-              key={newWinner.username} // re-trigger animation on change
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-xs sm:text-lg text-yellow-400 font-semibold"
-            >
-              🎉 {newWinner.username}
-            </motion.p>
-            <motion.p
-              key={newWinner.amount} // re-trigger animation on change
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-xs sm:text-lg text-yellow-400 font-semibold"
-            >
-              ₹{newWinner.amount}
-            </motion.p>
-          </div>
-        )}
-      </AnimatePresence>
-
-      <hr className="h-1 border-gray-600 mt-2" />
-
-      <div
-        className="sm:px-3 py-2 h-full overflow-y-auto scroll-hidden"
-        ref={listRef}
-      >
-        {data.length === 0 ? (
-          <div className="text-center text-gray-400 py-8">
-            <div className="text-2xl mb-2">🎲</div>
-            <p className="text-xs">Waiting for winners...</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <div ref={contentRef} className="space-y-2">
-              {data.map((w, i) =>
-                renderItem(w, i, { showEffects: true, isClone: false })
-              )}
+        <AnimatePresence mode="wait">
+          {newWinner && (
+            <div className="flex space-x-2 mt-1">
+              <motion.p
+                key={newWinner.username}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-xs text-yellow-400 font-semibold"
+              >
+                🎉 {newWinner.username}
+              </motion.p>
+              <motion.p
+                key={newWinner.amount}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-xs text-yellow-400 font-semibold"
+              >
+                ₹{newWinner.amount}
+              </motion.p>
             </div>
-            {/* clone for smooth infinite scroll */}
-            <div className="space-y-1" aria-hidden="true">
-              {data.map((w, i) =>
-                renderItem(w, i, { showEffects: false, isClone: true })
-              )}
+          )}
+        </AnimatePresence>
+
+        <hr className="h-1 border-gray-600 mt-2" />
+
+        <div
+          className=" py-2 h-full overflow-y-auto scroll-hidden"
+          ref={listRef}
+        >
+          {data.length === 0 ? (
+            <div className="text-center text-gray-400 py-8">
+              <div className="text-2xl mb-2">🎲</div>
+              <p className="text-xs">Waiting for winners...</p>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-2">
+              <div ref={contentRef} className="space-y-2">
+                {data.map((w, i) =>
+                  renderItem(w, i, { showEffects: true, isClone: false })
+                )}
+              </div>
+              <div className="space-y-1" aria-hidden="true">
+                {data.map((w, i) =>
+                  renderItem(w, i, { showEffects: false, isClone: true })
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Popup Bar */}
+      <div className="sm:hidden w-[70%]">
+        <div className="fixed bottom-15 z-50">
+          {data.length === 0 ? (
+            <p className="text-gray-400 text-[10px]">No winners yet...</p>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5 }}
+                className=" text-yellow-600 text-[10px] font-bold"
+              >
+                {renderItem(data[activeIndex], activeIndex, {
+                  showEffects: true,
+                  isClone: false,
+                })}
+              </motion.div>
+            </AnimatePresence>
+          )}
+        </div>
+
+        {/* Totals below popup */}
+        <div className="text-white text-[10px] flex flex-col justify-between">
+          <span>
+            Total Bet: <span className="text-yellow-400">₹{totalAmount}</span>
+          </span>
+          <span>
+            Balance:{" "}
+            <span className="text-yellow-400">
+              ₹{user?.realBalance || singleUser?.realBalance}
+            </span>
+          </span>
+        </div>
       </div>
     </motion.div>
   );
