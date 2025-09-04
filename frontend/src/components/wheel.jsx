@@ -1,13 +1,32 @@
 import anime from "animejs";
 import { useCallback } from "react";
 import { useEffect } from "react";
-import { useGameSocket } from "../hooks/useGameSocket";
 
 const roulette1 = "/assets/roulette_1.png";
 const roulette2 = "/assets/roulette_2.png";
 const roulette3 = "/assets/roulette_3.png";
 const roulette4 = "/assets/roulette_4.png";
 const roulette5 = "/assets/roulette_5.png";
+
+const startIdleRotation = () => {
+  anime({
+    targets: [".layer-2", ".layer-4"],
+    rotate: "-=360deg",
+    duration: 2000, // slow, realistic spin
+    easing: "linear",
+    loop: true,
+  });
+};
+
+const showBall = () => {
+  const el = document.querySelector(".ball-container");
+  if (el) el.style.display = "block";
+};
+
+const hideBall = () => {
+  const el = document.querySelector(".ball-container");
+  if (el) el.style.display = "none";
+};
 
 const Wheel = (props) => {
   var totalNumbers = 37;
@@ -16,7 +35,7 @@ const Wheel = (props) => {
   var lastNumber = 0;
 
   const isSmallScreen = window.innerWidth < 768; // you can adjust breakpoint
-  const lastValue = isSmallScreen ?73  : 90;
+  const lastValue = isSmallScreen ? 73 : 90;
 
   var rouletteWheelNumbers = props.rouletteData.numbers;
   const getRouletteIndexFromNumber = (number) => {
@@ -99,10 +118,14 @@ const Wheel = (props) => {
       rotate: function () {
         return endRotation; // random number
       },
-      duration: singleSpinDuration, // random duration
+      duration: singleSpinDuration,
       easing: `cubicBezier(${bezier.join(",")})`,
       complete: function () {
         lastNumber = currentNumber;
+        // ✅ Restart idle rotation 2s after final spin stops
+        setTimeout(() => {
+          startIdleRotation();
+        }, 2000);
       },
     });
     // aniamte ball
@@ -124,19 +147,24 @@ const Wheel = (props) => {
     const nextNumber = props.number.next;
 
     if (props.phase === "betting") {
-      // Stop all animations & reset position
-      // anime.remove([".layer-2", ".layer-4", ".ball-container"]);
-      //  anime.set([".layer-2", ".layer-4"], {
-      //    rotate: 0,
-      //  });
+      // clear old animations
+      anime.remove([".layer-2", ".layer-4", ".ball-container"]);
+      // start idle rotation
+      startIdleRotation();
     }
 
     if (props.phase === "spinning") {
-      // Wheel spin (anticlockwise)
+      // stop idle rotation first
+      showBall();
+      anime.remove([".layer-2", ".layer-4", ".ball-container"]);
+
+      // reset ball
       anime.set(".ball-container", {
         rotate: 0,
-        translateY: 40, // reset to initial orbit radius
+        translateY: 40,
       });
+
+      // fast continuous spin until result
       anime({
         targets: [".layer-2", ".layer-4"],
         rotate: "-=360deg",
@@ -145,23 +173,29 @@ const Wheel = (props) => {
         loop: true,
       });
 
-      // Ball spin (clockwise)
       anime({
         targets: ".ball-container",
         rotate: "+=360deg",
         translateY: [{ value: 30 }],
         duration: 1000,
         easing: "linear",
-        loop: Infinity,
+        loop: true,
       });
     }
 
-    if (nextNumber != null && nextNumber !== "" && props.phase === "result") {
+    if (nextNumber != null && props.phase === "result") {
       const nextNumberInt = parseInt(nextNumber);
+      showBall();
 
-      // Stop continuous spinning before result spin
+      // stop continuous rotation before final spin
       anime.remove([".layer-2", ".layer-4", ".ball-container"]);
+
+      // run final spin + ball drop (spinWheel will handle restart later)
       spinWheel(nextNumberInt);
+      // so here: hide ball after 2s as well
+      setTimeout(() => {
+        hideBall();
+      }, singleSpinDuration + 2000); // wait for spin duration + 2s pause
     }
   }, [props.number, props.phase]);
 

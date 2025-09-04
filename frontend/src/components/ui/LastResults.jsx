@@ -28,11 +28,11 @@ const LastResults = () => {
   const delayedResults = useDelay(lastResults, 5000);
 
   return (
-    <div className="z-60 flex sm:gap-1 items-center justify-center">
+    <div className="z-60 flex sm:justify-center mt-7 sm:items-center sm:gap-1 w-full items-center ">
       {delayedResults?.map((res, idx) => (
         <div
           key={res.roundId || idx}
-          className={`w-7 sm:w-8 h-5 sm:h-8 flex items-center justify-center sm:rounded-md text-xs sm:text-sm font-bold border border-white shadow-md ${getColorClass(res.result)}`}
+          className={`w-full sm:w-9 h-5 sm:h-8 flex items-center justify-center sm:rounded-md text-xs sm:text-sm font-bold border border-white shadow-md ${getColorClass(res.result)}`}
         >
        
           {res.result}

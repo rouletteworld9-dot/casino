@@ -16,37 +16,6 @@ const ChipSelector = ({
   const flyingChips = useGameStore((s) => s.flyingChips);
   const setFlyingChips = useGameStore((s) => s.setFlyingChips);
 
-  const handleBetClick = () => {
-    if (betLocked || !hasBets) return;
-
-    const totalRef = document.getElementById("total-bet-label");
-    const endRect = totalRef?.getBoundingClientRect();
-
-    if (endRect) {
-      const chipAnimations = [];
-
-      Object.entries(bets || {}).forEach(([cellId, denoms]) => {
-        (denoms || []).forEach((denom) => {
-          const cellEl = document.getElementById(`cell-${cellId}`);
-          const startRect = cellEl?.getBoundingClientRect();
-
-          if (startRect && startRect.width && startRect.height) {
-            chipAnimations.push({
-              id: `${startRect.left}-${startRect.top}-${endRect.left}-${endRect.top}-${denom}-${Date.now()}`, // unique
-              start: startRect,
-              end: endRect,
-              amount: denom,
-            });
-          }
-        });
-      });
-
-      setFlyingChips((prev) => [...prev, ...chipAnimations]);
-    }
-
-    handlePlaceBet();
-  };
-
   const colorByDenom = (value) => {
     switch (value) {
       case 10:
@@ -125,38 +94,6 @@ const ChipSelector = ({
           </div>
         );
       })}
-      <div className=" ">
-        {/* Large Button (same as before) */}
-        <button
-          className={`cursor-pointer px-4 sm:px-6 md:px-8 
-                py-1 sm:py-2 
-                rounded-full font-bold 
-                text-sm sm:text-base md:text-lg 
-                shadow-lg transition 
-                bg-gradient-to-r from-yellow-400 to-yellow-600 
-                text-black border-2 border-yellow-700 hidden sm:flex
-                ${!hasBets || betLocked ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}`}
-          onClick={handleBetClick}
-          disabled={betLocked || !hasBets}
-        >
-          Place Bet
-        </button>
-
-        {/* Small Compact Button */}
-        <button
-          className={`p-3 cursor-pointer 
-                rounded-full font-bold 
-                text-[12px] leading-none
-                shadow-md transition sm:hidden
-                bg-gradient-to-r from-yellow-400 to-yellow-600 
-                text-black border border-yellow-700 
-                ${!hasBets || betLocked ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}`}
-          onClick={handleBetClick}
-          disabled={betLocked || !hasBets}
-        >
-          Bet
-        </button>
-      </div>
 
       {flyingChips.map((chip) => (
         <ChipAnimation

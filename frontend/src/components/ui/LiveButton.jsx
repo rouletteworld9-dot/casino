@@ -32,7 +32,7 @@ const LiveButton = ({ onClick, className = "" }) => {
         sm:bg-gray-900 sm:hover:bg-gray-800 
         text-white font-semibold 
         sm:rounded-lg sm:border-2
-        transition-colors duration-200
+        transition-colors duration-200 mt-4 mr-2
         ${className}
       `}
       //   variants={buttonGlowVariants}

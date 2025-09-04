@@ -16,8 +16,11 @@ import { Undo2 } from "lucide-react";
 import MuteButton from "../components/MuteButton";
 import ResultDisplay from "../components/ui/ResultDisplay";
 import { motion } from "framer-motion";
+import AutoRouletteTag from "../components/ui/AutoRouletteTag";
 
 const AutoRoulette = () => {
+  const [showWinMessage, setShowWinMessage] = useState(false);
+  const winStatus = useGameStore((s) => s.winStatus);
   const user = useAuthStore((state) => state.user);
 
   const phase = useGameStore((s) => s.phase);
@@ -31,6 +34,17 @@ const AutoRoulette = () => {
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, [setLoading]);
+
+  // Show win message 1s after result phase starts
+  useEffect(() => {
+    if (phase === "result" && winStatus?.isWin) {
+      setShowWinMessage(false);
+      const t = setTimeout(() => setShowWinMessage(true), 6000); // 6 seconds delay (5s for number, 1s after)
+      return () => clearTimeout(t);
+    } else {
+      setShowWinMessage(false);
+    }
+  }, [phase, winStatus]);
 
   return (
     <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
@@ -62,9 +76,9 @@ const AutoRoulette = () => {
           </div>
 
           <MuteButton />
-          <ResultOverlay />
-          {/* last results */}  
-          <div className="bg-black/10  left-10 absolute top-0 sm:top-11 sm:left-140 flex justify-center items-center">
+          {showWinMessage && <ResultOverlay />}
+          {/* last results */}
+          <div className="bg-black/5 gap-7 w-auto h-3 right-0 left-0 absolute top-0 sm:top-11 b-2 flex items-center justify-between">
             <LastResults />
           </div>
 
@@ -73,30 +87,14 @@ const AutoRoulette = () => {
             <ResultDisplay className="absolute sm:fixed z-80 top-0 sm:top-120" />
 
             <motion.div
-              className={`
-    absolute sm:left-0 left-0 top-10 sm:top-0
-    transition-all duration-900 ease-in-out
-    ${
-      phase === "betting"
-        ? "opacity-30 mt-10 sm:mt-0 sm:opacity-100 sm:-translate-y-0 -translate-y-5 z-0"
-        : "opacity-100 translate-y-0 z-10 mt-5 sm:mt-0"
-    }
-  `}
-              initial={{ scale: 1 }}
-              animate={{
-                // only animate on small screens
-                scale:
-                  (phase === "spinning" || phase === "result") &&
-                  window.innerWidth < 640
-                    ? [1, 1.5, 1] // zoom animation
-                    : 1,
-              }}
-              transition={{
-                duration: phase === "spinning" || phase === "result" ? 5 : 0,
-                repeat:
-                  phase === "spinning" || phase === "result" ? Infinity : 0,
-                ease: "easeInOut",
-              }}
+              className="absolute sm:left-0 left-0 top-10 sm:top-0"
+              initial={{ y: 0, opacity: 1 }}
+              animate={
+                phase === "betting"
+                  ? { y: -20, opacity: 0.7, zIndex: 0 }
+                  : { y: 0, opacity: 1, zIndex: 10 }
+              }
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <RouletteGame />
             </motion.div>
@@ -170,6 +168,7 @@ const AutoRoulette = () => {
             {/* <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 opacity-100"> */}
             <PhaseTimer />
           </div>
+          {/* <AutoRouletteTag/> */}
         </div>
       )}
     </div>
