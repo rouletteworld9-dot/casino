@@ -4,18 +4,17 @@ import { IndianRupee } from 'lucide-react';
 
 const ResultOverlay = () => {
   const {
-    winStatus: { isWin = true, amount },
+    winStatus: {isWin, amount },
   } = useGameStore();
   const result = useGameStore((s) => s.result);
 
   if (isWin === null) return null;
 
-
   return (
     <div
       style={{
         position: "fixed",
-        top: 0,
+        top: 60,
         left: 0,
         width: "100vw",
         height: "50vh",

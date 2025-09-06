@@ -48,7 +48,7 @@ const AutoRoulette = () => {
 
   return (
     <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
-      {/* <InsufficientBalanceModal /> */}
+      <InsufficientBalanceModal />
 
       <div className="sm:block hidden ">
         <Header />
