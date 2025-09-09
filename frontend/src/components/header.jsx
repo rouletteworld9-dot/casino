@@ -60,7 +60,7 @@ export default function Header() {
           onClick={() => navigate("/")}
           className="text-sm sm:text-base"
         >
-          Casinoo
+          Roulette Worlds
         </NavButton>
 
         {/* Desktop Nav */}

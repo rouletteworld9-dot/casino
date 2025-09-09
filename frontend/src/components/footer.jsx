@@ -66,7 +66,7 @@ export default function Footer() {
             className="text-right flex flex-col"
           >
             <span className="text-gray-400 text-sm">support@casino.in</span>
-            <span className="text-gray-400 text-sm">Customer Support : 7000843747</span>
+            <span className="text-gray-400 text-sm">Customer Support : 7898262846</span>
           </motion.div>
         </div>
 
