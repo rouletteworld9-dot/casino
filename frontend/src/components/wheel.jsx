@@ -1,5 +1,5 @@
 import anime from "animejs";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useEffect } from "react";
 
 const roulette1 = "/assets/roulette_1.png";
