@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useGameStore } from "../../stores/useGameStore";
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee } from "lucide-react";
 
 const ResultOverlay = () => {
+  const [showWinMessage, setShowWinMessage] = useState(false);
+
   const {
-    winStatus: {isWin, amount },
+    winStatus: { isWin, amount },
   } = useGameStore();
-  const result = useGameStore((s) => s.result);
+
+  console.log("amount",amount)
+
+  useEffect(() => {
+    if (isWin === null) return;
+    const t = setTimeout(() => {
+      setShowWinMessage(true);
+    }, 5000);
+
+    return () => clearTimeout(t);
+  }, [isWin]);
 
   if (isWin === null) return null;
 
@@ -22,7 +34,7 @@ const ResultOverlay = () => {
         alignItems: "center",
         justifyContent: "center",
         zIndex: 100,
-        pointerEvents: "none"
+        pointerEvents: "none",
       }}
     >
       <span
@@ -37,21 +49,24 @@ const ResultOverlay = () => {
           padding: "clamp(0.75rem, 4vw, 1rem) clamp(1.25rem, 5vw, 2rem)",
           borderTop: "2px solid #facc15",
           borderBottom: "2px solid #facc15",
-          background: "linear-gradient(180deg, rgba(250, 204, 251, 0), rgba(0, 0, 0, 0.5))",
+          background:
+            "linear-gradient(180deg, rgba(250, 204, 251, 0), rgba(0, 0, 0, 0.5))",
           borderRadius: "0.5rem",
         }}
       >
         <span>You won</span>
-        <span style={{ 
-          display: "flex", 
-          alignItems: "center",
-          fontSize: "clamp(1.2rem, 5vw, 1.6rem)"
-        }}>
+        {/* <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontSize: "clamp(1.2rem, 5vw, 1.6rem)",
+          }}
+        >
           <IndianRupee size={20} style={{ marginRight: "0.5rem" }} /> {amount}
-        </span>
+        </span> */}
       </span>
     </div>
   );
 };
 
-export default ResultOverlay;
+export default React.memo(ResultOverlay);

@@ -248,4 +248,4 @@ const Wheel = (props) => {
   );
 };
 
-export default Wheel;
+export default React.memo(Wheel);

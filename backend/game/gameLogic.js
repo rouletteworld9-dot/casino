@@ -5,6 +5,7 @@ const {
 const payouts = require('./payouts');
 
 
+
 function generateWinningNumber(gameState) {
   if (gameState.nextWinningNumber !== null) {
     return gameState.nextWinningNumber;
@@ -14,7 +15,7 @@ function generateWinningNumber(gameState) {
     return Math.floor(Math.random() * 37);
   }
 
-  console.log("gameState", gameState)
+  console.log("gameState", gameState);
 
   // Calculate total payout for each possible number (0-36)
   const payoutForNumber = {};
@@ -30,16 +31,40 @@ function generateWinningNumber(gameState) {
     }
   }
   
-  // Find number(s) with minimum total payout
-  let minPayout = Math.min(...Object.values(payoutForNumber));
-  let numbersWithMinPayout = Object.keys(payoutForNumber)
-    .filter(num => payoutForNumber[num] === minPayout)
-    .map(num => parseInt(num));
+  console.log("Payout breakdown:", payoutForNumber);
+  
+  // Find minimum payout (safer approach)
+  let minPayout = Infinity;
+  for (let number = 0; number <= 36; number++) {
+    if (payoutForNumber[number] < minPayout) {
+      minPayout = payoutForNumber[number];
+    }
+  }
+  
+  console.log("Minimum payout found:", minPayout);
+  
+  // Find all numbers with minimum payout
+  let numbersWithMinPayout = [];
+  for (let number = 0; number <= 36; number++) {
+    if (payoutForNumber[number] === minPayout) {
+      numbersWithMinPayout.push(number);
+    }
+  }
+  
+  console.log("Numbers with min payout:", numbersWithMinPayout);
+  
+  // Safety check
+  if (numbersWithMinPayout.length === 0) {
+    console.error("❌ No numbers found with minimum payout! Fallback to random.");
+    return Math.floor(Math.random() * 37);
+  }
   
   // Randomly select from numbers that minimize payout
-  return numbersWithMinPayout[Math.floor(Math.random() * numbersWithMinPayout.length)];
+  const selectedNumber = numbersWithMinPayout[Math.floor(Math.random() * numbersWithMinPayout.length)];
+  console.log("🎯 Selected winning number:", selectedNumber, "with payout:", minPayout);
+  
+  return selectedNumber;
 }
-
 
 
 function updateLastResults(currentResults, winningNumber, roundId, bets = []) {

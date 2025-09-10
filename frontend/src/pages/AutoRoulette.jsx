@@ -19,8 +19,6 @@ import { motion } from "framer-motion";
 import AutoRouletteTag from "../components/ui/AutoRouletteTag";
 
 const AutoRoulette = () => {
-  const [showWinMessage, setShowWinMessage] = useState(false);
-  const winStatus = useGameStore((s) => s.winStatus);
   const user = useAuthStore((state) => state.user);
 
   const phase = useGameStore((s) => s.phase);
@@ -35,16 +33,6 @@ const AutoRoulette = () => {
     return () => clearTimeout(timer);
   }, [setLoading]);
 
-  // Show win message 1s after result phase starts
-  useEffect(() => {
-    if (phase === "result" && winStatus?.isWin) {
-      setShowWinMessage(false);
-      const t = setTimeout(() => setShowWinMessage(true), 6000); // 6 seconds delay (5s for number, 1s after)
-      return () => clearTimeout(t);
-    } else {
-      setShowWinMessage(false);
-    }
-  }, [phase, winStatus]);
 
   return (
     <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
@@ -76,7 +64,7 @@ const AutoRoulette = () => {
           </div>
 
           <MuteButton />
-          {showWinMessage && <ResultOverlay />}
+           <ResultOverlay  />
           {/* last results */}
           <div className="bg-black/5 gap-7 w-auto h-3 right-0 left-0 absolute top-0 sm:top-11 b-2 flex items-center justify-between">
             <LastResults />
