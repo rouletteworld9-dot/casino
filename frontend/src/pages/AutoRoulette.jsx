@@ -110,7 +110,6 @@ const AutoRoulette = () => {
               cellTotals,
               onCellClick,
               onCellDrop,
-              onPlaceBet,
               hasBets,
               betLocked,
               onDoubleBets,
@@ -135,7 +134,7 @@ const AutoRoulette = () => {
                         selectedCoin={selectedCoin}
                         onSelect={setSelectedCoin}
                         betLocked={betLocked}
-                        handlePlaceBet={onPlaceBet}
+                      
                         hasBets={hasBets}
                         hidePlaceBet
                       />

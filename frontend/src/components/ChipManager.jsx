@@ -53,11 +53,11 @@ const getBetTypeAndNumber = (cellId) => {
 const ChipManager = ({ children, userId, round, phase }) => {
   const [selectedCoin, setSelectedCoin] = useState(10);
   // const [bets, setBets] = useState([]);
-  const {bets, setBets} = setAmountStore(s=>s)
+  const { bets, setBets } = setAmountStore((s) => s);
   const [betLocked, setBetLocked] = useState(false);
   const [betHistory, setBetHistory] = useState([]); // for undo
   const { emitPlaceBet } = useGameSocket();
-  const {  remaining } = useCountdown();
+  const { remaining } = useCountdown();
 
   // 🔹 Reset lock & clear bets when a new round starts
   useEffect(() => {
@@ -77,13 +77,14 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
   // 🔹 Auto place bet at the end of betting phase
   useEffect(() => {
-    // Only proceed if we have bets and we're transitioning away from betting phase 
-    if (phase === "betting" && 
-      bets.length > 0 && 
-      !betLocked && 
-      remaining <= 1 && 
-      remaining > 0 ) {
-    
+    // Only proceed if we have bets and we're transitioning away from betting phase
+    if (
+      phase === "betting" &&
+      bets.length > 0 &&
+      !betLocked &&
+      remaining <= 1 &&
+      remaining > 0
+    ) {
       // Call placeBet logic directly here
       const mappedBets = bets.map((b) => {
         const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
@@ -100,11 +101,10 @@ const ChipManager = ({ children, userId, round, phase }) => {
       emitPlaceBet(payload);
       setBetLocked(true);
     }
-  }, [phase, bets, betLocked, userId, emitPlaceBet,remaining]);
+  }, [phase, bets, betLocked, userId, emitPlaceBet, remaining]);
 
   const addBet = useCallback(
     (cellId, coinValue) => {
-
       if (betLocked) {
         return;
       }
@@ -140,7 +140,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
         // --- Column: allow up to 2 columns ---
         if (
           betType.type === "column" &&
-          prev.filter((b) => b.type === "column" && b.number !== betType.number).length >= 2
+          prev.filter((b) => b.type === "column" && b.number !== betType.number)
+            .length >= 2
         ) {
           toast("You can only bet on up to two columns at a time.");
           console.log("❌ Column exclusion: more than two columns");
@@ -149,7 +150,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
         // --- Dozen: allow up to 2 dozens ---
         if (
           betType.type === "dozen" &&
-          prev.filter((b) => b.type === "dozen" && b.number !== betType.number).length >= 2
+          prev.filter((b) => b.type === "dozen" && b.number !== betType.number)
+            .length >= 2
         ) {
           toast("You can only bet on up to two dozens at a time.");
           console.log("❌ Dozen exclusion: more than two dozens");
@@ -195,10 +197,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
         }
 
         const idx = prev.findIndex(matchFn);
-        console.log("🔍 Match search result:", {
-          idx,
-          matchFn: matchFn.toString(),
-        });
 
         if (idx === -1) {
           let newBet;
@@ -281,7 +279,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
     const totals = {};
 
     bets.forEach((b, index) => {
-
       let cellId;
       if (b.type === "straight") {
         cellId = String(b.number);
@@ -313,7 +310,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
       if (cellId) {
         const total = b.bets.reduce((s, a) => s + a.amount, 0);
         totals[cellId] = total;
-        console.log(`🧮 CellId: ${cellId}, Total: ${total}`);
       }
     });
 
@@ -323,11 +319,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
   const betsByCell = useMemo(() => {
     const out = {};
-    console.log("🎲 Calculating betsByCell from bets:", bets);
 
     bets.forEach((b, index) => {
-      console.log(`🎲 Processing bet ${index}:`, b);
-
       let cellId;
       if (b.type === "straight") {
         cellId = String(b.number);
@@ -363,30 +356,8 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
     });
 
-    console.log("🎲 Final betsByCell:", out);
     return out;
   }, [bets]);
-
-  const placeBet = useCallback(() => {
-    const mappedBets = bets.map((b, index) => {
-      const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
-
-      if (b.type === "color") {
-        return { type: b.color, amount };
-      } else if (["split", "corner", "street", "line"].includes(b.type)) {
-        return { type: b.type, numbers: b.numbers, amount };
-      } else {
-        return { type: b.type, numbers: [b.number], amount };
-      }
-    });
-
-    console.log("🚀 Final mapped bets:", mappedBets);
-    const payload = { userId, bets: mappedBets };
-    console.log("🚀 Payload to emit:", payload);
-
-    emitPlaceBet(payload);
-    setBetLocked(true);
-  }, [bets, userId, emitPlaceBet]);
 
   return children({
     selectedCoin,
@@ -395,7 +366,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
     cellTotals,
     onCellClick: (cellId) => addBet(cellId, selectedCoin),
     onCellDrop: (cellId, value) => addBet(cellId, value),
-    onPlaceBet: placeBet,
     hasBets: bets.length > 0,
     betLocked,
     onDoubleBets: doubleBets,

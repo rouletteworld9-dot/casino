@@ -10,7 +10,6 @@ const ChipSelector = ({
   selectedCoin,
   betLocked,
   onSelect,
-  handlePlaceBet,
   hasBets,
 }) => {
   const flyingChips = useGameStore((s) => s.flyingChips);
