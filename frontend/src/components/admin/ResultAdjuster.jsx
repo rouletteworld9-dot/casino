@@ -12,6 +12,7 @@ const ResultAdjuster = () => {
       toast.error("Please select a number");
     } else {
       forceResult(number);
+      setNumber(" ")
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGameStore } from "../../stores/useGameStore";
 import { IndianRupee } from "lucide-react";
+import { useDelay } from "../../hooks/useDelay";
 
 const ResultOverlay = () => {
   const [showWinMessage, setShowWinMessage] = useState(false);
@@ -9,24 +10,37 @@ const ResultOverlay = () => {
     winStatus: { isWin, amount },
   } = useGameStore();
 
-  console.log("amount",amount)
+  // Delay win status by 5s
+  const isWinDelayed = useDelay(isWin, 5000);
+  console.log(isWinDelayed, "win delayedd");
 
   useEffect(() => {
-    if (isWin === null) return;
-    const t = setTimeout(() => {
-      setShowWinMessage(true);
-    }, 5000);
+    if (isWinDelayed === true) {
+      const t = setTimeout(() => {
+        setShowWinMessage(true);
+      }, 3000);
 
-    return () => clearTimeout(t);
-  }, [isWin]);
+      return () => clearTimeout(t);
+    } else {
+      // reset when not win
+      setShowWinMessage(false);
+    }
+  }, [isWinDelayed]);
 
-  if (isWin === null) return null;
+  // ✅ Only render when delayed win is true and message should be visible
+  if (
+    isWinDelayed === null ||
+    isWinDelayed === false ||
+    isWin === null ||
+    isWin === false
+  )
+    return null;
 
   return (
     <div
       style={{
         position: "fixed",
-        top: 60,
+        top: 80,
         left: 0,
         width: "100vw",
         height: "50vh",
@@ -55,7 +69,7 @@ const ResultOverlay = () => {
         }}
       >
         <span>You won</span>
-        {/* <span
+        <span
           style={{
             display: "flex",
             alignItems: "center",
@@ -63,7 +77,7 @@ const ResultOverlay = () => {
           }}
         >
           <IndianRupee size={20} style={{ marginRight: "0.5rem" }} /> {amount}
-        </span> */}
+        </span>
       </span>
     </div>
   );

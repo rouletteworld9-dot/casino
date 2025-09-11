@@ -42,7 +42,7 @@ const BrowseRecharge = () => {
           {deposits.map((d) => (
             <tr key={d._id} className="border-b border-slate-800/80 text-gray-900">
               <td className="p-2">{d.userId?.name}</td>
-              <td className="p-2">{d.amount} INR</td>
+              <td className="p-2">{d?.amount} INR</td>
               <td className="p-2">{d.status}</td>
               <td className="p-2">{new Date(d.createdAt).toLocaleString()}</td>
             </tr>
