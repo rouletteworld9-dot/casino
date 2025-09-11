@@ -15,7 +15,7 @@ function generateWinningNumber(gameState) {
     return Math.floor(Math.random() * 37);
   }
 
-  console.log("gameState", gameState);
+  console.log("gameState", gameState.bets);
 
   // Calculate total payout for each possible number (0-36)
   const payoutForNumber = {};
@@ -31,8 +31,6 @@ function generateWinningNumber(gameState) {
     }
   }
   
-  console.log("Payout breakdown:", payoutForNumber);
-  
   // Find minimum payout (safer approach)
   let minPayout = Infinity;
   for (let number = 0; number <= 36; number++) {
@@ -40,8 +38,6 @@ function generateWinningNumber(gameState) {
       minPayout = payoutForNumber[number];
     }
   }
-  
-  console.log("Minimum payout found:", minPayout);
   
   // Find all numbers with minimum payout
   let numbersWithMinPayout = [];
@@ -51,17 +47,13 @@ function generateWinningNumber(gameState) {
     }
   }
   
-  console.log("Numbers with min payout:", numbersWithMinPayout);
-  
   // Safety check
   if (numbersWithMinPayout.length === 0) {
-    console.error("❌ No numbers found with minimum payout! Fallback to random.");
     return Math.floor(Math.random() * 37);
   }
   
   // Randomly select from numbers that minimize payout
   const selectedNumber = numbersWithMinPayout[Math.floor(Math.random() * numbersWithMinPayout.length)];
-  console.log("🎯 Selected winning number:", selectedNumber, "with payout:", minPayout);
   
   return selectedNumber;
 }
