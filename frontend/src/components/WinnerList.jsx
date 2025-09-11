@@ -243,10 +243,10 @@ export default function WinnerList() {
       )}
       <div className="flex items-center gap-2">
         <span className="text-yellow-400 font-semibold text-xs truncate max-w-20">
-          {item.username}:
+          {item?.username}:
         </span>
         <span className="text-yellow-400 text-xs break-all truncate max-w-32">
-          {item.text}
+          {item?.text}
         </span>
       </div>
       {showEffects && item === newMessage && (

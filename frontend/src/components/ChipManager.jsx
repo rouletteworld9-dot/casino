@@ -51,6 +51,7 @@ const getBetTypeAndNumber = (cellId) => {
 };
 
 const ChipManager = ({ children, userId, round, phase }) => {
+  // console.log(userId , "userid")
   const [selectedCoin, setSelectedCoin] = useState(10);
   // const [bets, setBets] = useState([]);
   const { bets, setBets } = setAmountStore((s) => s);
@@ -87,7 +88,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
     ) {
       // Call placeBet logic directly here
       const mappedBets = bets.map((b) => {
-        const amount = b.bets.reduce((sum, a) => sum + a.amount, 0);
+        const amount = b.bets.reduce((sum, a) => sum + a?.amount, 0);
         if (b.type === "color") {
           return { type: b.color, amount };
         } else if (["split", "corner", "street", "line"].includes(b.type)) {
@@ -96,7 +97,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
           return { type: b.type, numbers: [b.number], amount };
         }
       });
-
+   
       const payload = { userId, bets: mappedBets };
       emitPlaceBet(payload);
       setBetLocked(true);
@@ -308,7 +309,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
 
       if (cellId) {
-        const total = b.bets.reduce((s, a) => s + a.amount, 0);
+        const total = b.bets.reduce((s, a) => s + a?.amount, 0);
         totals[cellId] = total;
       }
     });
@@ -350,7 +351,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
 
       if (cellId) {
-        const amounts = b.bets.map((a) => a.amount);
+        const amounts = b.bets.map((a) => a?.amount);
         out[cellId] = (out[cellId] || []).concat(amounts);
         console.log(`🎲 CellId: ${cellId}, Amounts: [${amounts.join(",")}]`);
       }
@@ -358,6 +359,27 @@ const ChipManager = ({ children, userId, round, phase }) => {
 
     return out;
   }, [bets]);
+
+  const placeBet = useCallback(() => {
+    const mappedBets = bets.map((b, index) => {
+      const amount = b.bets.reduce((sum, a) => sum + a?.amount, 0);
+
+      if (b.type === "color") {
+        return { type: b.color, amount };
+      } else if (["split", "corner", "street", "line"].includes(b.type)) {
+        return { type: b.type, numbers: b.numbers, amount };
+      } else {
+        return { type: b.type, numbers: [b.number], amount };
+      }
+    });
+
+    console.log("🚀 Final mapped bets:", mappedBets);
+    const payload = { userId, bets: mappedBets };
+    console.log("🚀 Payload to emit:", payload);
+
+    emitPlaceBet(payload);
+    setBetLocked(true);
+  }, [bets, userId, emitPlaceBet]);
 
   return children({
     selectedCoin,
