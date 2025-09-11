@@ -12,6 +12,7 @@ const ResultOverlay = () => {
 
   // Delay win status by 5s
   const isWinDelayed = useDelay(isWin, 5000);
+  console.log(isWin, "is win");
   console.log(isWinDelayed, "win delayedd");
 
   useEffect(() => {
