@@ -15,7 +15,6 @@ function generateWinningNumber(gameState) {
     return Math.floor(Math.random() * 37);
   }
 
-  console.log("gameState", gameState);
 
   // Calculate total payout for each possible number (0-36)
   const payoutForNumber = {};

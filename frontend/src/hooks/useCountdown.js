@@ -145,7 +145,7 @@ function playTick() {
 }
 
 function playBeep() {
-  console.log("Beep sound 🔊");
+  // console.log("Beep sound 🔊");
 }
 
 function playFinish() {
@@ -176,7 +176,7 @@ function getVoices() {
 
 export async function announceNumber(isPageVisible, number) {
   if (!("speechSynthesis" in window)) {
-    console.log("Speech synthesis not supported in this browser.");
+    // console.log("Speech synthesis not supported in this browser.");
     return;
   }
 

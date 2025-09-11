@@ -28,14 +28,11 @@ const Transactions = () => {
   const paginated = allTransactions.slice(start, start + pageSize);
 
   const handleAction = async (transactionId, action, reason) => {
-    console.log("handleAction called with:", transactionId, action, reason);
     setLoadingAction({ id: transactionId, action });
     try {
       if (action === "approve") {
-        console.log("aprove called");
         await approveTransactionFn(transactionId);
       } else if (action === "reject") {
-        console.log("reject called");
         await rejectTransactionFn({ id: transactionId, adminNote: reason });
       }
     } finally {
@@ -87,9 +84,7 @@ const Transactions = () => {
             <tbody>
               {paginated.map((t) => (
                 <tr key={t._id} className="border-b border-deepPurple">
-                  <td className="p-2">
-                    {t.user?.name || "Unknown"}
-                  </td>
+                  <td className="p-2">{t.user?.name || "Unknown"}</td>
                   <td className="p-2 capitalize">{t.transactionType}</td>
                   <td className="p-2">{t.amount}</td>
                   <td className="p-2">

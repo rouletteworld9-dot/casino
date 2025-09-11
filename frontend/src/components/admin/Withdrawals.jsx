@@ -291,14 +291,11 @@ const Withdrawals = () => {
   const paginated = allTransactions.slice(start, start + pageSize);
 
   const handleAction = async (transactionId, action, reason) => {
-    console.log("handleAction called with:", transactionId, action, reason);
     setLoadingAction({ id: transactionId, action });
     try {
       if (action === "approve") {
-        console.log("aprove called");
         await approveTransactionFn(transactionId);
       } else if (action === "reject") {
-        console.log("reject called");
         await rejectTransactionFn({ id: transactionId, adminNote: reason });
       }
     } finally {
