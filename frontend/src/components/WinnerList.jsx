@@ -274,7 +274,7 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-1 sm:h-auto h-20 left-1 sm:left-4 w-fit sm:w-60 mt-2"
+      className="fixed z-1 sm:h-auto h-10 left-1 sm:left-4 w-fit sm:w-60 mt-2"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -395,8 +395,8 @@ export default function WinnerList() {
       </div>
 
       {/* Mobile: Single cycling item */}
-      <div className="sm:hidden w-[70%] relative z-10 mt-92 ">
-        <div className="fixed bottom-15 z-50 px-3 py-2 h-[38px]">
+      <div className="sm:hidden w-[70%] relative z-10 ">
+        <div className="fixed bottom-15 z-50 px-3 py-2 h-[20px]">
           {phase === "result" ? (
             winnerData.length === 0 ? (
               <p className="text-gray-400 text-[10px]">No winners yet...</p>
