@@ -274,14 +274,14 @@ export default function WinnerList() {
 
   return (
     <motion.div
-      className="fixed z-10 left-1 sm:left-4 w-[90%] sm:w-60 mt-2"
+      className="fixed z-1 sm:h-auto h-20 left-1 sm:left-4 w-fit sm:w-60 mt-2"
       initial={{ bottom: 0, opacity: 0 }}
       animate={{ bottom: 16, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Desktop: Scrolling panel */}
 
-      <div className="hidden sm:block sm:h-45 relative z-10">
+      <div className="hidden sm:block relative z-10">
         <h1 className="flex items-center space-x-1 text-white font-bold px-3 pt-2">
           <span>{phase === "result" ? "🏆 Winners" : "💬 Chat"}</span>
         </h1>

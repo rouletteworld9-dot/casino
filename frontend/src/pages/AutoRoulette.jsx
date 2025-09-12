@@ -105,7 +105,7 @@ const AutoRoulette = () => {
             }) => (
               <>
                 {phase === "betting" && (
-                  <div className="fixed top-30 sm:top-128 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center ">
+                  <div className="fixed top-30 sm:top-120 sm:left-0 right-0 sm:w-full z-50 bg-transparent px-2 py-3 flex justify-center items-center ">
                     <div className="w-full max-w-2xl flex sm:flex-row flex-col items-center justify-center gap-2">
                       {/* 2x Button Far Left */}
                       <button
