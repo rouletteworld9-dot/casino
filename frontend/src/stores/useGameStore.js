@@ -10,10 +10,14 @@ export const useGameStore = create((set, get) => ({
   phase: null,
   result: null,
   roundEndTime: null,
+
+  tempWinResults: [],
+
   winStatus: {
     isWin: null,
     amount: null,
   },
+
   isMuted: true,
   isGameRunning: false,
 
@@ -23,6 +27,22 @@ export const useGameStore = create((set, get) => ({
   messages: "",
   loading: false,
   flyingChips: [],
+
+  setTempWinResults: (result) =>
+    set((state) => {
+      const updatedTempWinResults = [...state.tempWinResults, result];
+      // Check if there's a winning result with a valid amount
+      const winningResult = updatedTempWinResults.find(
+        (r) => r.isWin === true && typeof r.amount === "number"
+      );
+      return {
+        tempWinResults: updatedTempWinResults,
+        winStatus: {
+          isWin: winningResult ? true : false,
+          amount: winningResult ? winningResult.amount : null,
+        },
+      };
+    }),
 
   setFlyingChips: (next) =>
     set((state) => ({
@@ -35,7 +55,21 @@ export const useGameStore = create((set, get) => ({
 
   setRound: (roundId) => set({ round: roundId }),
 
-  setPhase: (phase) => set({ phase }),
+  setPhase: (phase) =>
+    set(() => {
+      if (phase === "betting") {
+        return {
+          phase: phase,
+          tempWinResults: [],
+          winStatus: {
+            isWin: null,
+            amount: null,
+          },
+        };
+      } else {
+        return { phase: phase };
+      }
+    }),
 
   setResult: (result) => set({ result }),
 

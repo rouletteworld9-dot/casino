@@ -58,7 +58,7 @@ async function deductUserBalance(user, realAmount, tokenAmount) {
   if (!updatedUser) {
     throw new Error("Insufficient balance");
   }
-
+  
   return updatedUser;
 }
 

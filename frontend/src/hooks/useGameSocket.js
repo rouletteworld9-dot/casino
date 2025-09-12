@@ -12,7 +12,7 @@ export function useGameSocket() {
   // Get state and actions from Zustand store
   const {
     round,
-    setWinStatus,
+    setTempWinResults,
     setConnection,
     setRound,
     setPhase,
@@ -58,7 +58,6 @@ export function useGameSocket() {
       setRound(data.roundId);
       setPhase("betting");
       setRoundEndTime(data.roundEndTime)
-      setWinStatus(null, null);
       setMessages("Game started");
     });
 
@@ -107,8 +106,7 @@ export function useGameSocket() {
           },
         });
       }
-
-      setWinStatus(data.win, data.payout);
+      setTempWinResults({isWin:data.win, amount :data.payout});
       setMessages(data.win ? `You won ${data.payout}` : "You lost");
     });
 

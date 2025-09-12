@@ -6,13 +6,10 @@ import { useDelay } from "../../hooks/useDelay";
 const ResultOverlay = () => {
   const [showWinMessage, setShowWinMessage] = useState(false);
 
-  const {
-    winStatus: { isWin, amount },
-  } = useGameStore();
+  const {isWin, amount} = useGameStore(s=>s.winStatus)
 
-  // Delay win status by 5s
-  const isWinDelayed = useDelay(isWin, 5000);
-  console.log(isWinDelayed, "win delayedd");
+  // Delay win status by 6s
+  const isWinDelayed = useDelay(isWin, 6000);
 
   useEffect(() => {
     if (isWinDelayed === true) {
