@@ -13,11 +13,10 @@ const login = async (credentials) => {
 const register = async (userData) => {
   try {
     const response = await api.post("/auth/register", userData);
-    console.log(response.data , "response form api")
     return response.data;
   } catch (error) {
     console.error("Registration failed:", error);
-    throw error;  
+    throw error;
   }
 };
 
@@ -54,7 +53,6 @@ const resetPassword = async ({ phone, otp, newPassword }) => {
     throw error;
   }
 };
-
 
 const authApi = {
   login,

@@ -145,7 +145,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
             .length >= 2
         ) {
           toast("You can only bet on up to two columns at a time.");
-          console.log("❌ Column exclusion: more than two columns");
           return prev;
         }
         // --- Dozen: allow up to 2 dozens ---
@@ -155,7 +154,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
             .length >= 2
         ) {
           toast("You can only bet on up to two dozens at a time.");
-          console.log("❌ Dozen exclusion: more than two dozens");
           return prev;
         }
         // --- Low/High: mutually exclusive ---
@@ -373,9 +371,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
     });
 
-    console.log("🚀 Final mapped bets:", mappedBets);
     const payload = { userId, bets: mappedBets };
-    console.log("🚀 Payload to emit:", payload);
 
     emitPlaceBet(payload);
     setBetLocked(true);

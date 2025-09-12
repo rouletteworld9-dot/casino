@@ -50,11 +50,11 @@ export default function WinnerList() {
   const rafIdRef = useRef(null);
 
   // Debug logging for phase and totals
-  useEffect(() => {
-    console.log("Phase:", phase);
-    console.log("Total Amount:", totalAmount);
-    console.log("Balance:", user?.realBalance || singleUser?.realBalance);
-  }, [phase, totalAmount, user, singleUser]);
+  // useEffect(() => {
+  //   console.log("Phase:", phase);
+  //   console.log("Total Amount:", totalAmount);
+  //   console.log("Balance:", user?.realBalance || singleUser?.realBalance);
+  // }, [phase, totalAmount, user, singleUser]);
 
   // Handle incoming winners
   useEffect(() => {
@@ -229,7 +229,6 @@ export default function WinnerList() {
       )}
     </div>
   );
-
   const renderMessageItem = (item, index, { showEffects, isClone }) => (
     <div
       key={`${item?.username}-${item?.text}-${index}${isClone ? "-clone" : ""}`}

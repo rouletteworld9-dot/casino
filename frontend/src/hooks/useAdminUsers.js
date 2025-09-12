@@ -22,7 +22,6 @@ export const useAdminUsers = () => {
   const updateUserStatus = useMutation({
     mutationFn: ({ id, status }) => adminUsersApi.updateStatus(id, status),
     onSuccess: () => {
-      console.log("calledd");
       queryClient.invalidateQueries(["AllUsers"]);
       toast.success("User Status Updated Successfully!");
     },

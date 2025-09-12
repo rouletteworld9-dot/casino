@@ -31,7 +31,6 @@ async function handlePlaceBets(socket, data) {
 
     const validation = validateMultipleBets(data.bets);
     if (!validation.isValid) {
-      console.log("invalid", validation.errors);
       return socket.emit("error", {
         message: "Invalid bet data",
         errors: validation.errors,

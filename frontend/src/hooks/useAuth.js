@@ -19,7 +19,6 @@ export const useAuth = () => {
       toast.success(data?.message || "Registered Successfully!");
     },
     onError: (error) => {
-      console.log("Registration error:", error);
       toast.error(
         error?.response?.data?.message ||
           "Registration failed. Please try again."
@@ -34,7 +33,6 @@ export const useAuth = () => {
       toast.success(data.message || "Login successfully!");
     },
     onError: (error) => {
-      console.log("Login error:", error);
       toast.error(
         error?.response?.data?.message || "Login failed. Please try again."
       );
@@ -58,8 +56,8 @@ export const useAuth = () => {
 
   const forgotPasswordMutation = useMutation({
     mutationFn: authApi.forgotPassword,
-    onSuccess:(data)=>{
-      toast.success(data?.message || "OTP sent via whatsapp")
+    onSuccess: (data) => {
+      toast.success(data?.message || "OTP sent via whatsapp");
     },
     onError: (error) => {
       toast.error(
@@ -86,7 +84,6 @@ export const useAuth = () => {
       setAccountData(data);
     },
     onError: (error) => {
-      console.log("Account settings error:", error);
       toast.error(
         error?.response?.data?.message ||
           "Account settings failed. Please try again."
