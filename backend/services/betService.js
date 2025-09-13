@@ -79,7 +79,7 @@ async function settleBets(bets, winningNumber, io) {
   for (const bet of bets) {
     const user = await User.findById(bet.userId);
     if (!user) continue;
-
+    console.log(bet ,"bet");
     const isWin = validateBet(bet, winningNumber);
     let payout = 0;
 
