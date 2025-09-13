@@ -22,7 +22,7 @@ export function useGameSocket() {
     setMessages,
     updateGameState,
     betsPlaced,
-    setRoundEndTime,
+    setCountDown,
   } = useGameStore();
 
   const setTotalBetAmount = setAmountStore((s) => s.setTotalBetAmount);
@@ -57,17 +57,17 @@ export function useGameSocket() {
     socket.on("gameStarted", (data) => {
       setRound(data.roundId);
       setPhase("betting");
-      setRoundEndTime(data.roundEndTime)
+      setCountDown(data.roundEndTime,data.serverTime)
       setMessages("Game started");
     });
 
     socket.on("bettingClosed", (data) => {
-      setPhase("spinning");
       betsPlaced;
       setMessages("Betting closed");
     });
-
+    
     socket.on("spinning", (data) => {
+      setPhase("spinning");
       setMessages(`Waiting for result`);
     });
 

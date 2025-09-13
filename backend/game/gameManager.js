@@ -34,7 +34,13 @@ async function startGame(io) {
   };
 
   await gameStateService.setGameState(newGameState);
-  io.emit("gameStarted", { roundId: newGameState.roundId, phase: "betting", roundEndTime });
+  io.emit("gameStarted", {
+    roundId: newGameState.roundId,
+    phase: "betting",
+    roundEndTime,
+    serverTime: Date.now(),
+    duration: GAME_TIMINGS.BETTING_PHASE,
+  });
 
   // Set betting phase timer
   timerManager.setBettingTimer(async () => {
@@ -118,7 +124,6 @@ async function handleResultPhase(io, expectedRoundId) {
 }
 
 async function placeBets(socket, data) {
-  
   const gameState = await gameStateService.getGameState();
 
   if (gameState.phase !== "betting") {
@@ -129,8 +134,6 @@ async function placeBets(socket, data) {
     ...data,
     roundId: gameState.roundId,
   });
-  
-
 
   const updatedState = {
     ...gameState,

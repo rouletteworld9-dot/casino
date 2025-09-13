@@ -1,6 +1,7 @@
 // hooks/useCountdown.js - Mobile-compatible version
 import { useEffect, useState } from "react";
 import { useGameStore } from "../stores/useGameStore";
+import { socket } from "../socket";
 
 const tickAudio = new Audio("/sounds/tick.mp3");
 const finishAudio = new Audio("/sounds/finish.mp3");
@@ -66,9 +67,44 @@ function initializeSpeech() {
 }
 
 export default function useCountdown() {
-  const { roundEndTime, phase, isMuted, result } = useGameStore();
+  const { countDown, phase, isMuted, result } = useGameStore();
+  const { roundEndTime, serverTime } = countDown;
   const [remaining, setRemaining] = useState(null);
   const [isPageVisible, setIsPageVisible] = useState(true);
+  const [serverTimeOffset, setServerTimeOffset] = useState(0);
+
+  // Calculate server-client time offset when game starts
+  useEffect(() => {
+    const handleGameStarted = (data) => {
+      const clientReceiveTime = Date.now();
+      const serverSentTime = data.serverTime;
+      const networkDelay = (clientReceiveTime - serverSentTime) / 2; // Estimate one-way delay
+      const offset = serverSentTime + networkDelay - clientReceiveTime;
+      setServerTimeOffset(offset);
+    };
+
+    socket.on("gameStarted", handleGameStarted);
+    return () => socket.off("gameStarted", handleGameStarted);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "betting" || !roundEndTime) {
+      setRemaining(null);
+      return;
+    }
+
+    const updateRemaining = () => {
+      // Use server-synchronized time
+      const syncedCurrentTime = Date.now() + serverTimeOffset;
+      const diff = Math.floor((roundEndTime - syncedCurrentTime) / 1000);
+      setRemaining(diff >= 0 ? diff : 0);
+    };
+
+    updateRemaining();
+    const interval = setInterval(updateRemaining, 1000);
+
+    return () => clearInterval(interval);
+  }, [roundEndTime, phase, serverTimeOffset]);
 
   // Initialize speech on component mount (requires user interaction first)
   useEffect(() => {
@@ -101,7 +137,7 @@ export default function useCountdown() {
         announceNumber(isPageVisible, result);
       }, 5000);
     }
-  }, [phase, isMuted, result,isPageVisible]);
+  }, [phase, isMuted, result, isPageVisible]);
 
   useEffect(() => {
     if (phase !== "betting" || !roundEndTime) {

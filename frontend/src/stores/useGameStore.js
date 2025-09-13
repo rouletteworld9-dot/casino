@@ -9,7 +9,11 @@ export const useGameStore = create((set, get) => ({
   round: null,
   phase: null,
   result: null,
-  roundEndTime: null,
+
+  countDown: {
+    roundEndTime: null,
+    serverTime: null,
+  },
 
   tempWinResults: [],
 
@@ -73,7 +77,13 @@ export const useGameStore = create((set, get) => ({
 
   setResult: (result) => set({ result }),
 
-  setRoundEndTime: (time) => set({ roundEndTime: time }),
+  setCountDown: (roundEndTime, serverTime) =>
+    set({
+      countDown: {
+        roundEndTime: roundEndTime,
+        serverTime: serverTime,
+      },
+    }),
 
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
 
@@ -109,5 +119,9 @@ export const useGameStore = create((set, get) => ({
       winStatus: { isWin: null, amount: null },
       isMuted: false,
       flyingChips,
+      countDown: {
+        roundEndTime: null,
+        serverTime: null,
+      },
     }),
 }));
