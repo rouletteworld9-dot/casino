@@ -17,6 +17,7 @@ import MuteButton from "../components/MuteButton";
 import ResultDisplay from "../components/ui/ResultDisplay";
 import { motion } from "framer-motion";
 import AutoRouletteTag from "../components/ui/AutoRouletteTag";
+import SlowNetworkPopup from "../components/SlowNetworkPopup";
 
 const AutoRoulette = () => {
   const user = useAuthStore((state) => state.user);
@@ -37,6 +38,7 @@ const AutoRoulette = () => {
   return (
     <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
       <InsufficientBalanceModal />
+      <SlowNetworkPopup/>
 
       <div className="sm:block hidden ">
         <Header />

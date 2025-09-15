@@ -29,6 +29,23 @@ async function setGameState(newState) {
   return success;
 }
 
+async function appendBets(newBets) {
+  const currentState = await getGameState();
+
+  const updatedState = {
+    ...currentState,
+    bets: [...(currentState.bets || []), ...newBets],
+  };
+
+  const success = await redisManager.set(REDIS_KEYS.GAME_STATE, updatedState);
+  if (!success) {
+    localGameState = updatedState;
+  }
+
+  return updatedState;
+}
+
+
 async function initGameState() {
   const connected = await redisManager.connect();
 
@@ -47,4 +64,5 @@ module.exports = {
   setGameState,
   initGameState,
   getDefaultGameState,
+  appendBets
 }

@@ -135,10 +135,7 @@ async function placeBets(socket, data) {
     roundId: gameState.roundId,
   });
 
-  const updatedState = {
-    ...gameState,
-    bets: [...gameState.bets, ...result.processedBets],
-  };
+  const updatedState = await gameStateService.appendBets(result.processedBets);
 
   await gameStateService.setGameState(updatedState);
   return result;
