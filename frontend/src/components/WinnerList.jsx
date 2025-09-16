@@ -8,14 +8,26 @@ import { useSingleUser } from "../hooks/useAdminUsers";
 import { setAmountStore } from "../stores/setAmountStore";
 
 export default function WinnerList() {
-  const phase = useGameStore((s) => s.phase);
+  const realphase = useGameStore((s) => s.phase);
+
+  const [phase, setPhase] = useState("betting")
+
+  useEffect(()=>{
+      if(realphase==="result"){
+        setTimeout(() => {
+          setPhase("result")
+        }, 5000);
+      }else{
+        setPhase("betting")
+      }
+  },[realphase])
+
   const totalAmount = setAmountStore((s) => s.totalBetAmount);
   const result = useGameStore((state) => state.result);
   const setTotalBetAmount = setAmountStore((s) => s.setTotalBetAmount);
   const { recentWinners: newWinners } = useGameStore();
   const user = useAuthStore((s) => s.user);
   const { singleUser } = useSingleUser(user?._id);
-
   const delayResult = useDelay(result, 5000);
   const delayedWinners = useDelay(newWinners, 5000);
 
