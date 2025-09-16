@@ -228,7 +228,6 @@ export async function announceNumber(isPageVisible, number) {
     speechSynthesis.cancel();
 
     const voices = await getVoices();
-    console.log("Available voices:", voices.length);
 
     if (voices.length === 0) {
       console.warn("No voices available");

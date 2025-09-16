@@ -21,6 +21,7 @@ import DesktopNav from "./ui/DekstopNav";
 import MobileNav from "./ui/MobileNav";
 import { useNavigate } from "react-router-dom";
 import { useSingleUser } from "../hooks/useAdminUsers";
+import InstallPrompt from "./InstallPopup";
 
 const IconButton = ({ icon: Icon, ...props }) => (
   <NavButton {...props} className="p-2">
@@ -69,6 +70,7 @@ export default function Header() {
         {/* Right Actions */}
         <div className="flex items-center sm:space-x-3 space-x-1">
           {/* Search & Settings */}
+          <InstallPrompt />
           <IconButton icon={Search} className="sm:p-2 p-1" />
           <IconButton icon={Settings} className="sm:p-2 p-1" />
 
