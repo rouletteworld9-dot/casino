@@ -23,6 +23,7 @@ export const useUserTransactions = (transactionStatus, transactionType) => {
     mutationFn: transactionApi.withdrawlRequest,
     onSuccess: () => { 
       toast.success("Withdrawl Request Sent!");
+      toast.success("Your withdrawal request has been sent to us!")
     },
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something Went Wrong!");

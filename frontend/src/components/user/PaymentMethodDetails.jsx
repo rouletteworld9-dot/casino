@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ShowQR from "./ShowQR";
 import toast from "react-hot-toast";
-
+import UPI from "../../../public/Assets/UPI image.jpg"
 const PaymentMethodDetails = () => {
-  const [amount, setAmount] = useState(3000);
+  const [amount, setAmount] = useState(100);
   const [showQR, setShowQR] = useState(false);
 
   const quickAmounts = [5000, 7500, 10000, 12500, 15000];
 
   const decreaseAmount = () => {
-    if (amount > 300) setAmount(Math.max(300, amount - 100));
+    if (amount > 100) setAmount(Math.max(100, amount - 100));
   };
 
   const increaseAmount = () => {
@@ -27,12 +27,18 @@ const PaymentMethodDetails = () => {
         </label>
         <div className="w-full p-4 rounded-lg flex items-center justify-between bg-darkViolet border border-deepBorder">
           <div className="flex items-center space-x-3">
-            <div className="w-6 h-6 rounded bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center text-white">
+            {/* <div className="w-6 h-6 rounded bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center text-white">
               <Triangle size={12} />
-            </div>
+            </div>  */}
+            <img
+              src={UPI}
+              alt="UPI"
+              className="w-11 h-11 mx-auto mb-4 mr-3 mt-3"  
+            />{" "}
+            
             <div>
               <p className="text-white font-medium">UPI SafePay</p>
-              <p className="text-gray-400 text-sm">from ₹300</p>
+              <p className="text-gray-400 text-sm">from ₹100 to ₹50,000</p>
             </div>
           </div>
         </div>
@@ -42,7 +48,7 @@ const PaymentMethodDetails = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <label className="text-sm font-medium text-gray-400">AMOUNT</label>
-          <span className="text-sm text-gray-400">From ₹300 to ₹50,000</span>
+          <span className="text-sm text-gray-400">From ₹100 to ₹50,000</span>
         </div>
 
         <div className="flex items-center rounded-lg p-1 bg-darkViolet border border-deepBorder">
@@ -98,10 +104,10 @@ const PaymentMethodDetails = () => {
 
         <button
           onClick={() => {
-            if (amount >= 500) {
+            if (amount >= 100) {
               setShowQR(true);
             } else {
-              toast.error("Please Deposit Atleast ₹500");
+              toast.error("Please Deposit Atleast ₹100");
             }
           }}
           className="w-full p-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-colors hover:opacity-90 bg-brandRed"

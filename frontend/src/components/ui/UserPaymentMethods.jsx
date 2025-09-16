@@ -1,36 +1,37 @@
 import React from "react";
 import { useState } from "react";
+import UPI from "../../../public/Assets/UPI image.jpg";
 
 const UserPaymentMethods = () => {
-      const [selectedMethod, setSelectedMethod] = useState("upi-safepay");
-    
+  const [selectedMethod, setSelectedMethod] = useState("upi-safepay");
+
   const paymentMethods = [
     {
       id: "upi",
       name: "UPI",
-      logo: "🔺",
-      minAmount: 300,
+      logo: "",
+      minAmount: 100,
       colors: "bg-gradient-to-r from-blue-600 to-green-600",
     },
     {
       id: "upi-baterybet",
       name: "Card",
       logo: "🔺",
-      minAmount: 300,
+      minAmount: 100,
       colors: "bg-gradient-to-r from-blue-600 to-green-600",
     },
     {
       id: "bank-transfer",
       name: "Netbanking",
       logo: "🔺",
-      minAmount: 500,
+      minAmount: 100,
       colors: "bg-gradient-to-r from-orange-600 to-red-600",
     },
     {
       id: "usdt-trc20",
       name: "Cash",
       logo: "💎",
-      minAmount: 300,
+      minAmount: 100,
       colors: "bg-gradient-to-r from-teal-600 to-green-600",
     },
   ];
@@ -53,12 +54,20 @@ const UserPaymentMethods = () => {
               <div
                 className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${method.colors}`}
               >
-                {method.logo}
+                {method.id === "upi" ? (
+                  <img
+                    src={UPI} // image in public/Assets folder
+                    alt={method.name}
+                    className="w-full h-full object-fit rounded-lg"
+                  />
+                ) : (
+                  <span>{method.logo}</span>
+                )}{" "}
               </div>
               <div>
                 <h3 className="text-white font-semibold">{method.name}</h3>
                 <p className="text-gray-400 text-sm">
-                  from ₹{method.minAmount}
+                  from ₹{method.minAmount} 
                 </p>
               </div>
             </div>
