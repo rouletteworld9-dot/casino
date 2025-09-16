@@ -39,7 +39,7 @@ exports.register = async (req, res) => {
         phone,
         name,
         password: hashedPassword,
-        playTokens: 1500,
+        playTokens: 3000,
       });
     }
 

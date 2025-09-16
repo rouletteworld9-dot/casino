@@ -21,8 +21,6 @@ export default function SlowNetworkPopup() {
     };
   }, []);
 
-  
-
   // Network speed detection using Network Information API (when available)
   useEffect(() => {
     if ("connection" in navigator) {
@@ -38,9 +36,7 @@ export default function SlowNetworkPopup() {
         // - Effective type is 'slow-2g' or '2g'
         // - Downlink is less than 1 Mbps
         const isSlow =
-          effectiveType === "slow-2g" ||
-          effectiveType === "2g" ||
-          downlink < 1;
+          effectiveType === "slow-2g" || effectiveType === "2g" || downlink < 1;
 
         if (isSlow && !isSlowNetwork) {
           setIsSlowNetwork(true);
@@ -129,8 +125,6 @@ export default function SlowNetworkPopup() {
 
     return "Slow network detected";
   };
-
-  console.log("sfdf")
 
   if (!showPopup) return null;
 

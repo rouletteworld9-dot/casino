@@ -97,7 +97,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
           return { type: b.type, numbers: [b.number], amount };
         }
       });
-   
+
       const payload = { userId, bets: mappedBets };
       emitPlaceBet(payload);
       setBetLocked(true);
@@ -312,7 +312,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
       }
     });
 
-    console.log("🧮 Final cellTotals:", totals);
     return totals;
   }, [bets]);
 
