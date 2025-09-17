@@ -14,24 +14,24 @@ export default function LandingPage({ isLoggedIn }) {
   const soundRef = useRef(null);
   const bonusKey = useMemo(() => (user?._id ? `welcomeBonusShown:${user._id}` : null), [user?._id]);
 
-  useEffect(() => {
-    if (!user || !bonusKey) return;
-    try {
-      const alreadyShown = localStorage.getItem(bonusKey);
-      if (!alreadyShown) {
-        setShowWelcomeBonus(true);
-      }
-    } catch (e) {
-      setShowWelcomeBonus(true);
-    }
-  }, [user, bonusKey]);
+  // useEffect(() => {
+  //   if (!user || !bonusKey) return;
+  //   try {
+  //     const alreadyShown = localStorage.getItem(bonusKey);
+  //     if (!alreadyShown) {
+  //       setShowWelcomeBonus(true);
+  //     }
+  //   } catch (e) {
+  //     setShowWelcomeBonus(true);
+  //   }
+  // }, [user, bonusKey]);
 
-  const handleCloseWelcome = () => {
-    if (bonusKey) {
-      try { localStorage.setItem(bonusKey, "1"); } catch (e) {}
-    }
-    setShowWelcomeBonus(false);
-  };
+  // const handleCloseWelcome = () => {
+  //   if (bonusKey) {
+  //     try { localStorage.setItem(bonusKey, "1"); } catch (e) {}
+  //   }
+  //   setShowWelcomeBonus(false);
+  // };
 
   useEffect(() => {
     if (!showWelcomeBonus) return;
@@ -127,7 +127,7 @@ export default function LandingPage({ isLoggedIn }) {
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     onClick={handleCloseWelcome}
   >
-    <motion.div
+    {/* <motion.div
       initial={{ scale: 0.9, opacity: 0, y: 20 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
       exit={{ scale: 0.95, opacity: 0 }}
@@ -160,7 +160,7 @@ export default function LandingPage({ isLoggedIn }) {
         <div className="absolute -top-6 -left-6 h-20 w-20 rotate-12 rounded-lg bg-pink-500/10 blur-md" />
         <div className="absolute -bottom-6 -right-6 h-24 w-24 -rotate-12 rounded-full bg-yellow-400/10 blur-md" />
       </div>
-    </motion.div>
+    </motion.div> */}
   </div>
 )}
       <Header />
