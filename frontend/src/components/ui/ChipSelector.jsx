@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import ChipAnimation from "./ChipAnimation";
+import { useGameStore } from "../../stores/useGameStore";
+import { setAmountStore } from "../../stores/setAmountStore";
 
 const DEFAULT_DENOMINATIONS = [10, 20, 50, 100, 500, 2500];
 
 const ChipSelector = ({
-  bets,
+
   denominations = DEFAULT_DENOMINATIONS,
   selectedCoin,
   betLocked,
@@ -11,6 +14,8 @@ const ChipSelector = ({
   hasBets,
   placeBets,
 }) => {
+
+  const bets = setAmountStore((s) => s.bets);
 
   const colorByDenom = (value) => {
     switch (value) {
@@ -91,7 +96,7 @@ const ChipSelector = ({
         );
       })}
       <button
-      disabled={betLocked}
+        disabled={betLocked || bets.length === 0}
         onClick={() => {
           placeBets();
         }}
