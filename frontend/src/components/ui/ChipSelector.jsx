@@ -1,6 +1,4 @@
-import React, { useRef, useState } from "react";
-import ChipAnimation from "./ChipAnimation";
-import { useGameStore } from "../../stores/useGameStore";
+import React from "react";
 
 const DEFAULT_DENOMINATIONS = [10, 20, 50, 100, 500, 2500];
 
@@ -13,8 +11,6 @@ const ChipSelector = ({
   hasBets,
   placeBets,
 }) => {
-  const flyingChips = useGameStore((s) => s.flyingChips);
-  const setFlyingChips = useGameStore((s) => s.setFlyingChips);
 
   const colorByDenom = (value) => {
     switch (value) {
@@ -103,18 +99,6 @@ const ChipSelector = ({
       >
         Place bet
       </button>
-
-      {flyingChips.map((chip) => (
-        <ChipAnimation
-          key={chip.id}
-          start={chip.start}
-          end={chip.end}
-          amount={chip.amount}
-          onComplete={() => {
-            setFlyingChips((prev) => prev.filter((c) => c.id !== chip.id));
-          }}
-        />
-      ))}
     </div>
   );
 };

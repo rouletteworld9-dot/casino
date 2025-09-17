@@ -2,14 +2,6 @@ const { validateBet, VALID_BET_TYPES } = require("./betValidator");
 const payouts = require('./payouts');
 
 function generateWinningNumber(gameState) {
-  console.log(`=== GENERATING WINNING NUMBER ===`);
-  console.log(`Total bets in gameState: ${gameState.bets.length}`);
-  console.log(`Bets details:`, gameState.bets.map(bet => ({
-    userId: bet.userId,
-    type: bet.type,
-    numbers: bet.numbers,
-    amount: bet.amount
-  })));
 
   if (gameState.nextWinningNumber !== null) {
     console.log(`Using forced winning number: ${gameState.nextWinningNumber}`);
@@ -38,8 +30,6 @@ function generateWinningNumber(gameState) {
     }
   }
 
-  console.log(`Payout calculation for all numbers:`, payoutForNumber);
-
   // THIS IS THE PROBLEM! The current logic finds MINIMUM payout (house wins more)
   // Find minimum payout (current logic - PROBLEMATIC)
   let minPayout = Infinity;
@@ -49,8 +39,6 @@ function generateWinningNumber(gameState) {
     }
   }
 
-  console.log(`Minimum payout found: ${minPayout}`);
-
   // Find all numbers with minimum payout
   let numbersWithMinPayout = [];
   for (let number = 0; number <= 36; number++) {
@@ -58,8 +46,6 @@ function generateWinningNumber(gameState) {
       numbersWithMinPayout.push(number);
     }
   }
-
-  console.log(`Numbers that would result in minimum payout (house wins most): [${numbersWithMinPayout.join(', ')}]`);
 
   // Safety check
   if (numbersWithMinPayout.length === 0) {
@@ -71,14 +57,9 @@ function generateWinningNumber(gameState) {
   // Randomly select from numbers that minimize payout (HOUSE ALWAYS WINS!)
   const selectedNumber = numbersWithMinPayout[Math.floor(Math.random() * numbersWithMinPayout.length)];
 
-  console.log(`Selected winning number: ${selectedNumber} (chosen to minimize player winnings)`);
-  console.log(`This number will result in total payout of: ${payoutForNumber[selectedNumber]}`);
-
   // Show which players will win/lose
-  console.log(`=== BET RESULTS FOR WINNING NUMBER ${selectedNumber} ===`);
   for (const bet of gameState.bets) {
     const isWin = validateBet(bet, selectedNumber);
-    console.log(`User ${bet.userId} - Bet: ${bet.type} (${bet.numbers}) - Amount: ${bet.amount} - Result: ${isWin ? 'WIN' : 'LOSE'}`);
   }
 
   return selectedNumber;
