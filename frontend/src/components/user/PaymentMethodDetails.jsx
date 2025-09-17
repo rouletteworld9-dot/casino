@@ -116,10 +116,10 @@ const PaymentMethodDetails = () => {
           <span>Deposit ₹{amount.toLocaleString()}</span>
         </button>
 
-        <div className="text-center mt-3">
+        {/* <div className="text-center mt-3">
           <span className="text-gray-400">BONUS: </span>
           <span className="font-bold">₹{amount.toLocaleString()}</span>
-        </div>
+        </div> */}
       </div>
 
       {/* QR Modal */}

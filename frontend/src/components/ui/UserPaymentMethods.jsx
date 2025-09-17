@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import UPI from "../../../public/Assets/UPI image.jpg";
+import USDT from "../../../public/Assets/USDT logo.png";
 
 const UserPaymentMethods = () => {
   const [selectedMethod, setSelectedMethod] = useState("upi-safepay");
@@ -29,12 +30,13 @@ const UserPaymentMethods = () => {
     },
     {
       id: "usdt-trc20",
-      name: "Cash",
-      logo: "💎",
+      name: "USDT",
+      logo: "",
       minAmount: 100,
       colors: "bg-gradient-to-r from-teal-600 to-green-600",
     },
   ];
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-6">Choose a method</h2>
@@ -56,18 +58,24 @@ const UserPaymentMethods = () => {
               >
                 {method.id === "upi" ? (
                   <img
-                    src={UPI} // image in public/Assets folder
+                    src={UPI}
+                    alt={method.name}
+                    className="w-full h-full object-fit rounded-lg"
+                  />
+                ) : method.id === "usdt-trc20" ? (
+                  <img
+                    src={USDT}
                     alt={method.name}
                     className="w-full h-full object-fit rounded-lg"
                   />
                 ) : (
                   <span>{method.logo}</span>
-                )}{" "}
+                )}
               </div>
               <div>
                 <h3 className="text-white font-semibold">{method.name}</h3>
                 <p className="text-gray-400 text-sm">
-                  from ₹{method.minAmount} 
+                  from ₹{method.minAmount}
                 </p>
               </div>
             </div>
