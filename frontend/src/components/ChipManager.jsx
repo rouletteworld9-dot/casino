@@ -357,6 +357,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
   }, [bets]);
 
   const placeBet = useCallback(() => {
+    
     const mappedBets = bets.map((b, index) => {
       const amount = b.bets.reduce((sum, a) => sum + a?.amount, 0);
 
