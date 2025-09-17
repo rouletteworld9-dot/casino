@@ -1,3 +1,4 @@
+
 body {
   font-family: sans-serif;
   /* background-image:
@@ -20,7 +21,6 @@ body {
 }
 
 @media screen and (max-width: 2640px) {
-  
   .roulette-wheel {
     float: none;
     margin: 1em auto;
@@ -44,7 +44,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-   background-size: 90% 90%; 
+  background-size: 90% 90%;
 }
 
 .ball-container {
@@ -91,7 +91,7 @@ body {
   border-radius: 7px;
   background: #fff radial-gradient(circle at 5px 5px, #fff, #444);
   box-shadow: 1px 1px 4px #000;
-  transform: translateY( -120px);
+  transform: translateY(-120px);
   top: 50%;
   left: 50%;
   margin: -7px;
@@ -103,7 +103,7 @@ body {
   display: flow-root;
   width: 1000px;
   height: 420px;
-  background: url("./assets/Board.png");
+  background: url();
   background-size: 1000px auto;
   margin: 0 auto;
 }
@@ -281,7 +281,6 @@ div.chip-5-placed {
   background-repeat: no-repeat;
   background-position: center;
 }
-
 
 @media (min-width: 1024px) {
   .roulette-wheel .ball {

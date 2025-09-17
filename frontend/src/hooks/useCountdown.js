@@ -261,7 +261,7 @@ export async function announceNumber(isPageVisible, number) {
     // Final fallback: use default voice
     if (!selectedVoice) {
       selectedVoice = voices.find((v) => v.default) || voices[0];
-      console.log("Using default/first voice:", selectedVoice?.name);
+      // console.log("Using default/first voice:", selectedVoice?.name);
     }
 
     const utterance = new SpeechSynthesisUtterance(numWithColor.toString());
@@ -280,13 +280,13 @@ export async function announceNumber(isPageVisible, number) {
       console.error("Speech synthesis error:", event.error);
     };
 
-    utterance.onstart = () => {
-      console.log("Speech started");
-    };
+    // utterance.onstart = () => {
+    //   console.log("Speech started");
+    // };
 
-    utterance.onend = () => {
-      console.log("Speech ended");
-    };
+    // utterance.onend = () => {
+    //   console.log("Speech ended");
+    // };
 
     // Ensure speech synthesis is not paused
     if (speechSynthesis.paused) {

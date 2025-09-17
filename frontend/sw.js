@@ -8,7 +8,6 @@ const urlsToCache = [
   '/assets/roulette_3.png',
   '/assets/roulette_4.png',
   '/assets/roulette_5.png',
-  '/assets/Board.png',
   '/manifest.json'
 ];
 

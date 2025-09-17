@@ -31,7 +31,7 @@ export default function DesktopNav({ onNavigate, specials }) {
       <div className="flex items-center space-x-4">
         {navItems.map((name) => (
           <NavButton
-            key={name}
+            key={name.name}
             onClick={() => navigate(name.link)}
             className="font-semibold text-xs uppercase tracking-wide"
           >

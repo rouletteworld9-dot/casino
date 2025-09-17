@@ -38,7 +38,7 @@ const AutoRoulette = () => {
   return (
     <div className="relative w-full flex flex-col h-[100dvh] top-0 overflow-hidden">
       <InsufficientBalanceModal />
-      <SlowNetworkPopup/>
+      <SlowNetworkPopup />
 
       <div className="sm:block hidden ">
         <Header />
@@ -66,7 +66,7 @@ const AutoRoulette = () => {
           </div>
 
           <MuteButton />
-           <ResultOverlay  />
+          <ResultOverlay />
           {/* last results */}
           <div className="bg-black/5 gap-7 w-auto h-3 right-0 left-0 absolute top-0 sm:top-11 b-2 flex items-center justify-between">
             <LastResults />
@@ -104,6 +104,7 @@ const AutoRoulette = () => {
               betLocked,
               onDoubleBets,
               onUndo,
+              placeBet,
             }) => (
               <>
                 {phase === "betting" && (
@@ -124,9 +125,9 @@ const AutoRoulette = () => {
                         selectedCoin={selectedCoin}
                         onSelect={setSelectedCoin}
                         betLocked={betLocked}
-                      
                         hasBets={hasBets}
                         hidePlaceBet
+                        placeBets={placeBet}
                       />
                       {/* Undo Button Far Right */}
                       <button

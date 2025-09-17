@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGameStore } from "../../stores/useGameStore";
 import { IndianRupee } from "lucide-react";
 import { useDelay } from "../../hooks/useDelay";
+import ChipAnimation from "./ChipAnimation";
 
 const ResultOverlay = () => {
   const [showWinMessage, setShowWinMessage] = useState(false);
@@ -76,6 +77,7 @@ const ResultOverlay = () => {
           <IndianRupee size={20} style={{ marginRight: "0.5rem" }} /> {amount}
         </span>
       </span>
+      <ChipAnimation isWin={isWin} amount={amount}/>
     </div>
   );
 };
