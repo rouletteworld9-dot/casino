@@ -87,7 +87,7 @@ export default function Header() {
                 className="relative"
                 onMouseEnter={() => setDropdownOpen(true)}
               >
-                <span className="text-white flex items-center space-x-1 sm:space-x-2 text-[10px] sm:text-xs cursor-pointer max-w-[90px] sm:max-w-none truncate">
+                <span className="text-white flex items-center space-x-1 sm:space-x-2 text-[10px] sm:text-xs cursor-pointer max-w-[150px]  sm:max-w-none truncate">
                   <CircleUser size={16} className="sm:w-5 sm:h-5" />
                   <span className="font-semibold flex items-center gap-1 truncate">
                     {showBalance ? (
@@ -95,7 +95,7 @@ export default function Header() {
                         <span className="truncate">
                           ₹ {user?.realBalance || singleUser?.realBalance}
                         </span> 
-                        <span className="hidden sm:flex text-yellow-400 items-center gap-1">
+                        <span className=" flex text-yellow-400 items-center gap-1">
                           |
                           <Coins className="w-3 h-3 sm:w-4 sm:h-4" />
                           {user?.playTokens || singleUser?.playTokens}

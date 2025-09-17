@@ -77,32 +77,32 @@ const ChipManager = ({ children, userId, round, phase }) => {
   }, [phase]);
 
   // 🔹 Auto place bet at the end of betting phase
-  useEffect(() => {
-    // Only proceed if we have bets and we're transitioning away from betting phase
-    if (
-      phase === "betting" &&
-      bets.length > 0 &&
-      !betLocked &&
-      remaining <= 1 &&
-      remaining > 0
-    ) {
-      // Call placeBet logic directly here
-      const mappedBets = bets.map((b) => {
-        const amount = b.bets.reduce((sum, a) => sum + a?.amount, 0);
-        if (b.type === "color") {
-          return { type: b.color, amount };
-        } else if (["split", "corner", "street", "line"].includes(b.type)) {
-          return { type: b.type, numbers: b.numbers, amount };
-        } else {
-          return { type: b.type, numbers: [b.number], amount };
-        }
-      });
+  // useEffect(() => {
+  //   // Only proceed if we have bets and we're transitioning away from betting phase
+  //   if (
+  //     phase === "betting" &&
+  //     bets.length > 0 &&
+  //     !betLocked &&
+  //     remaining <= 1 &&
+  //     remaining > 0
+  //   ) {
+  //     // Call placeBet logic directly here
+  //     const mappedBets = bets.map((b) => {
+  //       const amount = b.bets.reduce((sum, a) => sum + a?.amount, 0);
+  //       if (b.type === "color") {
+  //         return { type: b.color, amount };
+  //       } else if (["split", "corner", "street", "line"].includes(b.type)) {
+  //         return { type: b.type, numbers: b.numbers, amount };
+  //       } else {
+  //         return { type: b.type, numbers: [b.number], amount };
+  //       }
+  //     });
 
-      const payload = { userId, bets: mappedBets };
-      emitPlaceBet(payload);
-      setBetLocked(true);
-    }
-  }, [phase, bets, betLocked, userId, emitPlaceBet, remaining]);
+  //     const payload = { userId, bets: mappedBets };
+  //     emitPlaceBet(payload);
+  //     setBetLocked(true);
+  //   }
+  // }, [phase, bets, betLocked, userId, emitPlaceBet, remaining]);
 
   const addBet = useCallback(
     (cellId, coinValue) => {
@@ -350,7 +350,6 @@ const ChipManager = ({ children, userId, round, phase }) => {
       if (cellId) {
         const amounts = b.bets.map((a) => a?.amount);
         out[cellId] = (out[cellId] || []).concat(amounts);
-        console.log(`🎲 CellId: ${cellId}, Amounts: [${amounts.join(",")}]`);
       }
     });
 
@@ -373,6 +372,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
     const payload = { userId, bets: mappedBets };
 
     emitPlaceBet(payload);
+
     setBetLocked(true);
   }, [bets, userId, emitPlaceBet]);
 
@@ -387,6 +387,7 @@ const ChipManager = ({ children, userId, round, phase }) => {
     betLocked,
     onDoubleBets: doubleBets,
     onUndo: undoBet,
+    placeBet,
   });
 };
 

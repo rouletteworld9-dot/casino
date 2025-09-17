@@ -1,8 +1,9 @@
 import anime from "animejs";
 import React, { useCallback } from "react";
 import { useEffect } from "react";
+import roulette1 from "/assets/roulette_1.png";
 
-const roulette1 = "/assets/roulette_1.png";
+// const roulette1 = "/assets/roulette_1.png";
 const roulette2 = "/assets/roulette_2.png";
 const roulette3 = "/assets/roulette_3.png";
 const roulette4 = "/assets/roulette_4.png";

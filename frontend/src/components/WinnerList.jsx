@@ -10,17 +10,17 @@ import { setAmountStore } from "../stores/setAmountStore";
 export default function WinnerList() {
   const realphase = useGameStore((s) => s.phase);
 
-  const [phase, setPhase] = useState("betting")
+  const [phase, setPhase] = useState("betting");
 
-  useEffect(()=>{
-      if(realphase==="result"){
-        setTimeout(() => {
-          setPhase("result")
-        }, 5000);
-      }else{
-        setPhase("betting")
-      }
-  },[realphase])
+  useEffect(() => {
+    if (realphase === "result") {
+      setTimeout(() => {
+        setPhase("result");
+      }, 5000);
+    } else {
+      setPhase("betting");
+    }
+  }, [realphase]);
 
   const totalAmount = setAmountStore((s) => s.totalBetAmount);
   const result = useGameStore((state) => state.result);
@@ -30,7 +30,8 @@ export default function WinnerList() {
   const { singleUser } = useSingleUser(user?._id);
   const delayResult = useDelay(result, 5000);
   const delayedWinners = useDelay(newWinners, 5000);
-
+  const delayedUser = useDelay(user, 5000);
+  const delayedsingleUser = useDelay(singleUser, 5000);
   const [winners, setWinners] = useState([]);
   const [newWinner, setNewWinner] = useState(null);
   const [messages, setMessages] = useState([
@@ -457,7 +458,16 @@ export default function WinnerList() {
           <span>
             Balance:{" "}
             <span className="text-yellow-400">
-              ₹{(user?.realBalance || singleUser?.realBalance || 0).toFixed(2)}
+              ₹
+              {phase === "betting"
+                ? (
+                    delayedUser?.realBalance ||
+                    delayedsingleUser?.realBalance ||
+                    0
+                  ).toFixed(2)
+                : (user?.realBalance || singleUser?.realBalance || 0).toFixed(
+                    2
+                  )}
             </span>
           </span>
         </div>

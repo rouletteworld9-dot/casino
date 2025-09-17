@@ -11,6 +11,7 @@ const ChipSelector = ({
   betLocked,
   onSelect,
   hasBets,
+  placeBets,
 }) => {
   const flyingChips = useGameStore((s) => s.flyingChips);
   const setFlyingChips = useGameStore((s) => s.setFlyingChips);
@@ -93,6 +94,15 @@ const ChipSelector = ({
           </div>
         );
       })}
+      <button
+      disabled={betLocked}
+        onClick={() => {
+          placeBets();
+        }}
+        className="cursor-pointer disabled:bg-yellow-500/50 bg-yellow-500 p-2 text-xs rounded-full font-bold"
+      >
+        Place bet
+      </button>
 
       {flyingChips.map((chip) => (
         <ChipAnimation
