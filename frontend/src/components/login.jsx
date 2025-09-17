@@ -69,6 +69,8 @@ export default function LoginScreen() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <InputField
+              minlength={10}
+              maxlength={10}
                 name="phone"
                 label="Phone Number"
                 type="tel"

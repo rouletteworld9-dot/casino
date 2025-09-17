@@ -94,6 +94,8 @@ export default function RegisterScreen() {
 
             {/* Phone */}
             <InputField
+            minLength={10}
+            maxLength={10}
               type="tel"
               label="Phone Number"
               name="phone"

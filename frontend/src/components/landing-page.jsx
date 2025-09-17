@@ -33,51 +33,51 @@ export default function LandingPage({ isLoggedIn }) {
   //   setShowWelcomeBonus(false);
   // };
 
-  useEffect(() => {
-    if (!showWelcomeBonus) return;
+  // useEffect(() => {
+  //   if (!showWelcomeBonus) return;
 
-    // Play celebration sound (uses public/sounds)
-    try {
-      if (!soundRef.current) {
-        soundRef.current = new Audio("/sounds/result.mp3");
-        soundRef.current.volume = 0.5;
-      }
-      soundRef.current.currentTime = 0;
-      soundRef.current.play().catch(() => {});
-    } catch (e) {}
+  //   // Play celebration sound (uses public/sounds)
+  //   try {
+  //     if (!soundRef.current) {
+  //       soundRef.current = new Audio("/sounds/result.mp3");
+  //       soundRef.current.volume = 0.5;
+  //     }
+  //     soundRef.current.currentTime = 0;
+  //     soundRef.current.play().catch(() => {});
+  //   } catch (e) {}
 
-    // Load confetti library once on-demand
-    const ensureConfetti = () =>
-      new Promise((resolve) => {
-        if (window.confetti) return resolve();
-        if (confettiInjectedRef.current) return resolve();
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
-        script.async = true;
-        script.onload = () => resolve();
-        document.head.appendChild(script);
-        confettiInjectedRef.current = true;
-      });
+  //   // Load confetti library once on-demand
+  //   const ensureConfetti = () =>
+  //     new Promise((resolve) => {
+  //       if (window.confetti) return resolve();
+  //       if (confettiInjectedRef.current) return resolve();
+  //       const script = document.createElement("script");
+  //       script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+  //       script.async = true;
+  //       script.onload = () => resolve();
+  //       document.head.appendChild(script);
+  //       confettiInjectedRef.current = true;
+  //     });
 
-    const fire = () => {
-      if (!window.confetti) return;
-      const defaults = { spread: 360, ticks: 80, gravity: 0.9, decay: 0.94, startVelocity: 25 }; 
-      window.confetti({ ...defaults, particleCount: 60, origin: { x: 0.2, y: 0.1 } });
-      window.confetti({ ...defaults, particleCount: 60, origin: { x: 0.8, y: 0.1 } });
-      window.confetti({ ...defaults, particleCount: 80, origin: { x: 0.5, y: 0.2 } });
-    };
+  //   const fire = () => {
+  //     if (!window.confetti) return;
+  //     const defaults = { spread: 360, ticks: 80, gravity: 0.9, decay: 0.94, startVelocity: 25 }; 
+  //     window.confetti({ ...defaults, particleCount: 60, origin: { x: 0.2, y: 0.1 } });
+  //     window.confetti({ ...defaults, particleCount: 60, origin: { x: 0.8, y: 0.1 } });
+  //     window.confetti({ ...defaults, particleCount: 80, origin: { x: 0.5, y: 0.2 } });
+  //   };
 
-    let intervalId;
-    ensureConfetti().then(() => {
-      fire();
-      intervalId = setInterval(fire, 600);
-      setTimeout(() => { if (intervalId) clearInterval(intervalId); }, 2400);
-    });
+  //   let intervalId;
+  //   ensureConfetti().then(() => {
+  //     fire();
+  //     intervalId = setInterval(fire, 600);
+  //     setTimeout(() => { if (intervalId) clearInterval(intervalId); }, 2400);
+  //   });
 
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [showWelcomeBonus]);
+  //   return () => {
+  //     if (intervalId) clearInterval(intervalId);
+  //   };
+  // }, [showWelcomeBonus]);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -122,12 +122,12 @@ export default function LandingPage({ isLoggedIn }) {
 
   return (
     <div className="min-h-screen">
-   {user && showWelcomeBonus && (
+   {/* {user && showWelcomeBonus && (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     onClick={handleCloseWelcome}
   >
-    {/* <motion.div
+    <motion.div
       initial={{ scale: 0.9, opacity: 0, y: 20 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
       exit={{ scale: 0.95, opacity: 0 }}
@@ -160,9 +160,9 @@ export default function LandingPage({ isLoggedIn }) {
         <div className="absolute -top-6 -left-6 h-20 w-20 rotate-12 rounded-lg bg-pink-500/10 blur-md" />
         <div className="absolute -bottom-6 -right-6 h-24 w-24 -rotate-12 rounded-full bg-yellow-400/10 blur-md" />
       </div>
-    </motion.div> */}
+    </motion.div>
   </div>
-)}
+)} */}
       <Header />
       {/* Hero Section */}
       <HeroSlider className="rounded-none sm:h-[80vh] h-[30vh]" />

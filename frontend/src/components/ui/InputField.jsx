@@ -6,7 +6,7 @@ const motionFade = {
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5 },
 };
-const InputField = ({ label, type, name, value, onChange, placeholder }) => (
+const InputField = ({ label, type, name, value, onChange, placeholder ,...rest}) => (
   <motion.div {...motionFade}>
     <label
       htmlFor={name}
@@ -15,6 +15,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder }) => (
       {label}
     </label>
     <input
+      {...rest}
       id={name}
       name={name}
       type={type || "text"}

@@ -19,6 +19,11 @@ const ShowQR = ({ setShowQR, amount }) => {
       toast.error("Please Enter your UTR Number");
       return;
     }
+    const utrRegex = /^\d{12,}$/;
+    if (!utrRegex.test(utr.trim())) {
+      toast.error("UTR number must be at least 12 digits long ");
+      return;
+    }
     await depositRequestFn(
       { amount, utr },
       { onSuccess: () => setShowQR(false) }

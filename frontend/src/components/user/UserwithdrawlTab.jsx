@@ -36,6 +36,33 @@ const UserWithdrawlTab = () => {
       toast.error("All withdrawal details are required");
       return;
     }
+    const { amount, bankName, bankAccountNumber, ifscCode } = formData;
+    // ✅ Validate amount
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      toast.error("Please enter a valid withdrawal amount");
+      return;
+    }
+
+    // ✅ Validate Bank Name
+    if (!bankName.trim()) {
+      toast.error("Bank Name is required");
+      return;
+    }
+
+    // ✅ Validate Account Number (6–18 digits)
+    const accountRegex = /^\d{6,18}$/;
+    if (!accountRegex.test(bankAccountNumber)) {
+      toast.error("Bank Account Number must be 6 to 18 digits");
+      return;
+    }
+
+    // ✅ Validate IFSC Code (Indian standard: 4 letters + 0 + 6 digits)
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/i;
+    if (!ifscRegex.test(ifscCode.trim())) {
+      toast.error("Enter a valid IFSC Code");
+      return;
+    }
+
     withdrawlRequestFn(formData, {
       onSuccess: () => {
         resetForm();
