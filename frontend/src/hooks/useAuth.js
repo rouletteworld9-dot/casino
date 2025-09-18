@@ -46,12 +46,6 @@ export const useAuth = () => {
       setIsPhoneVerified(true);
       toast.success(data.message || "Verified Successfully!");
     },
-    onError: () => {
-      toast.error(
-        error?.response?.data?.message ||
-          "OTP verification failed. Please try again."
-      );
-    },
   });
 
   const forgotPasswordMutation = useMutation({

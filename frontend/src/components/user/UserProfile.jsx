@@ -66,7 +66,7 @@ const UserProfilePage = () => {
                 <h2 className="text-gray-200 font-semibold mb-3">
                   Personal Data
                 </h2>
-                <InfoRow label="Account Number" value={singleUser?._id} />
+                <InfoRow label="Account ID" value={singleUser?._id} />
                 <InfoRow label="Phone" value={singleUser?.phone} />
                 <InfoRow
                   label="Verified"

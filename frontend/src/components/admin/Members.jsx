@@ -17,6 +17,7 @@ const Members = () => {
     deleteUserLoading,
     updateStatusFn,
   } = useAdminUsers();
+  const [deleteUserId, setDeleteUserId] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [pendingStatusUser, setPendingStatusUser] = useState(null);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
@@ -76,10 +77,12 @@ const Members = () => {
 
   const confirmDelete = async () => {
     if (!confirmDeleteId) return;
+    setDeleteUserId(confirmDeleteId);
     try {
       await deleteUserFn(confirmDeleteId);
     } catch (err) {
     } finally {
+      setDeleteUserId(null);
       setConfirmDeleteId(null);
       setConfirmOpen(false);
     }
@@ -187,11 +190,15 @@ const Members = () => {
                       onConfirm={confirmStatusChange}
                     />
                     <ActionButton
-                      label="Delete User"
+                      label={
+                        deletingUserId === user._id
+                          ? "Deleting.."
+                          : "Delete User"
+                      }
                       color="red"
                       onClick={() => handleDeleteUser(user)}
                       icon={<Trash size={16} className="-ml-1" />}
-                      disabled={deleteUserLoading}
+                      disabled={deleteUserId === user._id}
                     />
                   </div>
                 </td>

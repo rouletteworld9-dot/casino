@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 const VerifyOtp = ({ phone, resendOtp }) => {
   const navigate = useNavigate();
-  const { verifyOtpFn } = useAuth();
+  const { verifyOtpFn, verifyOtpLoading } = useAuth();
   const [codeSent, setCodeSent] = useState(false);
   const [timerKey, setTimerKey] = useState(Date.now());
   const [timerExpired, setTimerExpired] = useState(false);
@@ -29,6 +29,12 @@ const VerifyOtp = ({ phone, resendOtp }) => {
       {
         onSuccess: () => {
           navigate("/login");
+        },
+        onError: (error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "OTP verification failed. Please try again."
+          );
         },
       }
     );
@@ -62,8 +68,9 @@ const VerifyOtp = ({ phone, resendOtp }) => {
       </div>
 
       <button
+        disabled={verifyOtpLoading}
         onClick={handleCodeSubmit}
-        className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-bold transition cursor-pointer"
+        className="w-full disabled:bg-gray-500  bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-bold transition cursor-pointer"
       >
         Next
       </button>
